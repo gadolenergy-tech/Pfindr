@@ -20,6 +20,25 @@ function optional(name: string, fallback: string): string {
   return process.env[name] ?? fallback;
 }
 
+/**
+ * Returns what is wrong with the JWT secrets, or null if they are fine. A
+ * placeholder or short secret in production lets anyone mint a valid token, so
+ * the server refuses to start rather than run that way.
+ */
+export function jwtSecretProblem(access: string, refresh: string): string | null {
+  for (const [name, secret] of [["JWT_ACCESS_SECRET", access], ["JWT_REFRESH_SECRET", refresh]] as const) {
+    if (secret.length < 32 || /change-me|changeme|secret|password/i.test(secret)) {
+      return `${name} must be a random string of at least 32 characters in production (try: openssl rand -base64 48).`;
+    }
+  }
+  return access === refresh ? "JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be different." : null;
+}
+
+if (process.env.NODE_ENV === "production") {
+  const problem = jwtSecretProblem(required("JWT_ACCESS_SECRET"), required("JWT_REFRESH_SECRET"));
+  if (problem) throw new Error(problem);
+}
+
 export const env = {
   nodeEnv: optional("NODE_ENV", "development"),
   isProduction: process.env.NODE_ENV === "production",
@@ -36,6 +55,14 @@ export const env = {
     .map((o) => o.trim())
     .filter(Boolean),
   webUrl: optional("WEB_URL", "http://localhost:3020"),
+  /**
+   * How many proxies sit in front of the API, so rate limiting sees the real
+   * client IP. 1 for a single reverse proxy; 2 when the web app's /api/proxy
+   * (e.g. on Vercel) calls an API that is itself behind a platform proxy
+   * (e.g. Railway). Too low and every visitor shares one rate-limit bucket;
+   * too high and clients can spoof their IP.
+   */
+  trustProxyHops: Number(optional("TRUST_PROXY_HOPS", "1")),
   logLevel: optional("LOG_LEVEL", "info"),
   paystack: {
     /** sk_test_… or sk_live_…. Empty disables checkout with a clear error. */

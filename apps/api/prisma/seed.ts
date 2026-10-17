@@ -9,58 +9,20 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import { env } from "../src/env";
+import { CATEGORIES } from "./categories";
 import { seedProximityVendors } from "./seed-vendors";
 
 const adapter = new PrismaPg({ connectionString: env.databaseUrl });
 const prisma = new PrismaClient({ adapter });
 
-// Icon names match the lucide-react imports in apps/web/app/(marketing)/page.tsx.
-const CATEGORIES = [
-  {
-    name: "Healthcare",
-    slug: "healthcare",
-    description: "Pharmacies & Blood Banks",
-    icon: "Pill",
-    sortOrder: 1,
-  },
-  {
-    name: "Food & Beverage",
-    slug: "food-beverage",
-    description: "Fresh & Packaged Goods",
-    icon: "Utensils",
-    sortOrder: 2,
-  },
-  {
-    name: "Industrial",
-    slug: "industrial",
-    description: "Tools & Equipment",
-    icon: "Wrench",
-    sortOrder: 3,
-  },
-  {
-    name: "Oil & Gas",
-    slug: "oil-gas",
-    description: "Drilling & Maintenance",
-    icon: "Factory",
-    sortOrder: 4,
-  },
-  {
-    name: "Emergency",
-    slug: "emergency",
-    description: "Critical Supply Chain",
-    icon: "Shield",
-    sortOrder: 5,
-  },
-  {
-    name: "Everyday",
-    slug: "everyday",
-    description: "Consumer Products",
-    icon: "ShoppingBag",
-    sortOrder: 6,
-  },
-];
 
 async function main() {
+  if (env.isProduction && process.env.ALLOW_SEED_IN_PRODUCTION !== "1") {
+    throw new Error(
+      "Refusing to seed a production database: it creates accounts with a published password. Use `npm run db:bootstrap` instead.",
+    );
+  }
+
   console.log("Seeding categories...");
   for (const category of CATEGORIES) {
     await prisma.category.upsert({

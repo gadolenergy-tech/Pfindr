@@ -18,7 +18,8 @@ export function createApp() {
 
   // Behind the Next.js BFF proxy (and any production reverse proxy), so req.ip
   // needs to come from X-Forwarded-For for rate limiting to be meaningful.
-  app.set("trust proxy", 1);
+  // See TRUST_PROXY_HOPS in env.ts for what to set per deployment.
+  app.set("trust proxy", env.trustProxyHops);
 
   app.use(helmet());
   app.use(
