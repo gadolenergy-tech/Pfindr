@@ -23,8 +23,11 @@ API with the httpOnly auth cookies, so the API needs no cross-site cookies.
 1. New project → add **PostgreSQL**.
 2. Add a service from this GitHub repo. Leave **Root Directory** at the repo root
    (the workspaces need it); Railway picks up `railway.json` from there.
-   That file builds the shared package and API, runs `prisma migrate deploy`
-   before each release, and health-checks `/api/healthz`.
+   That file builds the shared package and API, and its start command runs
+   `prisma migrate deploy` before the server boots, so a failed migration fails
+   the deploy instead of serving a broken schema. It health-checks `/api/healthz`.
+   (Railway ignored a separate `preDeployCommand` here, so migrations live in
+   the start command.)
 3. Set the variables below, using the Postgres service's `DATABASE_URL`
    (reference it as `${{Postgres.DATABASE_URL}}`).
 
