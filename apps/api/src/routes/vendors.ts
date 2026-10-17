@@ -8,6 +8,7 @@ import { ok } from "../lib/respond";
 import { validateBody } from "../middleware/validate";
 import { requireAuth, requireVendor, vendorIdOf } from "../middleware/auth";
 import { assertOwnImageUrl } from "../lib/storage";
+import { listPayouts, vendorBalances } from "../services/payout.service";
 import { notFound } from "../lib/errors";
 import { recordProfileView } from "../services/stats.service";
 
@@ -21,6 +22,13 @@ router.get("/vendors/me", requireAuth, requireVendor, async (req, res) => {
   });
   if (!vendor) throw notFound("You do not have a vendor profile yet");
   return ok(res, { ...vendor, preferences: readPreferences(vendor.preferences) });
+});
+
+/** What Finder owes the signed-in vendor from Buy now orders, and what it has sent. */
+router.get("/vendors/me/payouts", requireAuth, requireVendor, async (req, res) => {
+  const vendorId = vendorIdOf(req);
+  const [balances, payouts] = await Promise.all([vendorBalances(vendorId), listPayouts(vendorId)]);
+  return ok(res, { balances, payouts });
 });
 
 router.patch(

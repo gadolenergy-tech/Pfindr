@@ -135,3 +135,15 @@ export const affiliateAdminApi = {
   settlePayout: (id: string, status: "PAID" | "FAILED", reference?: string) =>
     api.patch(`/admin/payouts/${id}`, { status, reference }),
 };
+
+export const vendorPayoutApi = {
+  /** What Finder holds for each vendor from Buy now orders, biggest debt first. */
+  balances: () => api.get<import("@finder/shared").AdminVendorBalance[]>("/admin/vendor-payouts"),
+  history: (vendorId: string) =>
+    api.get<{
+      balances: import("@finder/shared").VendorBalance[];
+      payouts: import("@finder/shared").VendorPayoutRecord[];
+    }>(`/admin/vendors/${vendorId}/payouts`),
+  record: (vendorId: string, input: import("@finder/shared").RecordPayoutInput) =>
+    api.post<import("@finder/shared").VendorPayoutRecord>(`/admin/vendors/${vendorId}/payouts`, input),
+};

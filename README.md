@@ -56,6 +56,7 @@ Seeded accounts (development only):
 | `npm run dev`        | All three apps plus the shared package in watch  |
 | `npm run build`      | Turbo build across the workspace                 |
 | `npm run typecheck`  | `tsc --noEmit` everywhere                        |
+| `npm test`           | API integration tests (needs Postgres; uses a separate `finder_network_test` database it creates itself) |
 | `npm run db:migrate` | `prisma migrate dev`, then `prisma generate`     |
 | `npm run db:seed`    | Seed categories, admin, demo vendor              |
 | `npm run db:studio`  | Prisma Studio on :5556                           |
@@ -94,18 +95,23 @@ search, messaging, affiliate or admin surfaces renders hardcoded data.
 | API keys & public API | Scoped, hashed, revocable keys; `/api/v1` search, inventory CRUD/sync/history, orders; 120 req/min per key |
 | Affiliates | Instant join, `/r/[code]` links with 90-day cookie, attribution, conversion, tiers, payout requests |
 | Settings | Profile, password, notification/privacy/default preferences (privacy + defaults enforced) |
-| Admin | Vendor verification, user suspension, contact/partner triage, affiliate credit + payout settlement, audit log |
+| Admin | Vendor verification, user suspension, contact/partner triage, affiliate credit + payout settlement, vendor payout ledger, audit log |
+| Email | Verification codes and password-reset links sent through Resend; failures are logged, never block sign-up |
+| Uploads | Vendor logo and product photos: browser uploads straight to an S3-compatible bucket (R2/S3) through a presigned URL; saved URLs must be the vendor's own uploads |
+| Vendor payouts | Ledger of what Finder owes each vendor (paid, un-refunded Buy now orders less `PLATFORM_FEE_PERCENT`) minus payouts an admin records after a manual bank transfer; never lets a payout exceed the balance |
 
 **Not built — each is labelled "Soon" in the UI rather than faked:**
 
-- **Billing and vendor payouts.** Buy now payments land in Finder's Paystack
-  account; paying vendors out is manual for now (Paystack subaccounts/splits
-  would automate it). There are no vendor subscriptions, so affiliate
-  commission is credited by an operator in the admin console. Buyer refunds
-  are issued from the Paystack dashboard, then marked Refunded on the order.
-- **Outbound email.** Verification codes and reset links are written to the API
-  log in development. Notification preferences are saved but nothing is sent.
-- **File uploads** (vendor logos, product images). Needs a storage choice — S3 or Cloudinary.
+- **Automated vendor payouts and billing.** Buy now payments land in Finder's
+  Paystack account and vendors are paid by bank transfer, recorded in the admin
+  Payouts ledger (Paystack subaccounts/splits would automate it). There are no
+  vendor subscriptions, so affiliate commission is credited by an operator in
+  the admin console. Buyer refunds are issued from the Paystack dashboard, then
+  marked Refunded on the order.
+- **Notification emails.** Only verification and password-reset emails are
+  sent. Notification preferences are saved but nothing else is sent yet.
+- **Showing product photos in search results.** Photos upload and appear in the
+  vendor's product list; the public search cards do not render them yet.
 - **AI Document Scan, Camera Capture and Form Submission** tabs on the inventory
   page are still design demos. Manual entry, bulk import and the API are the real
   intake paths.

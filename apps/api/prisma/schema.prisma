@@ -134,6 +134,7 @@ model User {
   orders        Order[]
   checkouts     CheckoutSession[]
   auditLogs     AuditLog[]
+  vendorPayoutsRecorded VendorPayout[]
 
   @@index([role])
   @@index([status])
@@ -225,6 +226,7 @@ model Vendor {
   syncJobs       InventorySyncJob[]
   dailyStats     VendorDailyStat[]
   checkouts      CheckoutSession[]
+  payouts        VendorPayout[]
 
   @@index([status])
   @@index([categoryId])
@@ -659,4 +661,26 @@ model VendorDailyStat {
   @@unique([vendorId, day])
   @@index([day])
   @@map("vendor_daily_stats")
+}
+
+/// A manual transfer from Finder to a vendor for money collected at checkout.
+/// What a vendor is owed is derived: paid checkout orders (less the platform
+/// fee) minus the payouts recorded here. See services/payout.service.ts.
+model VendorPayout {
+  id          String   @id @default(cuid())
+  vendorId    String
+  amount      Decimal  @db.Decimal(14, 2)
+  currency    String   @default("NGN") @db.Char(3)
+  /// Bank transfer reference, for reconciling against the bank statement.
+  reference   String?
+  note        String?
+  paidAt      DateTime @default(now())
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  vendor    Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  createdBy User?  @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([vendorId, currency])
+  @@map("vendor_payouts")
 }

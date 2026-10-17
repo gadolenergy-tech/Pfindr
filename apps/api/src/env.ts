@@ -58,6 +58,8 @@ export const env = {
     /** Public base URL objects are served from (CDN or r2.dev), no trailing slash. */
     publicUrl: optional("S3_PUBLIC_URL", "").replace(/\/+$/, ""),
   },
+  /** Finder's cut of each paid checkout order, in percent. Zero until pricing is decided. */
+  platformFeePercent: Number(optional("PLATFORM_FEE_PERCENT", "0")),
   /** How long Buy now holds stock while the buyer pays. */
   checkoutHoldMinutes: Number(optional("CHECKOUT_HOLD_MINUTES", "30")),
 } as const;

@@ -3,11 +3,14 @@ import { z } from "zod";
 import {
   paginationQuerySchema,
   partnerStatusSchema,
+  recordPayoutSchema,
   vendorStatusUpdateSchema,
+  type RecordPayoutInput,
 } from "@finder/shared";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
-import { ok, paginated } from "../lib/respond";
+import { created, ok, paginated } from "../lib/respond";
+import { adminBalances, listPayouts, recordPayout, vendorBalances } from "../services/payout.service";
 import {
   parsedQuery,
   validateBody,
@@ -407,6 +410,27 @@ router.patch(
     return ok(res, { id: payout.id, status: payout.status });
   },
 );
+
+/** What Finder holds for each vendor from Buy now orders, and what it has paid out. */
+router.get("/vendor-payouts", async (_req, res) => ok(res, await adminBalances()));
+
+router.get("/vendors/:id/payouts", async (req, res) => {
+  const vendorId = req.params.id!;
+  const [balances, payouts] = await Promise.all([vendorBalances(vendorId), listPayouts(vendorId)]);
+  return ok(res, { balances, payouts });
+});
+
+/** Records a manual bank transfer to a vendor; never more than is owed. */
+router.post("/vendors/:id/payouts", validateBody(recordPayoutSchema), async (req, res) => {
+  const payout = await recordPayout(req.auth!.sub, req.params.id!, req.body as RecordPayoutInput);
+  await audit(req.auth!.sub, "VENDOR_PAYOUT_RECORDED", "Vendor", req.params.id!, {
+    payoutId: payout.id,
+    amount: payout.amount,
+    currency: payout.currency,
+    reference: payout.reference,
+  });
+  return created(res, payout);
+});
 
 /** Highest-value inventory on the platform — a quick sanity read for ops. */
 router.get("/inventory/top", async (_req, res) => {

@@ -12,3 +12,4 @@ export * from "./partner.js";
 export * from "./search.js";
 export * from "./checkout.js";
 export * from "./upload.js";
+export * from "./payout.js";

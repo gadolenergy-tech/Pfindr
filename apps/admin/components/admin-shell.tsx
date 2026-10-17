@@ -13,6 +13,7 @@ import {
   Boxes,
   LogOut,
   Share2,
+  Banknote,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { AuthGuard } from "@/components/auth-guard";
@@ -25,6 +26,7 @@ const NAV = [
   { icon: Mail, label: "Contact", href: "/contact" },
   { icon: Handshake, label: "Partners", href: "/partners" },
   { icon: Share2, label: "Affiliates", href: "/affiliates" },
+  { icon: Banknote, label: "Payouts", href: "/payouts" },
   { icon: ScrollText, label: "Audit log", href: "/audit" },
 ];
 
