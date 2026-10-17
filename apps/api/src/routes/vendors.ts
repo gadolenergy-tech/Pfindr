@@ -6,7 +6,8 @@ import { mergePreferences, readPreferences } from "../services/preferences.servi
 import { prisma } from "../lib/prisma";
 import { ok } from "../lib/respond";
 import { validateBody } from "../middleware/validate";
-import { requireAuth, requireVendor } from "../middleware/auth";
+import { requireAuth, requireVendor, vendorIdOf } from "../middleware/auth";
+import { assertOwnImageUrl } from "../lib/storage";
 import { notFound } from "../lib/errors";
 import { recordProfileView } from "../services/stats.service";
 
@@ -29,6 +30,7 @@ router.patch(
   validateBody(updateVendorSchema),
   async (req, res) => {
     const input = req.body as import("@finder/shared").UpdateVendorInput;
+    assertOwnImageUrl(vendorIdOf(req), input.logoUrl);
 
     const categoryId = input.categorySlug
       ? (

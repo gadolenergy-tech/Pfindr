@@ -139,7 +139,9 @@ router.post(
           contactEmail: input.contactEmail.toLowerCase(),
           contactPhone: input.contactPhone,
           website: input.website || null,
-          logoUrl: input.logoUrl ?? null,
+          // Uploads are scoped to a vendor id, which does not exist yet; the
+          // logo is added from settings once the account is created.
+          logoUrl: null,
           registrationNumber: input.registrationNumber ?? null,
           addressLine1: input.address.line1,
           addressLine2: input.address.line2 ?? null,

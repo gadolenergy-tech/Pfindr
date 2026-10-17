@@ -15,6 +15,7 @@ import apiKeysRouter from "./api-keys";
 import publicV1Router from "./public-v1";
 import affiliateRouter from "./affiliate";
 import checkoutRouter from "./checkout";
+import uploadsRouter from "./uploads";
 
 const router = Router();
 
@@ -34,5 +35,6 @@ router.use("/api-keys", apiKeysRouter);
 router.use("/v1", publicV1Router);
 router.use("/affiliate", affiliateRouter);
 router.use(checkoutRouter);
+router.use(uploadsRouter);
 
 export default router;

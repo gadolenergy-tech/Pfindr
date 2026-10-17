@@ -12,6 +12,7 @@ import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { inventoryApi } from "@/lib/vendor-api";
 import { VendorLocationField, pinFromVendor, type PinnedLocation } from "@/components/vendor-location-field";
+import { ImageUploadButton } from "@/components/image-upload";
 
 type SettingsTab = "profile" | "account" | "notifications" | "privacy" | "preferences";
 
@@ -21,6 +22,7 @@ type VendorMe = {
   contactEmail: string;
   contactPhone: string;
   website: string | null;
+  logoUrl: string | null;
   addressLine1: string | null;
   city: string | null;
   state: string | null;
@@ -135,6 +137,16 @@ export default function VendorSettings() {
     ? Object.values(err.fieldErrors).join(" · ")
     : err.message);
 
+  // The logo saves on its own the moment it uploads, independent of the form.
+  const saveLogo = useMutation({
+    mutationFn: (logoUrl: string | null) => api.patch("/vendors/me", { logoUrl }),
+    onSuccess: (_data, logoUrl) => {
+      void queryClient.invalidateQueries({ queryKey: ["vendor"] });
+      flash("ok", logoUrl ? "Logo updated" : "Logo removed");
+    },
+    onError,
+  });
+
   const saveProfile = useMutation({
     mutationFn: () => api.patch("/vendors/me", {
       businessName: profile.businessName,
@@ -222,16 +234,33 @@ export default function VendorSettings() {
                     <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-5">
                       <h2 className="text-sm font-semibold text-white">Business Profile</h2>
                       <div className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl">
-                        <div className="w-14 h-14 rounded-xl bg-slate-800 border border-white/[0.08] flex items-center justify-center text-xl font-bold text-slate-400">
-                          {profile.businessName.charAt(0).toUpperCase() || "F"}
+                        <div className="w-14 h-14 rounded-xl bg-slate-800 border border-white/[0.08] flex items-center justify-center text-xl font-bold text-slate-400 overflow-hidden">
+                          {vendor?.logoUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                            <img src={vendor.logoUrl} alt={`${profile.businessName} logo`} className="w-full h-full object-cover" />
+                          ) : (
+                            profile.businessName.charAt(0).toUpperCase() || "F"
+                          )}
                         </div>
                         <div>
                           <p className="text-[12px] font-semibold text-slate-300">Business Logo</p>
-                          <p className="text-[10px] text-slate-600 mb-2">PNG or JPG, minimum 200×200px</p>
-                          {/* File storage (S3/Cloudinary) is not chosen yet — see README. */}
-                          <button disabled title="Coming soon" className="text-[10px] text-slate-500 border border-white/[0.08] bg-white/[0.03] px-3 py-1 rounded-lg cursor-not-allowed">
-                            Upload Logo · Soon
-                          </button>
+                          <p className="text-[10px] text-slate-600 mb-2">JPG, PNG or WebP, up to 5 MB</p>
+                          <div className="flex items-center gap-2">
+                            <ImageUploadButton
+                              purpose="logo"
+                              onUploaded={async (url) => { await saveLogo.mutateAsync(url); }}
+                              onError={(text) => flash("error", text)}
+                              className="text-[10px] text-slate-300 border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-3 py-1 rounded-lg transition-colors disabled:opacity-60"
+                            >
+                              {vendor?.logoUrl ? "Change logo" : "Upload logo"}
+                            </ImageUploadButton>
+                            {vendor?.logoUrl && (
+                              <button type="button" onClick={() => saveLogo.mutate(null)} disabled={saveLogo.isPending}
+                                className="text-[10px] text-slate-500 hover:text-red-400 px-2 py-1 transition-colors">
+                                Remove
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <FieldGroup label="Business Name">

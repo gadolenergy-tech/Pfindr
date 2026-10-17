@@ -47,6 +47,17 @@ export const env = {
     /** Must be an address on a domain verified in Resend. */
     from: optional("EMAIL_FROM", "Finder Network <onboarding@resend.dev>"),
   },
+  storage: {
+    /** S3-compatible bucket (AWS S3, Cloudflare R2, MinIO). Empty disables uploads. */
+    bucket: optional("S3_BUCKET", ""),
+    region: optional("S3_REGION", "auto"),
+    /** Set for R2/MinIO; leave empty for AWS S3. */
+    endpoint: optional("S3_ENDPOINT", ""),
+    accessKeyId: optional("S3_ACCESS_KEY_ID", ""),
+    secretAccessKey: optional("S3_SECRET_ACCESS_KEY", ""),
+    /** Public base URL objects are served from (CDN or r2.dev), no trailing slash. */
+    publicUrl: optional("S3_PUBLIC_URL", "").replace(/\/+$/, ""),
+  },
   /** How long Buy now holds stock while the buyer pays. */
   checkoutHoldMinutes: Number(optional("CHECKOUT_HOLD_MINUTES", "30")),
 } as const;

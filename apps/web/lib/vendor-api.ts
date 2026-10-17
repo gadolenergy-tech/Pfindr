@@ -21,6 +21,7 @@ export type InventoryItem = {
   currency: string;
   lowStockThreshold: number;
   status: InventoryStatus;
+  imageUrl: string | null;
   notes: string | null;
   category: { id: string; name: string; slug: string } | null;
   lastSyncedAt: string | null;

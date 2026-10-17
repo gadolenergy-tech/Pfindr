@@ -1,6 +1,7 @@
 import type { InventoryStatus, Prisma } from "@prisma/client";
 import type { CreateInventoryItemInput, UpdateInventoryItemInput } from "@finder/shared";
 import { notFound } from "../lib/errors";
+import { assertOwnImageUrl } from "../lib/storage";
 import { readPreferences } from "./preferences.service";
 import { prisma } from "../lib/prisma";
 import { decimalToNumber, toIso } from "../lib/serialize";
@@ -172,6 +173,8 @@ export async function createInventoryItem(
   const lowStockThreshold = "lowStockThreshold" in sent ? input.lowStockThreshold : defaults.lowStockThreshold;
   const currency = "currency" in sent ? input.currency : defaults.currency;
 
+  assertOwnImageUrl(vendorId, input.imageUrl);
+
   const item = await prisma.inventoryItem.create({
     data: {
       vendorId,
@@ -209,6 +212,7 @@ export async function updateInventoryItem(
   id: string,
   input: UpdateInventoryItemInput,
 ) {
+  assertOwnImageUrl(vendorId, input.imageUrl);
   const current = await findOwnItem(vendorId, id);
   const quantity = input.quantity ?? current.quantity;
   const threshold = input.lowStockThreshold ?? current.lowStockThreshold;

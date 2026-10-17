@@ -6,6 +6,7 @@ import { ChevronDown, Loader2, Package, Search, Trash2 } from "lucide-react";
 import { createInventoryItemSchema } from "@finder/shared";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { ImageUploadButton } from "@/components/image-upload";
 import { ApiError } from "@/lib/api";
 import {
   formatMoney,
@@ -32,6 +33,7 @@ const EMPTY = {
   price: "",
   discontinued: false,
   notes: "",
+  imageUrl: "",
 };
 
 /** Row in the product list, expandable to adjust stock inline. */
@@ -80,6 +82,10 @@ function ProductRow({ item }: { item: InventoryItem }) {
             isCrit ? "bg-red-500/80" : isLow ? "bg-amber-500/80" : isOff ? "bg-slate-600" : "bg-green-500/50"
           }`}
         />
+        {item.imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+          <img src={item.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover border border-white/[0.06] shrink-0" />
+        )}
         <div className="flex-1 min-w-0">
           <div className="text-[12px] font-semibold text-slate-200 truncate">{item.name}</div>
           <div className="text-[10px] text-slate-500">
@@ -200,6 +206,7 @@ export function ManualEntry() {
       price: form.price.replace(/[₦,\s]/g, ""),
       status: form.discontinued ? "DISCONTINUED" : undefined,
       notes: form.notes || null,
+      imageUrl: form.imageUrl || null,
     });
 
     if (!parsed.success) {
@@ -280,6 +287,29 @@ export function ManualEntry() {
             <label className={LABEL}>Vendor Notes</label>
             <textarea rows={2} value={form.notes} onChange={(e) => set("notes")(e.target.value)} placeholder="Any notes for buyers (optional)…"
               className={`${INPUT} resize-none`} />
+          </div>
+          <div>
+            <label className={LABEL}>Product Photo</label>
+            <div className="flex items-center gap-3">
+              {form.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                <img src={form.imageUrl} alt="Product preview" className="w-14 h-14 rounded-lg object-cover border border-white/[0.08]" />
+              )}
+              <ImageUploadButton
+                purpose="product"
+                onUploaded={(url) => set("imageUrl")(url)}
+                onError={(message) => toast({ title: "Upload failed", description: message, variant: "destructive" })}
+                className="text-[11px] text-slate-300 border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60"
+              >
+                {form.imageUrl ? "Change photo" : "Upload photo (optional)"}
+              </ImageUploadButton>
+              {form.imageUrl && (
+                <button type="button" onClick={() => set("imageUrl")("")} className="text-[11px] text-slate-500 hover:text-red-400 transition-colors">
+                  Remove
+                </button>
+              )}
+            </div>
+            {err("imageUrl")}
           </div>
           <Button type="submit" disabled={create.isPending} className="w-full bg-blue-600 hover:bg-blue-500 text-white gap-2 mt-2">
             {create.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Package className="h-4 w-4" />}
