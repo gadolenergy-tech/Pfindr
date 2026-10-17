@@ -5,6 +5,12 @@ import { prisma } from "../lib/prisma";
 import { env } from "../env";
 import { logger } from "../lib/logger";
 import {
+  emailEnabled,
+  passwordResetEmail,
+  sendMail,
+  verificationEmail,
+} from "../lib/mailer";
+import {
   generateRefreshToken,
   hashToken,
   signAccessToken,
@@ -139,10 +145,10 @@ function generateSecret(purpose: Purpose): string {
 
 /**
  * Issues a single-use secret and invalidates any earlier one for the same
- * purpose. Returns the plaintext — the caller delivers it.
+ * purpose, then emails it to the user. Returns the plaintext.
  *
- * TODO: wire an email provider. Until then it is written to the log in
- * development so the flow is testable end to end.
+ * With no RESEND_API_KEY the secret is written to the log in development so
+ * the flow is still testable end to end.
  */
 export async function issueAuthToken(
   userId: string,
@@ -167,14 +173,29 @@ export async function issueAuthToken(
     },
   });
 
-  if (!env.isProduction) {
+  const resetLink = `${env.webUrl}/reset-password?token=${secret}`;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, fullName: true },
+  });
+  if (user) {
+    const message =
+      purpose === "EMAIL_VERIFICATION"
+        ? verificationEmail(user.fullName, secret)
+        : passwordResetEmail(user.fullName, resetLink);
+    await sendMail({ to: user.email, ...message });
+  }
+
+  // Without a provider the secret would be unrecoverable, so log it in dev.
+  if (!env.isProduction && !emailEnabled()) {
     if (purpose === "EMAIL_VERIFICATION") {
       logger.info(`[dev] verification code for ${userId}: ${secret}`);
     } else {
-      logger.info(
-        `[dev] password reset link: ${env.webUrl}/reset-password?token=${secret}`,
-      );
+      logger.info(`[dev] password reset link: ${resetLink}`);
     }
+  } else if (env.isProduction && !emailEnabled()) {
+    logger.warn(`RESEND_API_KEY is not set; ${purpose} email was not sent`);
   }
 
   return secret;

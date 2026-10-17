@@ -15,7 +15,8 @@
     "db:migrate": "npm run db:migrate --workspace @finder/api",
     "db:seed": "npm run db:seed --workspace @finder/api",
     "db:studio": "npm run db:studio --workspace @finder/api",
-    "postinstall": "npm run build --workspace @finder/shared"
+    "postinstall": "npm run build --workspace @finder/shared",
+    "test": "turbo run test"
   },
   "packageManager": "npm@11.12.1",
   "devDependencies": {

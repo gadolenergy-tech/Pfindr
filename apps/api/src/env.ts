@@ -41,6 +41,12 @@ export const env = {
     /** sk_test_… or sk_live_…. Empty disables checkout with a clear error. */
     secretKey: optional("PAYSTACK_SECRET_KEY", ""),
   },
+  email: {
+    /** Resend API key (re_…). Empty disables sending; codes are logged in dev. */
+    apiKey: optional("RESEND_API_KEY", ""),
+    /** Must be an address on a domain verified in Resend. */
+    from: optional("EMAIL_FROM", "Finder Network <onboarding@resend.dev>"),
+  },
   /** How long Buy now holds stock while the buyer pays. */
   checkoutHoldMinutes: Number(optional("CHECKOUT_HOLD_MINUTES", "30")),
 } as const;
