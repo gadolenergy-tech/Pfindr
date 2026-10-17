@@ -1,0 +1,25 @@
+{
+  "name": "finder-network",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "npm run db:generate --workspace @finder/api",
+    "db:migrate": "npm run db:migrate --workspace @finder/api",
+    "db:seed": "npm run db:seed --workspace @finder/api",
+    "db:studio": "npm run db:studio --workspace @finder/api",
+    "postinstall": "npm run build --workspace @finder/shared"
+  },
+  "packageManager": "npm@11.12.1",
+  "devDependencies": {
+    "turbo": "^2.9.18",
+    "typescript": "^5.9.3"
+  }
+}

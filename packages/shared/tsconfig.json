@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // CommonJS output, because apps/api compiles to CJS and requires this
+    // package directly. Next.js consumes CJS without complaint.
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "types": [],
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "isolatedModules": false
+  },
+  "include": ["src/**/*.ts"]
+}
