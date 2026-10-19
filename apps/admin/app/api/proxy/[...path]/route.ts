@@ -19,6 +19,11 @@ const STRIPPED = new Set([
   "transfer-encoding",
   "upgrade",
   "content-length",
+  // fetch() already decodes a compressed body, so passing the header on would
+  // make the browser decode it a second time. Asking upstream for plain text
+  // (Vercel compresses for the browser itself) avoids the mismatch entirely.
+  "content-encoding",
+  "accept-encoding",
 ]);
 
 async function forward(req: NextRequest, path: string[]): Promise<Response> {
@@ -55,7 +60,12 @@ async function forward(req: NextRequest, path: string[]): Promise<Response> {
     );
   }
 
-  const response = new NextResponse(upstream.body, {
+  // Buffer the body instead of piping upstream's stream through. These are
+  // small JSON payloads, and on Vercel a piped stream came back empty once the
+  // body outgrew the first chunk (a ~1 KB list rendered as "no results").
+  // 101/204/205/304 must not carry a body at all.
+  const noBody = [101, 204, 205, 304].includes(upstream.status);
+  const response = new NextResponse(noBody ? null : await upstream.arrayBuffer(), {
     status: upstream.status,
     statusText: upstream.statusText,
   });
