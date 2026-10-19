@@ -5,10 +5,11 @@ import { env } from "../env";
 
 /**
  * The browser never calls this API directly: it calls the Next app's
- * /api/proxy, which forwards here. On Vercel -> Railway the platform edge in
- * front of this API replaces X-Forwarded-For with the address it received the
- * connection from, so every visitor looks like one of Vercel's egress IPs and
- * would share a handful of rate-limit buckets.
+ * /api/proxy, which forwards here. Railway's edge appends the address that
+ * connected to it to X-Forwarded-For and the API trusts exactly that many hops
+ * (TRUST_PROXY_HOPS=2), so req.ip is the connecting address. For a proxied
+ * visitor that address is a Vercel server, so every visitor looks like one of
+ * Vercel's egress IPs and would share a handful of rate-limit buckets.
  *
  * So the proxy passes the real visitor IP in its own header, along with a
  * shared secret proving the request came from our proxy. Without that proof the

@@ -56,10 +56,13 @@ export const env = {
     .filter(Boolean),
   webUrl: optional("WEB_URL", "http://localhost:3020"),
   /**
-   * How many proxies sit directly in front of the API (1 on Railway, whose edge
-   * rewrites X-Forwarded-For itself). Too high lets clients spoof their IP.
-   * Visitors behind a Vercel /api/proxy are handled separately by
-   * PROXY_SHARED_SECRET, because no hop count can recover their IP.
+   * How many proxies sit in front of the API: 2 on Railway (its internal proxy
+   * and its edge, which appends the address that connected to it to
+   * X-Forwarded-For). That makes req.ip the real caller for anyone hitting the
+   * API directly, and a client-supplied X-Forwarded-For cannot override it. Too
+   * high lets clients spoof their IP; too low shows Railway's own address.
+   * Visitors behind a Vercel /api/proxy are different: the address that connects
+   * to Railway is then a Vercel server, so they are handled by PROXY_SHARED_SECRET.
    */
   trustProxyHops: Number(optional("TRUST_PROXY_HOPS", "1")),
   /**

@@ -84,9 +84,9 @@ describe("rate limiting behind the proxy", () => {
     // the real connection's bucket and get cut off.
     expect(await blocked(25, fake)).toBeGreaterThan(0);
   });
-  // Not tested here: a plain X-Forwarded-For. With TRUST_PROXY_HOPS=1 Express
-  // believes the last entry, which is only safe because Railway's edge rewrites
-  // the header with the address it really received the connection from (checked
-  // by sending spoofed headers straight to the deployed API). A test that connects
+  // Not tested here: a plain X-Forwarded-For. Express believes the entries the
+  // trusted hops add, so that is only safe behind Railway's edge, which appends the
+  // real connecting address (checked by sending forged headers straight to the
+  // deployed API: the logged IP stays the caller's real one). A test that connects
   // directly, with no such edge in front, cannot say anything about that.
 });
