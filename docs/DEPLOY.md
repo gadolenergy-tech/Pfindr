@@ -38,7 +38,8 @@ API with the httpOnly auth cookies, so the API needs no cross-site cookies.
 | `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` | two different random strings, 32+ chars (`openssl rand -base64 48`). The API refuses to start with placeholders. |
 | `WEB_URL` | the public web URL, e.g. `https://finder.example.com`. Used in reset links and as the Paystack return fallback. |
 | `CORS_ORIGINS` | web and admin origins, comma-separated |
-| `TRUST_PROXY_HOPS` | `2` (Railway's proxy + the Vercel server calling it). With the default `1` every visitor shares one rate-limit bucket. |
+| `TRUST_PROXY_HOPS` | `1` (Railway's edge, which rewrites `X-Forwarded-For` itself) |
+| `PROXY_SHARED_SECRET` | 32+ random characters (`openssl rand -hex 32`), **identical** to the same variable on both Vercel projects. Lets the API rate-limit by real visitor IP; see below. |
 | `PAYSTACK_SECRET_KEY` | `sk_live_…` (use `sk_test_…` on staging) |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Resend key, and a sender on a **verified domain** |
 | `S3_BUCKET`, `S3_REGION`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_PUBLIC_URL` | see below |
@@ -67,9 +68,21 @@ Create **two projects** from the same repo.
 | `API_URL` | the Railway API's public URL | same |
 | `NEXT_PUBLIC_APP_URL` | its own public URL | its own public URL |
 | `NEXT_PUBLIC_API_URL` | the Railway API's public URL (shown in developer docs) | — |
+| `PROXY_SHARED_SECRET` | same value as on the API | same value as on the API |
 
 Leave "Include source files outside of the Root Directory" **on**: both apps
 import `packages/shared`, which the root `postinstall` builds.
+
+### Why PROXY_SHARED_SECRET exists
+
+Railway's edge replaces `X-Forwarded-For` with the address it received the
+connection from. Behind Vercel that is a Vercel server, so without help the API
+sees every visitor as one of a few Vercel IPs and they all share rate-limit
+buckets (about 20 failed logins would lock everyone out). The web and admin
+`/api/proxy` therefore pass the visitor's real IP in `x-finder-client-ip`
+together with this secret, and the API believes that header only when the secret
+matches. Without it (or with a wrong one) the header is ignored, so nobody can
+pick their own IP. Leave it empty locally.
 
 ## 3. Image storage (R2 or S3)
 
@@ -113,3 +126,4 @@ delivers to the Resend account owner.
 - [ ] Re-send the Paystack webhook; no second order is created
 - [ ] Record a payout in admin → Payouts; the owed balance drops
 - [ ] Hit `/api/auth/login` repeatedly from two networks; only the abusive one gets 429
+- [ ] API logs show visitors' real IPs, not `54.x`/`3.x` Vercel addresses

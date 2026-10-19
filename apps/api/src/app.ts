@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import { env } from "./env";
 import { logger } from "./lib/logger";
+import { trustProxiedClientIp } from "./lib/proxy-ip";
 import routes from "./routes";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler";
 
@@ -20,6 +21,9 @@ export function createApp() {
   // needs to come from X-Forwarded-For for rate limiting to be meaningful.
   // See TRUST_PROXY_HOPS in env.ts for what to set per deployment.
   app.set("trust proxy", env.trustProxyHops);
+
+  // First, so the loggers and rate limiters below see the real visitor.
+  app.use(trustProxiedClientIp);
 
   app.use(helmet());
   app.use(

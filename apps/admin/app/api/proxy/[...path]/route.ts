@@ -36,6 +36,21 @@ async function forward(req: NextRequest, path: string[]): Promise<Response> {
   });
   headers.set("x-forwarded-for", req.headers.get("x-forwarded-for") ?? "");
 
+  // Railway's edge rewrites X-Forwarded-For to *this* server's address, so the
+  // visitor's IP would be lost and every visitor would share a few rate-limit
+  // buckets. Pass it in our own header, with a secret proving it came from here
+  // (the API ignores the header without it). Vercel sets these two headers
+  // itself, overwriting anything the visitor sent. Clear whatever the browser
+  // sent first so it can never choose its own IP.
+  headers.delete("x-finder-client-ip");
+  headers.delete("x-finder-proxy-secret");
+  const proxySecret = process.env.PROXY_SHARED_SECRET;
+  const clientIp = (req.headers.get("x-real-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0] ?? "").trim();
+  if (proxySecret && clientIp) {
+    headers.set("x-finder-client-ip", clientIp);
+    headers.set("x-finder-proxy-secret", proxySecret);
+  }
+
   const hasBody = !["GET", "HEAD"].includes(req.method);
 
   let upstream: Response;

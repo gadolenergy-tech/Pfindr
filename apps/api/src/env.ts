@@ -56,13 +56,18 @@ export const env = {
     .filter(Boolean),
   webUrl: optional("WEB_URL", "http://localhost:3020"),
   /**
-   * How many proxies sit in front of the API, so rate limiting sees the real
-   * client IP. 1 for a single reverse proxy; 2 when the web app's /api/proxy
-   * (e.g. on Vercel) calls an API that is itself behind a platform proxy
-   * (e.g. Railway). Too low and every visitor shares one rate-limit bucket;
-   * too high and clients can spoof their IP.
+   * How many proxies sit directly in front of the API (1 on Railway, whose edge
+   * rewrites X-Forwarded-For itself). Too high lets clients spoof their IP.
+   * Visitors behind a Vercel /api/proxy are handled separately by
+   * PROXY_SHARED_SECRET, because no hop count can recover their IP.
    */
   trustProxyHops: Number(optional("TRUST_PROXY_HOPS", "1")),
+  /**
+   * Shared with the web/admin apps' /api/proxy (as PROXY_SHARED_SECRET there
+   * too). When a request carries it, the visitor IP the proxy reports is
+   * trusted for rate limiting; see lib/proxy-ip.ts. 32+ random characters.
+   */
+  proxySecret: optional("PROXY_SHARED_SECRET", ""),
   logLevel: optional("LOG_LEVEL", "info"),
   paystack: {
     /** sk_test_… or sk_live_…. Empty disables checkout with a clear error. */
