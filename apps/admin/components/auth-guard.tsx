@@ -33,8 +33,10 @@ export function AuthGuard({
       router.replace(`${redirectTo}?next=${next}`);
       return;
     }
+    // "/" is itself behind this guard, so sending a wrong-role user there
+    // would redirect to itself forever; the login page is the safe landing.
     if (roles && !roles.includes(user.role)) {
-      router.replace("/");
+      router.replace(redirectTo);
     }
   }, [loading, user, roles, router, pathname, redirectTo]);
 
