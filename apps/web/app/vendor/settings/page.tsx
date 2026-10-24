@@ -7,6 +7,7 @@ import { VendorSidebar } from "@/components/vendor-sidebar";
 import { Building2, Lock, Bell, Shield, Sliders, CheckCircle2, AlertCircle, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import type { UpdateVendorPreferencesInput, VendorPreferences } from "@finder/shared";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -331,7 +332,7 @@ export default function VendorSettings() {
                           ["confirmPassword", "Confirm New Password", "new-password"],
                         ] as const).map(([key, label, auto]) => (
                           <FieldGroup key={key} label={label}>
-                            <Input type="password" autoComplete={auto} value={passwords[key]}
+                            <PasswordInput autoComplete={auto} value={passwords[key]}
                               onChange={(e) => setPasswords({ ...passwords, [key]: e.target.value })}
                               placeholder="••••••••••••" className={FIELD} />
                           </FieldGroup>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
@@ -329,9 +330,8 @@ export default function VendorSignUp() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="password">Create Password</Label>
-                      <Input
+                      <PasswordInput
                         id="password"
-                        type="password"
                         placeholder="••••••••"
                         autoComplete="new-password"
                         className="bg-background"
@@ -346,9 +346,8 @@ export default function VendorSignUp() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirmPassword">Confirm Password</Label>
-                      <Input
+                      <PasswordInput
                         id="confirmPassword"
-                        type="password"
                         placeholder="••••••••"
                         autoComplete="new-password"
                         className="bg-background"
