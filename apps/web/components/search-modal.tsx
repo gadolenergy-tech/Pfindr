@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, MapPin, Package, ScanSearch, Camera, ImageUp, CheckCircle2, Loader2, Phone, AlertTriangle, Clock, Navigation, TrendingUp, ChevronDown, LocateFixed, MessageSquare, ShoppingCart } from "lucide-react";
+import { Search, X, MapPin, Package, ScanSearch, Camera, ImageUp, CheckCircle2, Loader2, Phone, AlertTriangle, Clock, Navigation, TrendingUp, ChevronDown, LocateFixed, Images, ShoppingCart } from "lucide-react";
 import { CheckoutDialog, type CheckoutItem } from "@/components/checkout-dialog";
 import type { DiscoverResult } from "@finder/shared";
 import { api } from "@/lib/api";
@@ -34,6 +34,8 @@ type ResultRow = {
   vendorId: string;
   vendorCity: string;
   category: string;
+  imageUrl: string | null;
+  brand: string | null;
   /** Formatted distance ("3.8 km"), or null when the vendor has no pinned location. */
   distance: string | null;
   location: string;
@@ -99,6 +101,8 @@ function toRow(r: DiscoverResult): ResultRow {
     vendorId: r.vendor.id,
     vendorCity: r.vendor.city ?? "",
     category: r.category?.name ?? "General",
+    imageUrl: r.imageUrl,
+    brand: r.brand,
     distance: r.vendor.distanceKm !== null ? formatDistance(r.vendor.distanceKm) : null,
     location,
     stock: r.quantity ?? 0,
@@ -117,6 +121,8 @@ function toRow(r: DiscoverResult): ResultRow {
         ? {
             inventoryItemId: r.inventoryItemId,
             name: r.name,
+            brand: r.brand,
+            imageUrl: r.imageUrl,
             vendor: r.vendor.businessName,
             vendorCity: r.vendor.city ?? "",
             unitPrice: r.price,
@@ -138,12 +144,35 @@ function useDebounced<T>(value: T, ms: number): T {
   return debounced;
 }
 
+/** Where the buyer was, so "Back to search" from a product page puts them there again. */
+const LAST_SEARCH_KEY = "finder:last-search";
+
+function saveLastSearch(query: string, category: Category) {
+  try {
+    sessionStorage.setItem(LAST_SEARCH_KEY, JSON.stringify({ query, category }));
+  } catch {
+    /* storage unavailable: they just start a fresh search */
+  }
+}
+
+function readLastSearch(): { query: string; category: Category } | null {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(LAST_SEARCH_KEY) ?? "null") as { query?: string; category?: Category } | null;
+    if (!saved?.query || !CATEGORIES.some((c) => c.label === saved.category)) return null;
+    return { query: saved.query, category: saved.category! };
+  } catch {
+    return null;
+  }
+}
+
 interface SearchModalProps {
   open: boolean;
   onClose: () => void;
+  /** Reopen on the search the buyer left to look at a product. */
+  resume?: boolean;
 }
 
-export function SearchModal({ open, onClose }: SearchModalProps) {
+export function SearchModal({ open, onClose, resume = false }: SearchModalProps) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<Category>("All");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
@@ -166,8 +195,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
   useEffect(() => {
     if (open) {
-      setQuery("");
-      setActiveCategory("All");
+      const last = resume ? readLastSearch() : null;
+      setQuery(last?.query ?? "");
+      setActiveCategory(last?.category ?? "All");
       setSelectedIdx(0);
       setImageSearchOpen(false);
       setTimeout(() => inputRef.current?.focus(), 80);
@@ -271,6 +301,12 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     saveCity(city.label);
     setPickerOpen(false);
     setSelectedIdx(0);
+  }
+
+  /** Opens the product page: photo, brand and description, with Add to cart there. */
+  function viewProduct(v: ResultRow) {
+    saveLastSearch(query.trim(), activeCategory);
+    router.push(`/product/${v.id}`);
   }
 
   /** Opens a conversation with the vendor, pre-filled with the product. */
@@ -621,7 +657,12 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                             : { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }
                           }
                         >
-                          <Package className={`h-4 w-4 transition-colors ${isSelected ? "text-blue-400" : "text-slate-500"}`} />
+                          {v.imageUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                            <img src={v.imageUrl} alt="" className="w-full h-full rounded-xl object-cover" />
+                          ) : (
+                            <Package className={`h-4 w-4 transition-colors ${isSelected ? "text-blue-400" : "text-slate-500"}`} />
+                          )}
                         </div>
 
                         {/* CENTER — Product info + inventory bar */}
@@ -629,6 +670,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                           {/* Title row */}
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="text-[13px] font-semibold text-slate-100 truncate leading-tight">{v.product}</span>
+                            {v.brand && (
+                              <span className="shrink-0 text-[10px] text-slate-400 font-medium">· {v.brand}</span>
+                            )}
                             <span className="shrink-0 text-[9px] uppercase tracking-widest bg-white/[0.04] border border-white/[0.07] text-slate-500 px-1.5 py-px rounded font-medium">
                               {v.category}
                             </span>
@@ -747,11 +791,11 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                                 )}
                                 <button
                                   type="button"
-                                  disabled={contacting === v.id}
-                                  onClick={() => void contactVendor(v)}
-                                  className="disabled:opacity-60 text-[11px] font-semibold text-blue-300 border border-blue-500/25 bg-blue-500/[0.08] hover:bg-blue-500/[0.15] rounded-lg px-3 py-1.5 flex items-center gap-1.5 transition-colors"
+                                  data-testid={`search-view-images-${v.id}`}
+                                  onClick={() => viewProduct(v)}
+                                  className="text-[11px] font-semibold text-blue-300 border border-blue-500/25 bg-blue-500/[0.08] hover:bg-blue-500/[0.15] rounded-lg px-3 py-1.5 flex items-center gap-1.5 transition-colors"
                                 >
-                                  <MessageSquare className="h-3 w-3" /> Message vendor
+                                  <Images className="h-3 w-3" /> View product images
                                 </button>
                               </div>
                             </div>
@@ -785,7 +829,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
         </motion.div>
       )}
       {open && checkout && (
-        <CheckoutDialog key="checkout" item={checkout} onClose={() => setCheckout(null)} />
+        <CheckoutDialog key="checkout" items={[checkout]} onClose={() => setCheckout(null)} />
       )}
     </AnimatePresence>
   );

@@ -267,8 +267,15 @@ function OrdersView() {
                       <div className="mt-4 border border-white/[0.05] rounded-xl divide-y divide-white/[0.04]">
                         {order.items.map((item) => (
                           <div key={item.id} className="flex items-center justify-between px-4 py-2.5 text-[12px]">
-                            <span className="text-slate-300">
-                              {item.name}
+                            <span className="text-slate-300 flex items-center gap-2.5">
+                              {item.imageUrl && (
+                                // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                                <img src={item.imageUrl} alt="" className="w-8 h-8 rounded-md object-cover border border-white/[0.06]" />
+                              )}
+                              <span>
+                                {item.name}
+                                {item.brand && <span className="text-slate-500"> · {item.brand}</span>}
+                              </span>
                               {item.sku && <span className="text-slate-600 ml-2 font-mono text-[10px]">{item.sku}</span>}
                             </span>
                             <span className="text-slate-400 tabular-nums">

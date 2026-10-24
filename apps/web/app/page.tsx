@@ -81,6 +81,8 @@ const CATS = [
 
 export default function Home() {
   const [searchOpen, setSearchOpen] = useState(false);
+  /** Set when arriving from a product page's "Back to search". */
+  const [resumeSearch, setResumeSearch] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [hoveredCat, setHoveredCat] = useState<number | null>(null);
   const { user } = useAuth();
@@ -94,6 +96,14 @@ export default function Home() {
     }
     setSearchOpen(true);
   }
+
+  // "Back to search" and "Keep shopping" land here with ?search=resume.
+  useEffect(() => {
+    if (!user || new URLSearchParams(window.location.search).get("search") !== "resume") return;
+    setResumeSearch(true);
+    setSearchOpen(true);
+    window.history.replaceState(null, "", "/");
+  }, [user]);
 
   // An already-registered vendor should land on their own dashboard, not
   // restart the vendor onboarding flow and appear to lose their products.
@@ -765,7 +775,7 @@ export default function Home() {
 
       <Footer />
 
-      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal open={searchOpen} resume={resumeSearch} onClose={() => { setSearchOpen(false); setResumeSearch(false); }} />
     </div>
   );
 }

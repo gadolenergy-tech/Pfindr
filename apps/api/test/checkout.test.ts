@@ -133,6 +133,97 @@ describe("startCheckout", () => {
   });
 });
 
+describe("startCheckout with a cart", () => {
+  const cart = (items: { id: string; quantity: number }[]) => ({
+    items: items.map((i) => ({ inventoryItemId: i.id, quantity: i.quantity })),
+    fulfilment: "PICKUP" as const,
+    buyerPhone: "+2348011111111",
+  });
+
+  it("holds every line, totals them, and freezes the brand and photo the buyer saw", async () => {
+    const vendor = await makeVendor();
+    const a = await makeItem(vendor.id, { name: "Paracetamol", brand: "Emzor", price: 100, quantity: 10, imageUrl: "https://cdn.test/a.png" });
+    const b = await makeItem(vendor.id, { name: "Paracetamol", brand: "Fidson", price: 120, quantity: 10 });
+    const buyer = await makeUser();
+
+    const { reference } = await startCheckout(buyerOf(buyer), cart([{ id: a.id, quantity: 2 }, { id: b.id, quantity: 3 }]), ORIGIN);
+
+    const session = await prisma.checkoutSession.findUniqueOrThrow({ where: { reference }, include: { lines: true } });
+    expect(Number(session.total)).toBe(560);
+    expect(session.lines.map((l) => [l.brand, l.quantity]).sort()).toEqual([["Emzor", 2], ["Fidson", 3]]);
+    expect(session.lines.find((l) => l.brand === "Emzor")?.imageUrl).toBe("https://cdn.test/a.png");
+    expect(init.mock.calls[0]![0]).toMatchObject({ amount: 560 });
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: a.id } })).quantity).toBe(8);
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: b.id } })).quantity).toBe(7);
+  });
+
+  it("merges the same product listed twice into one line", async () => {
+    const { item, buyer } = await setup({ quantity: 10 });
+    const { reference } = await startCheckout(buyerOf(buyer), cart([{ id: item.id, quantity: 1 }, { id: item.id, quantity: 2 }]), ORIGIN);
+    const lines = await prisma.checkoutLine.findMany({ where: { session: { reference } } });
+    expect(lines).toHaveLength(1);
+    expect(lines[0]!.quantity).toBe(3);
+  });
+
+  it("rolls back every hold when one line is short", async () => {
+    const vendor = await makeVendor();
+    const plenty = await makeItem(vendor.id, { quantity: 10 });
+    const scarce = await makeItem(vendor.id, { quantity: 1 });
+    const buyer = await makeUser();
+
+    await expect(
+      startCheckout(buyerOf(buyer), cart([{ id: plenty.id, quantity: 4 }, { id: scarce.id, quantity: 2 }]), ORIGIN),
+    ).rejects.toMatchObject({ status: 409 });
+
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: plenty.id } })).quantity).toBe(10);
+    expect(await prisma.checkoutSession.count()).toBe(0);
+  });
+
+  it("refuses a cart that spans two vendors", async () => {
+    const [a, b] = [await setup(), await setup()];
+    await expect(
+      startCheckout(buyerOf(a.buyer), cart([{ id: a.item.id, quantity: 1 }, { id: b.item.id, quantity: 1 }]), ORIGIN),
+    ).rejects.toMatchObject({ status: 400 });
+    expect(await prisma.checkoutSession.count()).toBe(0);
+  });
+
+  it("puts every line on the paid order, with the brand and photo as sold", async () => {
+    const vendor = await makeVendor();
+    const a = await makeItem(vendor.id, { brand: "Emzor", price: 100, imageUrl: "https://cdn.test/a.png" });
+    const b = await makeItem(vendor.id, { brand: "Fidson", price: 200 });
+    const buyer = await makeUser();
+    const { reference } = await startCheckout(buyerOf(buyer), cart([{ id: a.id, quantity: 1 }, { id: b.id, quantity: 2 }]), ORIGIN);
+    verify.mockResolvedValue(paid(reference, 500));
+
+    await confirmCheckout(reference);
+    // The vendor repricing afterwards must not change what was sold.
+    await prisma.inventoryItem.update({ where: { id: a.id }, data: { price: 999, imageUrl: null } });
+
+    const order = await prisma.order.findFirstOrThrow({ include: { items: true } });
+    expect(order.items).toHaveLength(2);
+    const emzor = order.items.find((i) => i.brand === "Emzor")!;
+    expect(Number(emzor.unitPrice)).toBe(100);
+    expect(emzor.imageUrl).toBe("https://cdn.test/a.png");
+    const message = await prisma.message.findFirstOrThrow();
+    expect(message.body).toContain("1 × Cement 50kg (Emzor)");
+    expect(message.body).toContain("2 × Cement 50kg (Fidson)");
+  });
+
+  it("releases every line when the hold expires", async () => {
+    const vendor = await makeVendor();
+    const a = await makeItem(vendor.id, { quantity: 5 });
+    const b = await makeItem(vendor.id, { quantity: 5 });
+    const buyer = await makeUser();
+    const { reference } = await startCheckout(buyerOf(buyer), cart([{ id: a.id, quantity: 2 }, { id: b.id, quantity: 3 }]), ORIGIN);
+    await prisma.checkoutSession.update({ where: { reference }, data: { expiresAt: new Date(Date.now() - 1000) } });
+
+    await expireStaleCheckouts();
+
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: a.id } })).quantity).toBe(5);
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: b.id } })).quantity).toBe(5);
+  });
+});
+
 describe("confirmCheckout", () => {
   async function pendingCheckout(quantity = 2) {
     const { vendor, item, buyer } = await setup({ quantity: 10, price: 5000 });

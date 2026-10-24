@@ -1,10 +1,11 @@
 import { Router } from "express";
+import { z } from "zod";
 import { discoverQuerySchema, type DiscoverQuery } from "@finder/shared";
 import { prisma } from "../lib/prisma";
 import { ok, paginated } from "../lib/respond";
 import { parsedQuery, validateQuery } from "../middleware/validate";
 import { requireAuth } from "../middleware/auth";
-import { runDiscover } from "../services/discover.service";
+import { getDiscoverItem, runDiscover } from "../services/discover.service";
 
 const router = Router();
 
@@ -17,6 +18,18 @@ const router = Router();
 router.get("/discover", requireAuth, validateQuery(discoverQuerySchema), async (req, res) => {
   const { rows, meta } = await runDiscover(parsedQuery<DiscoverQuery>(req), req.auth?.sub ?? null);
   return paginated(res, rows, meta);
+});
+
+const itemQuerySchema = z.object({
+  latitude: z.coerce.number().min(-90).max(90).optional(),
+  longitude: z.coerce.number().min(-180).max(180).optional(),
+});
+
+/** The product page behind a search result: photo, brand, description, vendor. */
+router.get("/discover/items/:id", requireAuth, validateQuery(itemQuerySchema), async (req, res) => {
+  const { latitude, longitude } = parsedQuery<z.infer<typeof itemQuerySchema>>(req);
+  const origin = latitude !== undefined && longitude !== undefined ? { latitude, longitude } : null;
+  return ok(res, await getDiscoverItem(req.params.id!, origin));
 });
 
 /** Most-searched terms over the last 7 days — feeds the live ticker. */

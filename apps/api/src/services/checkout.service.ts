@@ -17,6 +17,7 @@ const PAYABLE_CURRENCIES = new Set(["NGN", "GHS", "ZAR", "KES", "USD"]);
 
 const purchaseInclude = {
   vendor: { select: { id: true, businessName: true, city: true } },
+  lines: { orderBy: { id: "asc" } },
   order: { select: { orderNumber: true, status: true, paidAt: true } },
 } satisfies Prisma.CheckoutSessionInclude;
 
@@ -26,9 +27,15 @@ export function serializePurchase(s: SessionRow): Purchase {
   return {
     reference: s.reference,
     status: s.status,
-    name: s.name,
-    quantity: s.quantity,
-    unitPrice: decimalToNumber(s.unitPrice),
+    items: s.lines.map((l) => ({
+      inventoryItemId: l.inventoryItemId,
+      name: l.name,
+      brand: l.brand,
+      imageUrl: l.imageUrl,
+      quantity: l.quantity,
+      unitPrice: decimalToNumber(l.unitPrice),
+      lineTotal: decimalToNumber(l.lineTotal),
+    })),
     total: decimalToNumber(s.total),
     currency: s.currency,
     fulfilment: s.fulfilment,
@@ -90,6 +97,11 @@ export function returnOrigin(origin: string | undefined): string {
   return allowed ? origin : fallback;
 }
 
+/**
+ * Starts a payment for one vendor's share of a cart: holds the stock for every
+ * line, freezes what the buyer saw (name, brand, photo, price) onto the session
+ * and hands back Paystack's payment page.
+ */
 export async function startCheckout(
   buyer: { userId: string; email: string; vendorId: string | null },
   input: CreateCheckoutInput,
@@ -97,51 +109,89 @@ export async function startCheckout(
 ) {
   await expireStaleCheckouts();
 
-  const item = await prisma.inventoryItem.findUnique({
-    where: { id: input.inventoryItemId },
+  // The same product twice in a cart is one line.
+  const wanted = new Map<string, number>();
+  for (const { inventoryItemId, quantity } of input.items) {
+    wanted.set(inventoryItemId, (wanted.get(inventoryItemId) ?? 0) + quantity);
+  }
+
+  const found = await prisma.inventoryItem.findMany({
+    where: { id: { in: [...wanted.keys()] } },
     include: { vendor: { select: { id: true, status: true, listingPaused: true, preferences: true } } },
   });
-  if (!item || item.vendor.status !== "VERIFIED" || item.vendor.listingPaused) {
-    throw notFound("That product is no longer available");
-  }
-  if (buyer.vendorId === item.vendorId) throw badRequest("You cannot buy from your own business");
-  if (item.status === "DISCONTINUED") throw conflict(`${item.name} has been discontinued`);
+  if (found.length !== wanted.size) throw notFound("A product in your cart is no longer available");
 
-  const price = decimalToNumber(item.price);
-  // A hidden or zero price means "ask the vendor" — there is nothing to charge.
-  if (price <= 0 || !readPreferences(item.vendor.preferences).privacy.showPricing) {
-    throw conflict("This vendor quotes on request. Message them to buy.");
+  const first = found[0]!;
+  if (found.some((i) => i.vendorId !== first.vendorId)) {
+    throw badRequest("Pay for one vendor at a time. Remove the other vendors' products, or pay for them separately.");
   }
-  if (!PAYABLE_CURRENCIES.has(item.currency)) {
-    throw conflict(`Online payment in ${item.currency} is not supported. Message the vendor to buy.`);
+  if (found.some((i) => i.currency !== first.currency)) {
+    throw badRequest("These products are priced in different currencies. Pay for them separately.");
   }
 
-  const total = Math.round(price * input.quantity * 100) / 100;
+  for (const item of found) {
+    if (item.vendor.status !== "VERIFIED" || item.vendor.listingPaused) {
+      throw notFound(`${item.name} is no longer available`);
+    }
+    if (buyer.vendorId === item.vendorId) throw badRequest("You cannot buy from your own business");
+    if (item.status === "DISCONTINUED") throw conflict(`${item.name} has been discontinued`);
+
+    // A hidden or zero price means "ask the vendor" — there is nothing to charge.
+    if (decimalToNumber(item.price) <= 0 || !readPreferences(item.vendor.preferences).privacy.showPricing) {
+      throw conflict(`${item.name}: this vendor quotes on request. Message them to buy.`);
+    }
+    if (!PAYABLE_CURRENCIES.has(item.currency)) {
+      throw conflict(`Online payment in ${item.currency} is not supported. Message the vendor to buy.`);
+    }
+  }
+
+  const lines = found.map((item) => {
+    const quantity = wanted.get(item.id)!;
+    const unitPrice = decimalToNumber(item.price);
+    return { item, quantity, unitPrice, lineTotal: Math.round(unitPrice * quantity * 100) / 100 };
+  });
+  const total = Math.round(lines.reduce((sum, l) => sum + l.lineTotal, 0) * 100) / 100;
+  const vendorId = first.vendorId;
+  const currency = first.currency;
   const reference = `FND-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
   const expiresAt = new Date(Date.now() + env.checkoutHoldMinutes * 60_000);
 
+  // All or nothing: one product short rolls back every hold already taken.
   const session = await prisma.$transaction(async (tx) => {
-    if (!(await reserveStock(tx, item.id, input.quantity))) {
-      const left = (await tx.inventoryItem.findUnique({ where: { id: item.id }, select: { quantity: true } }))?.quantity ?? 0;
-      throw conflict(left > 0 ? `Only ${left} ${item.unit} left in stock` : `${item.name} just sold out`);
+    for (const { item, quantity } of lines) {
+      if (!(await reserveStock(tx, item.id, quantity))) {
+        const left = (await tx.inventoryItem.findUnique({ where: { id: item.id }, select: { quantity: true } }))?.quantity ?? 0;
+        throw conflict(
+          left > 0 ? `Only ${left} ${item.unit} of ${item.name} left in stock` : `${item.name} just sold out`,
+        );
+      }
     }
     return tx.checkoutSession.create({
       data: {
         reference,
         userId: buyer.userId,
-        vendorId: item.vendorId,
-        inventoryItemId: item.id,
-        name: item.name,
-        sku: item.sku,
-        quantity: input.quantity,
-        unitPrice: price,
+        vendorId,
         total,
-        currency: item.currency,
+        currency,
         fulfilment: input.fulfilment,
         deliveryAddress: input.fulfilment === "DELIVERY" ? input.deliveryAddress ?? null : null,
         buyerPhone: input.buyerPhone,
         expiresAt,
+        // The photo, brand and price frozen here are what the buyer agreed to.
+        lines: {
+          create: lines.map(({ item, quantity, unitPrice, lineTotal }) => ({
+            inventoryItemId: item.id,
+            name: item.name,
+            sku: item.sku,
+            brand: item.brand,
+            imageUrl: item.imageUrl,
+            quantity,
+            unitPrice,
+            lineTotal,
+          })),
+        },
       },
+      include: { lines: true },
     });
   });
 
@@ -149,10 +199,10 @@ export async function startCheckout(
     const payment = await initializeTransaction({
       email: buyer.email,
       amount: total,
-      currency: item.currency,
+      currency,
       reference,
       callbackUrl: `${origin}/checkout/complete`,
-      metadata: { checkoutSessionId: session.id, vendorId: item.vendorId, item: item.name, quantity: input.quantity },
+      metadata: { checkoutSessionId: session.id, vendorId, items: lines.length },
     });
     return { reference, authorizationUrl: payment.authorization_url, expiresAt: expiresAt.toISOString() };
   } catch (err) {
@@ -162,7 +212,7 @@ export async function startCheckout(
         where: { id: session.id, status: "PENDING" },
         data: { status: "FAILED" },
       });
-      if (count) await releaseStock(tx, session.inventoryItemId, session.quantity);
+      if (count) for (const line of session.lines) await releaseStock(tx, line.inventoryItemId, line.quantity);
     });
     throw err;
   }
@@ -175,7 +225,7 @@ export async function startCheckout(
  * update, and the rest just read the result.
  */
 export async function confirmCheckout(reference: string) {
-  const session = await prisma.checkoutSession.findUnique({ where: { reference } });
+  const session = await prisma.checkoutSession.findUnique({ where: { reference }, include: { lines: true } });
   if (!session) throw notFound("No such checkout");
   if (session.status === "PAID" || session.status === "FAILED") return session;
 
@@ -199,12 +249,16 @@ export async function confirmCheckout(reference: string) {
     if (count === 0) return null; // another caller already confirmed it
 
     // Paid after the hold lapsed: the stock went back on the shelf, so take it
-    // again. If it has gone, the vendor still needs to know they were paid.
+    // again. If any of it has gone, the vendor still needs to know they were paid.
     let note: string | null = null;
-    if (session.status === "EXPIRED" && session.inventoryItemId) {
-      const reserved = await reserveStock(tx, session.inventoryItemId, session.quantity);
-      if (!reserved) {
-        note = "Paid after the stock hold expired, and there is not enough stock left. Fulfil it or refund the buyer.";
+    if (session.status === "EXPIRED") {
+      const short: string[] = [];
+      for (const line of session.lines) {
+        if (!line.inventoryItemId) continue;
+        if (!(await reserveStock(tx, line.inventoryItemId, line.quantity))) short.push(line.name);
+      }
+      if (short.length) {
+        note = `Paid after the stock hold expired, and there is not enough stock left for ${short.join(", ")}. Fulfil it or refund the buyer.`;
         logger.warn(`checkout ${reference}: paid after expiry with insufficient stock`);
       }
     }
@@ -253,14 +307,16 @@ export async function confirmCheckout(reference: string) {
         deliveryAddress: session.deliveryAddress,
         buyerPhone: session.buyerPhone,
         items: {
-          create: {
-            inventoryItemId: session.inventoryItemId,
-            name: session.name,
-            sku: session.sku,
-            quantity: session.quantity,
-            unitPrice: session.unitPrice,
-            lineTotal: session.total,
-          },
+          create: session.lines.map((line) => ({
+            inventoryItemId: line.inventoryItemId,
+            name: line.name,
+            sku: line.sku,
+            brand: line.brand,
+            imageUrl: line.imageUrl,
+            quantity: line.quantity,
+            unitPrice: line.unitPrice,
+            lineTotal: line.lineTotal,
+          })),
         },
       },
     });
@@ -281,7 +337,12 @@ export async function confirmCheckout(reference: string) {
           create: {
             senderType: "USER",
             senderId: session.userId,
-            body: formatOrderMessage({ ...session, orderNumber: created.orderNumber, total }),
+            body: formatOrderMessage({
+              ...session,
+              orderNumber: created.orderNumber,
+              total,
+              lines: session.lines.map((l) => ({ name: l.name, brand: l.brand, quantity: l.quantity })),
+            }),
           },
         },
       },
@@ -298,7 +359,7 @@ export async function confirmCheckout(reference: string) {
 export async function expireStaleCheckouts() {
   const stale = await prisma.checkoutSession.findMany({
     where: { status: "PENDING", expiresAt: { lt: new Date() } },
-    select: { id: true, inventoryItemId: true, quantity: true },
+    select: { id: true, lines: { select: { inventoryItemId: true, quantity: true } } },
     take: 200,
   });
   for (const s of stale) {
@@ -307,7 +368,7 @@ export async function expireStaleCheckouts() {
         where: { id: s.id, status: "PENDING" },
         data: { status: "EXPIRED" },
       });
-      if (count) await releaseStock(tx, s.inventoryItemId, s.quantity);
+      if (count) for (const line of s.lines) await releaseStock(tx, line.inventoryItemId, line.quantity);
     });
   }
   return stale.length;

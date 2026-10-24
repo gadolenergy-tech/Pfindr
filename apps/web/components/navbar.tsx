@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
+import { useCart } from "@/lib/cart";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
 
@@ -18,6 +19,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useAuth();
+  const { count: cartCount } = useCart();
   const location = usePathname();
 
   useEffect(() => {
@@ -100,6 +102,21 @@ export function Navbar() {
                   My orders
                 </Link>
               )}
+              {user.role !== "VENDOR" && (
+                <Link
+                  href="/cart"
+                  data-testid="link-nav-cart"
+                  aria-label={`Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+                  className="relative text-muted-foreground hover:text-white transition-colors p-2 rounded-md hover:bg-white/[0.04]"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  {cartCount > 0 && (
+                    <span data-testid="nav-cart-count" className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-blue-600 text-white text-[10px] font-bold leading-4 text-center tabular-nums">
+                      {cartCount > 99 ? "99+" : cartCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               <Button
                 data-testid="btn-nav-logout"
                 size="sm"
@@ -167,6 +184,11 @@ export function Navbar() {
                     {user.role !== "VENDOR" && (
                       <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-white border border-white/[0.07] hover:bg-white/[0.05]">
                         <Link href="/orders">My orders</Link>
+                      </Button>
+                    )}
+                    {user.role !== "VENDOR" && (
+                      <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-white border border-white/[0.07] hover:bg-white/[0.05]">
+                        <Link href="/cart">Cart{cartCount > 0 ? ` (${cartCount})` : ""}</Link>
                       </Button>
                     )}
                     <Button

@@ -43,13 +43,24 @@ export async function makeVendor(overrides: { status?: "VERIFIED" | "PENDING"; l
 
 export async function makeItem(
   vendorId: string,
-  overrides: { quantity?: number; price?: number; currency?: string; lowStockThreshold?: number } = {},
+  overrides: {
+    quantity?: number;
+    price?: number;
+    currency?: string;
+    lowStockThreshold?: number;
+    name?: string;
+    sku?: string;
+    brand?: string;
+    imageUrl?: string;
+  } = {},
 ) {
   return prisma.inventoryItem.create({
     data: {
       vendorId,
-      name: "Cement 50kg",
-      sku: `SKU-${uid()}`,
+      name: overrides.name ?? "Cement 50kg",
+      sku: overrides.sku ?? `SKU-${uid()}`,
+      brand: overrides.brand ?? null,
+      imageUrl: overrides.imageUrl ?? null,
       quantity: overrides.quantity ?? 10,
       unit: "bag",
       price: overrides.price ?? 5000,
@@ -60,8 +71,7 @@ export async function makeItem(
 }
 
 export const checkoutInput = (inventoryItemId: string, quantity = 1) => ({
-  inventoryItemId,
-  quantity,
+  items: [{ inventoryItemId, quantity }],
   fulfilment: "PICKUP" as const,
   buyerPhone: "+2348011111111",
 });

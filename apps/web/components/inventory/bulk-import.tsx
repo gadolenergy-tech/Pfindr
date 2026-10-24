@@ -12,15 +12,18 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProductList } from "@/components/inventory/product-list";
 import { inventoryApi, type SyncResult } from "@/lib/vendor-api";
 
-type FinderField = "name" | "sku" | "quantity" | "price";
+type FinderField = "name" | "sku" | "quantity" | "price" | "brand" | "image";
 
 const FIELD_LABEL: Record<FinderField, string> = {
   name: "Product Name",
   sku: "SKU / Product Code",
   quantity: "Quantity Available",
   price: "Price",
+  brand: "Brand / Manufacturer",
+  image: "Photo File Name",
 };
 
 /** Header names we recognise for each field, most specific first. */
@@ -29,12 +32,14 @@ const ALIASES: Record<FinderField, string[]> = {
   name: ["product name", "name", "product", "item", "description", "item name"],
   quantity: ["quantity", "qty", "stock", "stock qty", "stock_qty", "on hand", "available", "units"],
   price: ["price", "unit price", "unit_price", "cost", "selling price", "amount", "rate"],
+  brand: ["brand", "manufacturer", "maker", "make", "company", "producer"],
+  image: ["image", "photo", "picture", "image file", "photo file", "file name", "filename"],
 };
 
 const MAX_ROWS = 1000; // matches inventorySyncSchema in packages/shared
 
 const TEMPLATE =
-  "sku,name,quantity,price\nMED-001,Amoxicillin 500mg,480,1200\nIND-087,Hydraulic Pump 12T,12,84500\n";
+  "sku,name,brand,quantity,price,image\nMED-001,Amoxicillin 500mg,Emzor,480,1200,MED-001.jpg\nIND-087,Hydraulic Pump 12T,,12,84500,\n";
 
 /** RFC 4180-ish CSV parser: quoted fields, escaped quotes, CRLF. */
 function parseCsv(text: string): string[][] {
@@ -82,7 +87,7 @@ function detectColumns(headers: string[]): Mapping[] {
   const used = new Set<number>();
   const mappings: Mapping[] = [];
 
-  for (const field of ["sku", "quantity", "price", "name"] as FinderField[]) {
+  for (const field of ["image", "brand", "sku", "quantity", "price", "name"] as FinderField[]) {
     let best: Mapping | null = null;
     normalised.forEach((header, column) => {
       if (used.has(column)) return;
@@ -171,6 +176,8 @@ export function BulkImport() {
     const qtyCol = col("quantity");
     const priceCol = col("price");
     const nameCol = col("name");
+    const brandCol = col("brand");
+    const imageCol = col("image");
     if (skuCol === undefined || qtyCol === undefined) return;
 
     const items = rows
@@ -178,11 +185,15 @@ export function BulkImport() {
         const quantity = toNumber(row[qtyCol]);
         const price = priceCol !== undefined ? toNumber(row[priceCol]) : undefined;
         const name = nameCol !== undefined ? row[nameCol]?.trim() : undefined;
+        const brand = brandCol !== undefined ? row[brandCol]?.trim() : undefined;
+        const image = imageCol !== undefined ? row[imageCol]?.trim() : undefined;
         return {
           sku: (row[skuCol] ?? "").trim(),
           quantity: Number.isFinite(quantity) ? Math.max(0, Math.round(quantity)) : NaN,
           ...(price !== undefined && Number.isFinite(price) ? { price } : {}),
           ...(name && name.length >= 2 ? { name } : {}),
+          ...(brand ? { brand } : {}),
+          ...(image ? { image } : {}),
         };
       })
       .filter((item) => item.sku && Number.isFinite(item.quantity));
@@ -265,6 +276,7 @@ export function BulkImport() {
             <h3 className="text-base font-semibold text-white">{fileName} detected · {rows.length} rows</h3>
             <p className="text-slate-400 text-sm mt-1">
               Review the mapping before import. Existing SKUs are updated; new SKUs are created when a name is present.
+              Photos already in your library are attached automatically by SKU or product name; a Photo File Name column picks one explicitly.
             </p>
           </div>
           <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
@@ -273,7 +285,7 @@ export function BulkImport() {
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Finder Field</span>
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Confidence</span>
             </div>
-            {(["sku", "name", "quantity", "price"] as FinderField[]).map((field) => {
+            {(["sku", "name", "quantity", "price", "brand", "image"] as FinderField[]).map((field) => {
               const match = mappings.find((m) => m.field === field);
               const required = field === "sku" || field === "quantity";
               return (
@@ -287,10 +299,10 @@ export function BulkImport() {
                   </span>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full ${match ? "bg-green-500" : "bg-red-500/60"}`} style={{ width: `${match?.confidence ?? 100}%` }} />
+                      <div className={`h-full rounded-full ${match ? "bg-green-500" : required ? "bg-red-500/60" : "bg-white/[0.12]"}`} style={{ width: `${match?.confidence ?? 100}%` }} />
                     </div>
-                    <span className={`text-[10px] font-semibold tabular-nums shrink-0 ${match ? "text-green-400" : "text-red-400"}`}>
-                      {match ? `${match.confidence}%` : "missing"}
+                    <span className={`text-[10px] font-semibold tabular-nums shrink-0 ${match ? "text-green-400" : required ? "text-red-400" : "text-slate-500"}`}>
+                      {match ? `${match.confidence}%` : required ? "missing" : "optional"}
                     </span>
                   </div>
                 </div>
@@ -342,10 +354,11 @@ export function BulkImport() {
           </div>
           <h3 className="text-xl font-bold text-white">{result.updated + result.created} Products Synced</h3>
           <p className="text-sm text-slate-400 max-w-sm mx-auto">Your inventory is now live on Finder. Buyers in your area can discover your products in real time.</p>
-          <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto mt-4">
+          <div className="grid grid-cols-4 gap-3 max-w-md mx-auto mt-4">
             {[
               { label: "Updated", val: result.updated, color: "text-green-400" },
               { label: "Created", val: result.created, color: "text-blue-400" },
+              { label: "Photos matched", val: result.imagesMatched, color: "text-cyan-400" },
               { label: "Errors", val: result.failed, color: result.failed ? "text-amber-400" : "text-slate-400" },
             ].map((s) => (
               <div key={s.label} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-3 text-center">
@@ -366,6 +379,10 @@ export function BulkImport() {
           <Button onClick={reset} variant="ghost" className="text-slate-400 hover:text-white text-sm">Import another file</Button>
         </motion.div>
       )}
+
+      <div className="pt-4 border-t border-white/[0.06]">
+        <ProductList />
+      </div>
     </div>
   );
 }

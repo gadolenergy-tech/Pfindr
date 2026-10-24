@@ -3,6 +3,7 @@ import type { DiscoverQuery } from "@finder/shared";
 import { prisma } from "../lib/prisma";
 import { decimalToNumber } from "../lib/serialize";
 import { logger } from "../lib/logger";
+import { notFound } from "../lib/errors";
 import { recordImpressions } from "./stats.service";
 import { readPreferences } from "./preferences.service";
 
@@ -24,6 +25,73 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
  * Revisit with PostGIS once the catalogue outgrows this.
  */
 const CANDIDATE_LIMIT = 500;
+
+const discoverInclude = {
+  category: { select: { name: true, slug: true } },
+  vendor: {
+    select: {
+      id: true,
+      businessName: true,
+      slug: true,
+      addressLine1: true,
+      city: true,
+      state: true,
+      rating: true,
+      status: true,
+      latitude: true,
+      longitude: true,
+      preferences: true,
+    },
+  },
+} satisfies Prisma.InventoryItemInclude;
+
+type DiscoverRow = Prisma.InventoryItemGetPayload<{ include: typeof discoverInclude }>;
+
+/** One listing as a buyer sees it, honouring what the vendor chose to show. */
+function toResult(row: DiscoverRow, origin: { latitude: number; longitude: number } | null) {
+  const { privacy } = readPreferences(row.vendor.preferences);
+  const distanceKm =
+    origin && row.vendor.latitude !== null && row.vendor.longitude !== null
+      ? Math.round(haversineKm(origin.latitude, origin.longitude, row.vendor.latitude, row.vendor.longitude) * 10) / 10
+      : null;
+  return {
+    inventoryItemId: row.id,
+    name: row.name,
+    imageUrl: row.imageUrl,
+    brand: row.brand,
+    description: row.description,
+    // Vendors can hide exact stock or pricing; buyers then see "in stock" / "request a quote".
+    quantity: privacy.showQuantities ? row.quantity : null,
+    unit: row.unit,
+    price: privacy.showPricing ? decimalToNumber(row.price) : null,
+    currency: row.currency,
+    status: row.status,
+    updatedAt: row.updatedAt.toISOString(),
+    category: row.category,
+    vendor: {
+      id: row.vendor.id,
+      businessName: row.vendor.businessName,
+      slug: row.vendor.slug,
+      city: row.vendor.city,
+      state: row.vendor.state,
+      // Shown when a result card is expanded.
+      addressLine1: row.vendor.addressLine1,
+      rating: row.vendor.rating,
+      verified: row.vendor.status === "VERIFIED",
+      distanceKm,
+    },
+  };
+}
+
+/** The product page: one listing in full. Hidden listings 404 like they do in search. */
+export async function getDiscoverItem(id: string, origin: { latitude: number; longitude: number } | null) {
+  const row = await prisma.inventoryItem.findFirst({
+    where: { id, status: { not: "DISCONTINUED" }, vendor: { status: "VERIFIED", listingPaused: false } },
+    include: discoverInclude,
+  });
+  if (!row) throw notFound("That product is no longer available");
+  return toResult(row, origin);
+}
 
 /**
  * The public discovery query: what is in stock, how much, at what price, and
@@ -75,10 +143,11 @@ export async function runDiscover(query: DiscoverQuery, userId: string | null) {
           },
         }
       : {}),
-    // Every term must appear in the name, SKU or category name.
+    // Every term must appear in the name, brand, SKU or category name.
     AND: (terms.length ? terms : [q.trim()]).map((term) => ({
       OR: [
         { name: { contains: term, mode: "insensitive" as const } },
+        { brand: { contains: term, mode: "insensitive" as const } },
         { sku: { contains: term, mode: "insensitive" as const } },
         { category: { name: { contains: term, mode: "insensitive" as const } } },
       ],
@@ -89,38 +158,15 @@ export async function runDiscover(query: DiscoverQuery, userId: string | null) {
     where,
     take: CANDIDATE_LIMIT,
     orderBy: { updatedAt: "desc" },
-    include: {
-      category: { select: { name: true, slug: true } },
-      vendor: {
-        select: {
-          id: true,
-          businessName: true,
-          slug: true,
-          addressLine1: true,
-          city: true,
-          state: true,
-          rating: true,
-          status: true,
-          latitude: true,
-          longitude: true,
-          preferences: true,
-        },
-      },
-    },
+    include: discoverInclude,
   });
 
   const hasOrigin = latitude !== undefined && longitude !== undefined;
   const lowerQ = q.trim().toLowerCase();
 
-  let results = candidates.map((row) => {
-    const { privacy } = readPreferences(row.vendor.preferences);
-    const distanceKm =
-      hasOrigin && row.vendor.latitude !== null && row.vendor.longitude !== null
-        ? Math.round(
-            haversineKm(latitude!, longitude!, row.vendor.latitude, row.vendor.longitude) * 10,
-          ) / 10
-        : null;
+  const origin = hasOrigin ? { latitude: latitude!, longitude: longitude! } : null;
 
+  let results = candidates.map((row) => {
     // Simple relevance: exact-name match beats prefix beats contains, with a
     // nudge for vendor rating and fresh stock data.
     const name = row.name.toLowerCase();
@@ -129,32 +175,7 @@ export async function runDiscover(query: DiscoverQuery, userId: string | null) {
     const hoursSinceUpdate = (Date.now() - row.updatedAt.getTime()) / 3_600_000;
     relevance += Math.max(0, 10 - hoursSinceUpdate / 24);
 
-    return {
-      inventoryItemId: row.id,
-      name: row.name,
-      imageUrl: row.imageUrl,
-      // Vendors can hide exact stock or pricing; buyers then see "in stock" / "request a quote".
-      quantity: privacy.showQuantities ? row.quantity : null,
-      unit: row.unit,
-      price: privacy.showPricing ? decimalToNumber(row.price) : null,
-      currency: row.currency,
-      status: row.status,
-      updatedAt: row.updatedAt.toISOString(),
-      category: row.category,
-      vendor: {
-        id: row.vendor.id,
-        businessName: row.vendor.businessName,
-        slug: row.vendor.slug,
-        city: row.vendor.city,
-        state: row.vendor.state,
-        // Shown when a result card is expanded.
-        addressLine1: row.vendor.addressLine1,
-        rating: row.vendor.rating,
-        verified: row.vendor.status === "VERIFIED",
-        distanceKm,
-      },
-      relevance,
-    };
+    return { ...toResult(row, origin), relevance };
   });
 
   if (hasOrigin && radiusKm !== undefined) {

@@ -100,7 +100,7 @@ router.patch(
       where: { userId: req.auth!.sub },
       data: { preferences: preferences as unknown as Prisma.InputJsonValue },
     });
-    return ok(res, preferences);
+    return ok(res, readPreferences(preferences));
   },
 );
 

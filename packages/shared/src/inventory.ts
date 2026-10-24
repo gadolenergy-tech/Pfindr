@@ -49,6 +49,10 @@ export const createInventoryItemSchema = z.object({
   lowStockThreshold: z.coerce.number().int().min(0).default(10),
   status: inventoryStatusSchema.optional(),
   imageUrl: z.string().url().max(500).optional().nullable(),
+  /** Manufacturer or brand, so same-named products from different makers stay distinct. */
+  brand: z.string().trim().max(120).optional().nullable(),
+  /** Shown on the product page next to the photo. */
+  description: z.string().trim().max(2000).optional().nullable(),
   notes: z.string().max(1000).optional().nullable(),
 });
 export type CreateInventoryItemInput = z.infer<typeof createInventoryItemSchema>;
@@ -66,6 +70,10 @@ export const inventorySyncSchema = z.object({
         price: z.coerce.number().min(0).optional(),
         /** Required only when the SKU is new to this vendor. */
         name: z.string().min(2).max(200).optional(),
+        brand: z.string().trim().max(120).optional(),
+        description: z.string().trim().max(2000).optional(),
+        /** File name of a photo already in the vendor's library, e.g. "MED-001.jpg". */
+        image: z.string().trim().max(200).optional(),
       }),
     )
     .min(1)

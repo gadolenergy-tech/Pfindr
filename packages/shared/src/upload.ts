@@ -26,3 +26,29 @@ export type PresignedUpload = {
   /** Save this on the vendor or inventory item once the PUT succeeds. */
   publicUrl: string;
 };
+
+/** Most photos one bulk upload may register at once. */
+export const IMAGE_LIBRARY_BATCH = 50;
+
+/** POST /inventory/images — photos already PUT to the bucket, to add to the library. */
+export const registerImagesSchema = z.object({
+  images: z
+    .array(
+      z.object({
+        url: z.string().url().max(500),
+        /** The name the file had on the vendor's computer, e.g. "MED-001.jpg". */
+        fileName: z.string().trim().min(1).max(200),
+      }),
+    )
+    .min(1)
+    .max(IMAGE_LIBRARY_BATCH),
+});
+export type RegisterImagesInput = z.infer<typeof registerImagesSchema>;
+
+/** What a library upload or auto-match did to the vendor's products. */
+export type ImageMatchResult = {
+  /** Products that were given a photo. */
+  matched: number;
+  /** Photos that matched no product (they stay in the library for later). */
+  unmatched: string[];
+};

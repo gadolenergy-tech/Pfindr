@@ -22,6 +22,8 @@ export type InventoryItem = {
   lowStockThreshold: number;
   status: InventoryStatus;
   imageUrl: string | null;
+  brand: string | null;
+  description: string | null;
   notes: string | null;
   category: { id: string; name: string; slug: string } | null;
   lastSyncedAt: string | null;
@@ -31,6 +33,8 @@ export type InventoryItem = {
 export type InventorySummary = {
   totalItems: number;
   totalUnits: number;
+  /** Products that have a photo, for the photo coverage line. */
+  withImages: number;
   stockValue: number;
   inStock: number;
   lowStock: number;
@@ -51,8 +55,13 @@ export type SyncResult = {
   updated: number;
   created: number;
   failed: number;
+  /** Products that got a library photo during this import. */
+  imagesMatched: number;
   errors: { sku: string; message: string }[];
 };
+
+/** What a photo upload or the match-photos click did to the vendor's products. */
+export type ImageMatchResult = { matched: number; unmatched: string[] };
 
 export type Category = { id: string; name: string; slug: string };
 
@@ -66,6 +75,9 @@ export const inventoryApi = {
   remove: (id: string) => api.delete<void>(`/inventory/${id}`),
   sync: (input: InventorySyncInput) =>
     api.post<SyncResult>("/inventory/sync", input),
+  registerImages: (images: { url: string; fileName: string }[]) =>
+    api.post<ImageMatchResult>("/inventory/images", { images }),
+  matchImages: () => api.post<ImageMatchResult>("/inventory/images/match"),
   categories: () => api.get<Category[]>("/categories"),
 };
 
@@ -139,6 +151,9 @@ export type Order = {
     inventoryItemId: string | null;
     name: string;
     sku: string | null;
+    /** The brand and photo the buyer saw when they paid. */
+    brand: string | null;
+    imageUrl: string | null;
     quantity: number;
     unitPrice: number;
     lineTotal: number;

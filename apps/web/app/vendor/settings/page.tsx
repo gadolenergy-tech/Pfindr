@@ -182,12 +182,6 @@ export default function VendorSettings() {
     onError,
   });
 
-  const setVisibility = useMutation({
-    mutationFn: (visible: boolean) => api.patch("/vendors/me/listing", { paused: !visible }),
-    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["vendor"] }),
-    onError,
-  });
-
   // Changing the password signs out every session, this one included.
   const changePassword = useMutation({
     mutationFn: () => api.post("/auth/change-password", passwords),
@@ -377,13 +371,19 @@ export default function VendorSettings() {
                   {tab === "privacy" && prefs && (
                     <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-3">
                       <h2 className="text-sm font-semibold text-white mb-4">Privacy Settings</h2>
-                      {/* Directory visibility is the same switch as "Pause Inventory Sharing"; it saves instantly. */}
-                      <Toggle label="Show Business on Finder Directory" sub="Your business appears in buyer search results (saves instantly)"
-                        checked={!vendor.listingPaused} disabled={setVisibility.isPending} onChange={(v) => setVisibility.mutate(v)} />
-                      <Toggle label="Show Inventory Quantities" sub="Buyers see exact stock levels; off shows “In stock” only" checked={prefs.privacy.showQuantities} onChange={(v) => setPref("privacy", "showQuantities", v)} />
-                      <Toggle label="Show Pricing" sub="Display prices in search; off asks buyers to request a quote" checked={prefs.privacy.showPricing} onChange={(v) => setPref("privacy", "showPricing", v)} />
-                      <Toggle label="Allow Buyer Reviews" sub="Verified buyers can leave ratings on your profile" checked={prefs.privacy.allowReviews} onChange={(v) => setPref("privacy", "allowReviews", v)} badge="Reviews soon" />
-                      <Toggle label="Share Analytics with Finder" sub="Help Finder improve search quality with anonymized data" checked={prefs.privacy.shareAnalytics} onChange={(v) => setPref("privacy", "shareAnalytics", v)} />
+                      {/* Paused platform-wide: hiding prices or stock breaks buying and the product pages.
+                          The server ignores these values too (PRIVACY_CONTROLS_ENABLED in preferences.service). */}
+                      <Banner kind="info">
+                        Privacy controls are paused for now. Buyers see your prices, stock levels and product photos so they can
+                        check exactly what they are paying for. To take products off search, use Pause Inventory Sharing on the
+                        Inventory page.
+                      </Banner>
+                      <Toggle label="Show Business on Finder Directory" sub="Your business appears in buyer search results"
+                        checked={!vendor.listingPaused} disabled badge="Paused" />
+                      <Toggle label="Show Inventory Quantities" sub="Buyers see exact stock levels; off shows “In stock” only" checked disabled badge="Paused" />
+                      <Toggle label="Show Pricing" sub="Display prices in search; off asks buyers to request a quote" checked disabled badge="Paused" />
+                      <Toggle label="Allow Buyer Reviews" sub="Verified buyers can leave ratings on your profile" checked={prefs.privacy.allowReviews} disabled badge="Paused" />
+                      <Toggle label="Share Analytics with Finder" sub="Help Finder improve search quality with anonymized data" checked={prefs.privacy.shareAnalytics} disabled badge="Paused" />
                       <div className="pt-4 border-t border-white/[0.05]">
                         <p className="text-[11px] text-slate-500 mb-3">Data management</p>
                         <p className="text-[11px] text-slate-600">
@@ -391,7 +391,7 @@ export default function VendorSettings() {
                           To close your account, contact support.
                         </p>
                       </div>
-                      <Button onClick={() => savePrefs.mutate({ privacy: prefs.privacy })} disabled={savePrefs.isPending} className="bg-blue-600 hover:bg-blue-500 text-white w-full">
+                      <Button disabled className="bg-blue-600 text-white w-full">
                         Save Privacy Settings
                       </Button>
                     </div>

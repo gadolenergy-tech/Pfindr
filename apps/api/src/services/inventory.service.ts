@@ -3,6 +3,7 @@ import type { CreateInventoryItemInput, UpdateInventoryItemInput } from "@finder
 import { notFound } from "../lib/errors";
 import { assertOwnImageUrl } from "../lib/storage";
 import { readPreferences } from "./preferences.service";
+import { findImage, loadImageIndex, rememberItemImage } from "./image.service";
 import { prisma } from "../lib/prisma";
 import { decimalToNumber, toIso } from "../lib/serialize";
 
@@ -44,6 +45,8 @@ export function serializeInventoryItem(row: InventoryRow) {
     lowStockThreshold: row.lowStockThreshold,
     status: row.status,
     imageUrl: row.imageUrl,
+    brand: row.brand,
+    description: row.description,
     notes: row.notes,
     category: row.category,
     lastSyncedAt: toIso(row.lastSyncedAt),
@@ -52,7 +55,16 @@ export function serializeInventoryItem(row: InventoryRow) {
   };
 }
 
-export type SyncRow = { sku: string; quantity: number; price?: number; name?: string };
+export type SyncRow = {
+  sku: string;
+  quantity: number;
+  price?: number;
+  name?: string;
+  brand?: string;
+  description?: string;
+  /** File name of a photo in the vendor's library. */
+  image?: string;
+};
 
 export type SyncResult = {
   jobId: string;
@@ -60,6 +72,8 @@ export type SyncResult = {
   updated: number;
   created: number;
   failed: number;
+  /** Products that got a library photo during this run. */
+  imagesMatched: number;
   errors: { sku: string; message: string }[];
 };
 
@@ -80,8 +94,10 @@ export async function syncInventory(
 
   const existing = await prisma.inventoryItem.findMany({
     where: { vendorId, sku: { in: rows.map((r) => r.sku) } },
-    select: { id: true, sku: true, lowStockThreshold: true, status: true },
+    select: { id: true, sku: true, name: true, brand: true, imageUrl: true, lowStockThreshold: true, status: true },
   });
+  const images = await loadImageIndex(vendorId);
+  let imagesMatched = 0;
   const bySku = new Map(existing.map((e) => [e.sku, e]));
   const vendor = await prisma.vendor.findUnique({ where: { id: vendorId }, select: { preferences: true } });
   const { defaults } = readPreferences(vendor?.preferences);
@@ -100,17 +116,29 @@ export async function syncInventory(
           data: {
             quantity: row.quantity,
             ...(row.price !== undefined ? { price: row.price } : {}),
+            ...(row.brand ? { brand: row.brand } : {}),
+            ...(row.description ? { description: row.description } : {}),
+            // A photo the vendor already chose is never replaced by an import.
+            ...(match.imageUrl ? {} : imageUpdate(images, { sku: match.sku, name: match.name, brand: row.brand ?? match.brand }, row.image)),
             status: deriveStatus(row.quantity, match.lowStockThreshold, match.status),
             lastSyncedAt: now,
           },
         });
+        if (!match.imageUrl && findImage(images, { sku: match.sku, name: match.name, brand: row.brand ?? match.brand }, row.image)) {
+          imagesMatched += 1;
+        }
         updated += 1;
       } else if (row.name) {
+        const imageUrl = findImage(images, { sku: row.sku, name: row.name, brand: row.brand ?? null }, row.image);
+        if (imageUrl) imagesMatched += 1;
         await prisma.inventoryItem.create({
           data: {
             vendorId,
             sku: row.sku,
             name: row.name,
+            brand: row.brand || null,
+            description: row.description || null,
+            imageUrl,
             quantity: row.quantity,
             price: row.price ?? 0,
             currency: defaults.currency,
@@ -151,8 +179,15 @@ export async function syncInventory(
     updated,
     created,
     failed: errors.length,
+    imagesMatched,
     errors,
   };
+}
+
+/** The imageUrl patch for an existing product, or nothing when the library has no match. */
+function imageUpdate(index: Awaited<ReturnType<typeof loadImageIndex>>, item: { sku: string | null; name: string; brand: string | null }, file?: string) {
+  const imageUrl = findImage(index, item, file);
+  return imageUrl ? { imageUrl } : {};
 }
 
 /**
@@ -189,11 +224,14 @@ export async function createInventoryItem(
       lowStockThreshold,
       status: deriveStatus(input.quantity, lowStockThreshold, input.status),
       imageUrl: input.imageUrl ?? null,
+      brand: input.brand || null,
+      description: input.description || null,
       notes: input.notes ?? null,
       lastSyncedAt: new Date(),
     },
     include: inventoryInclude,
   });
+  await rememberItemImage(vendorId, item, item.imageUrl);
   return serializeInventoryItem(item);
 }
 
@@ -234,12 +272,16 @@ export async function updateInventoryItem(
       currency: input.currency,
       lowStockThreshold: input.lowStockThreshold,
       imageUrl: input.imageUrl,
+      brand: input.brand === undefined ? undefined : input.brand || null,
+      description: input.description === undefined ? undefined : input.description || null,
       notes: input.notes,
       status: deriveStatus(quantity, threshold, requested),
       ...(input.quantity !== undefined ? { lastSyncedAt: new Date() } : {}),
     },
     include: inventoryInclude,
   });
+  // Remember a newly chosen photo; clearing one leaves the library untouched.
+  if (input.imageUrl) await rememberItemImage(vendorId, item, item.imageUrl);
   return serializeInventoryItem(item);
 }
 

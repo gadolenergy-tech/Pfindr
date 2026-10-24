@@ -44,7 +44,21 @@ export default function MyOrdersPage() {
                     className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 sm:p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="text-[14px] font-semibold text-white">{p.quantity} × {p.name}</div>
+                        <div className="flex items-center gap-3">
+                          {p.items[0]?.imageUrl && (
+                            // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                            <img src={p.items[0].imageUrl} alt="" className="w-11 h-11 rounded-lg object-cover border border-white/[0.06] shrink-0" />
+                          )}
+                          <div className="min-w-0">
+                            <div className="text-[14px] font-semibold text-white">
+                              {p.items[0]?.quantity} × {p.items[0]?.name}
+                              {p.items[0]?.brand && <span className="text-slate-400 font-normal"> · {p.items[0].brand}</span>}
+                            </div>
+                            {p.items.length > 1 && (
+                              <div className="text-[11px] text-slate-500">+ {p.items.length - 1} more product{p.items.length > 2 ? "s" : ""}</div>
+                            )}
+                          </div>
+                        </div>
                         <div className="text-[12px] text-slate-500 mt-0.5">
                           {p.vendor.businessName}{p.vendor.city && ` · ${p.vendor.city}`}
                         </div>

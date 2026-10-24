@@ -4,10 +4,12 @@ import {
   createInventoryItemSchema,
   inventoryQuerySchema,
   inventorySyncSchema,
+  registerImagesSchema,
   updateInventoryItemSchema,
   type CreateInventoryItemInput,
   type InventoryQuery,
   type InventorySyncInput,
+  type RegisterImagesInput,
   type UpdateInventoryItemInput,
 } from "@finder/shared";
 import { prisma } from "../lib/prisma";
@@ -25,6 +27,7 @@ import {
   syncInventory,
   updateInventoryItem,
 } from "../services/inventory.service";
+import { matchLibraryToItems, registerImages } from "../services/image.service";
 
 const router = Router();
 
@@ -34,7 +37,7 @@ router.use(requireAuth, requireVendor);
 router.get("/summary", async (req, res) => {
   const vendorId = vendorIdOf(req);
 
-  const [byStatus, totals, lastJob] = await Promise.all([
+  const [byStatus, totals, lastJob, withImages] = await Promise.all([
     prisma.inventoryItem.groupBy({
       by: ["status"],
       where: { vendorId },
@@ -49,6 +52,7 @@ router.get("/summary", async (req, res) => {
       where: { vendorId },
       orderBy: { startedAt: "desc" },
     }),
+    prisma.inventoryItem.count({ where: { vendorId, imageUrl: { not: null } } }),
   ]);
 
   // Stock value needs price x quantity per row, which aggregate cannot do.
@@ -68,6 +72,7 @@ router.get("/summary", async (req, res) => {
   return ok(res, {
     totalItems: totals._count._all,
     totalUnits: totals._sum.quantity ?? 0,
+    withImages,
     stockValue,
     inStock: counts.IN_STOCK ?? 0,
     lowStock: counts.LOW_STOCK ?? 0,
@@ -162,6 +167,17 @@ router.delete("/", async (req, res) => {
     where: { vendorId: vendorIdOf(req) },
   });
   return ok(res, { deleted: count });
+});
+
+/** Adds photos (already uploaded to the bucket) to the library and matches them to products. */
+router.post("/images", validateBody(registerImagesSchema), async (req, res) => {
+  const { images } = req.body as RegisterImagesInput;
+  return ok(res, await registerImages(vendorIdOf(req), images));
+});
+
+/** The "match images" click: fills every photo-less product from the library. */
+router.post("/images/match", async (req, res) => {
+  return ok(res, await matchLibraryToItems(vendorIdOf(req)));
 });
 
 /** Spreadsheet import from the dashboard. The API-key route shares the service. */

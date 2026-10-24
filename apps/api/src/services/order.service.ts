@@ -37,6 +37,8 @@ export function serializeOrder(order: OrderRow) {
       inventoryItemId: item.inventoryItemId,
       name: item.name,
       sku: item.sku,
+      brand: item.brand,
+      imageUrl: item.imageUrl,
       quantity: item.quantity,
       unitPrice: decimalToNumber(item.unitPrice),
       lineTotal: decimalToNumber(item.lineTotal),

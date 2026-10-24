@@ -9,6 +9,7 @@ import type { Purchase } from "@finder/shared";
 import { Navbar } from "@/components/navbar";
 import { AuthGuard } from "@/components/auth-guard";
 import { api } from "@/lib/api";
+import { useCart } from "@/lib/cart";
 import { formatMoney } from "@/lib/vendor-api";
 
 /** Stop polling after this long; the webhook or My orders picks it up later. */
@@ -20,6 +21,7 @@ function CheckoutResult() {
   const reference = params.get("reference") ?? params.get("trxref");
   const [startedAt] = useState(() => Date.now());
   const [gaveUp, setGaveUp] = useState(false);
+  const cart = useCart();
 
   const { data, isError, error } = useQuery({
     queryKey: ["checkout", reference],
@@ -29,6 +31,14 @@ function CheckoutResult() {
     refetchInterval: (query) =>
       query.state.data?.status === "PENDING" && Date.now() - startedAt < POLL_FOR_MS ? 3000 : false,
   });
+
+  // What was paid for leaves the cart; anything the buyer added since stays.
+  const paidIds = data?.status === "PAID" ? data.items.flatMap((i) => (i.inventoryItemId ? [i.inventoryItemId] : [])) : [];
+  const paidKey = paidIds.join(",");
+  useEffect(() => {
+    if (paidKey) cart.removeMany(paidKey.split(","));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- removeMany is stable
+  }, [paidKey]);
 
   useEffect(() => {
     const t = setTimeout(() => setGaveUp(true), POLL_FOR_MS);
@@ -54,7 +64,18 @@ function CheckoutResult() {
       <Panel icon={<CheckCircle2 className="h-8 w-8 text-green-400" />} title="Payment received">
         <div className="mt-5 rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 text-left space-y-3">
           <Row label="Order" value={data.order?.orderNumber ?? "—"} mono />
-          <Row label="Item" value={`${data.quantity} × ${data.name}`} />
+          {data.items.map((line, i) => (
+            <div key={i} className="flex items-center gap-3">
+              {line.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                <img src={line.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover border border-white/[0.06]" />
+              )}
+              <div className="min-w-0 text-[13px] text-slate-200">
+                {line.quantity} × {line.name}
+                {line.brand && <span className="text-slate-500"> · {line.brand}</span>}
+              </div>
+            </div>
+          ))}
           <Row label="Vendor" value={`${data.vendor.businessName}${data.vendor.city ? ` · ${data.vendor.city}` : ""}`} />
           <Row label="Paid" value={formatMoney(data.total, data.currency)} strong />
           <div className="flex items-start gap-2 text-[12px] text-slate-400 pt-1">

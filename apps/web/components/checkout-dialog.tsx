@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Lock, Minus, Plus, Store, Truck, X, AlertCircle } from "lucide-react";
+import { Loader2, Lock, Minus, Package, Plus, Store, Truck, X, AlertCircle } from "lucide-react";
 import type { CheckoutStarted, Fulfilment } from "@finder/shared";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -11,6 +11,8 @@ import { formatMoney } from "@/lib/vendor-api";
 export type CheckoutItem = {
   inventoryItemId: string;
   name: string;
+  brand?: string | null;
+  imageUrl?: string | null;
   vendor: string;
   vendorCity: string;
   unitPrice: number;
@@ -23,13 +25,27 @@ export type CheckoutItem = {
 const MAX_QTY = 1000;
 
 /**
- * Buy now: pick quantity, pickup or delivery, and a phone number, then hand
- * off to Paystack. Price and stock are re-checked on the server.
+ * Pay now: pickup or delivery and a phone number, then hand off to Paystack.
+ * Price and stock are re-checked on the server.
+ *
+ * With `quantities` it pays for a cart's worth of one vendor's products at the
+ * quantities chosen there. Without, it is a Buy now of `items[0]` and the buyer
+ * picks the quantity here.
  */
-export function CheckoutDialog({ item, onClose }: { item: CheckoutItem; onClose: () => void }) {
+export function CheckoutDialog({
+  items,
+  quantities,
+  onClose,
+}: {
+  items: CheckoutItem[];
+  quantities?: Record<string, number>;
+  onClose: () => void;
+}) {
   const { user } = useAuth();
+  const item = items[0]!;
   const maxQty = Math.min(item.stock ?? MAX_QTY, MAX_QTY);
   const [quantity, setQuantity] = useState(1);
+  const qtyOf = (i: CheckoutItem) => (quantities ? quantities[i.inventoryItemId] ?? 1 : quantity);
   const [fulfilment, setFulfilment] = useState<Fulfilment>("PICKUP");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [buyerPhone, setBuyerPhone] = useState(user?.phone ?? "");
@@ -37,7 +53,7 @@ export function CheckoutDialog({ item, onClose }: { item: CheckoutItem; onClose:
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const total = Math.round(item.unitPrice * quantity * 100) / 100;
+  const total = Math.round(items.reduce((sum, i) => sum + i.unitPrice * qtyOf(i), 0) * 100) / 100;
   const setQty = (n: number) => setQuantity(Math.max(1, Math.min(maxQty, Math.floor(n) || 1)));
 
   async function pay(e: FormEvent) {
@@ -47,8 +63,7 @@ export function CheckoutDialog({ item, onClose }: { item: CheckoutItem; onClose:
     setSubmitting(true);
     try {
       const started = await api.post<CheckoutStarted>("/checkout", {
-        inventoryItemId: item.inventoryItemId,
-        quantity,
+        items: items.map((i) => ({ inventoryItemId: i.inventoryItemId, quantity: qtyOf(i) })),
         fulfilment,
         deliveryAddress: fulfilment === "DELIVERY" ? deliveryAddress : null,
         buyerPhone,
@@ -87,8 +102,11 @@ export function CheckoutDialog({ item, onClose }: { item: CheckoutItem; onClose:
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Buy now</div>
-            <h2 className="text-[16px] font-semibold text-white mt-1 leading-snug">{item.name}</h2>
+            <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">{quantities ? "Pay now" : "Buy now"}</div>
+            <h2 className="text-[16px] font-semibold text-white mt-1 leading-snug">
+              {quantities && items.length > 1 ? `${items.length} products` : item.name}
+              {!quantities && item.brand && <span className="text-slate-400 font-normal"> · {item.brand}</span>}
+            </h2>
             <p className="text-[12px] text-slate-500 mt-0.5">
               {item.vendor}{item.vendorCity && ` · ${item.vendorCity}`}
             </p>
@@ -99,28 +117,58 @@ export function CheckoutDialog({ item, onClose }: { item: CheckoutItem; onClose:
           </button>
         </div>
 
-        {/* Quantity */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[12px] font-medium text-slate-300">Quantity</div>
-            <div className="text-[11px] text-slate-500">
-              {formatMoney(item.unitPrice, item.currency)} per {item.unit}
-              {item.stock !== null && ` · ${item.stock.toLocaleString()} in stock`}
+        {/* What you are paying for: the photo and brand shown on the product page */}
+        <div className="space-y-2">
+          {items.map((i) => (
+            <div key={i.inventoryItemId} className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5">
+              <div className="w-11 h-11 rounded-lg bg-white/[0.04] border border-white/[0.06] overflow-hidden flex items-center justify-center shrink-0">
+                {i.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
+                  <img src={i.imageUrl} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <Package className="h-4 w-4 text-slate-600" />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[12px] font-medium text-slate-200 truncate">{i.name}</div>
+                <div className="text-[11px] text-slate-500 truncate">
+                  {i.brand && <>{i.brand} · </>}
+                  {formatMoney(i.unitPrice, i.currency)} per {i.unit}
+                </div>
+              </div>
+              {quantities && (
+                <div className="text-right shrink-0">
+                  <div className="text-[12px] font-semibold text-white tabular-nums">{qtyOf(i)} ×</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Quantity — Buy now only; a cart's quantities are set in the cart */}
+        {!quantities && (
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[12px] font-medium text-slate-300">Quantity</div>
+              <div className="text-[11px] text-slate-500">
+                {formatMoney(item.unitPrice, item.currency)} per {item.unit}
+                {item.stock !== null && ` · ${item.stock.toLocaleString()} in stock`}
+              </div>
+            </div>
+            <div className="flex items-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
+              <button type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 1}
+                className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="Fewer">
+                <Minus className="h-3.5 w-3.5" />
+              </button>
+              <input type="number" min={1} max={maxQty} value={quantity} onChange={(e) => setQty(Number(e.target.value))}
+                className="w-14 bg-transparent text-center text-sm text-white tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
+              <button type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= maxQty}
+                className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="More">
+                <Plus className="h-3.5 w-3.5" />
+              </button>
             </div>
           </div>
-          <div className="flex items-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
-            <button type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 1}
-              className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="Fewer">
-              <Minus className="h-3.5 w-3.5" />
-            </button>
-            <input type="number" min={1} max={maxQty} value={quantity} onChange={(e) => setQty(Number(e.target.value))}
-              className="w-14 bg-transparent text-center text-sm text-white tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
-            <button type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= maxQty}
-              className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="More">
-              <Plus className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        </div>
+        )}
         {fieldErrors.quantity && <p className="text-[11px] text-red-400 -mt-3">{fieldErrors.quantity}</p>}
 
         {/* Fulfilment */}

@@ -28,6 +28,8 @@ export const discoverResultSchema = z.object({
   inventoryItemId: z.string(),
   name: z.string(),
   imageUrl: z.string().nullable(),
+  brand: z.string().nullable(),
+  description: z.string().nullable(),
   /** null when the vendor hides exact stock levels. */
   quantity: z.number().nullable(),
   unit: z.string(),

@@ -227,6 +227,7 @@ model Vendor {
   dailyStats     VendorDailyStat[]
   checkouts      CheckoutSession[]
   payouts        VendorPayout[]
+  images         VendorImage[]
 
   @@index([status])
   @@index([categoryId])
@@ -295,6 +296,10 @@ model InventoryItem {
   lowStockThreshold Int             @default(10)
   status            InventoryStatus @default(IN_STOCK)
   imageUrl          String?
+  /// Manufacturer or brand, so buyers can tell same-named products apart.
+  brand             String?
+  /// What the product page shows beside the photo.
+  description       String?
   notes             String?
   lastSyncedAt      DateTime?
   createdAt         DateTime        @default(now())
@@ -303,14 +308,34 @@ model InventoryItem {
   vendor     Vendor      @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   product    Product?    @relation(fields: [productId], references: [id])
   category   Category?   @relation(fields: [categoryId], references: [id])
-  orderItems OrderItem[]
-  checkouts  CheckoutSession[]
+  orderItems    OrderItem[]
+  checkoutLines CheckoutLine[]
 
   @@unique([vendorId, sku])
   @@index([vendorId, status])
   @@index([categoryId])
   @@index([name])
   @@map("inventory_items")
+}
+
+/// A photo in the vendor's own library, remembered by the names it answers to
+/// (file name, SKU, product name). Items deleted and re-imported later pick
+/// their photo back up from here instead of the vendor uploading it again.
+model VendorImage {
+  id        String   @id @default(cuid())
+  vendorId  String
+  url       String
+  /// The file name it was uploaded as, for the CSV `image` column.
+  fileName  String
+  /// Normalised match keys; see lib/image-keys.ts.
+  keys      String[]
+  createdAt DateTime @default(now())
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([vendorId, url])
+  @@index([vendorId])
+  @@map("vendor_images")
 }
 
 /// One run of the AI Inventory Sync Center — a bulk push from a vendor's own
@@ -405,6 +430,9 @@ model OrderItem {
   /// deletes the inventory line it came from.
   name            String
   sku             String?
+  /// What the buyer was shown when they paid; the evidence in a dispute.
+  brand           String?
+  imageUrl        String?
   quantity        Int
   unitPrice       Decimal @db.Decimal(14, 2)
   lineTotal       Decimal @db.Decimal(14, 2)
@@ -425,12 +453,8 @@ model CheckoutSession {
   /// Our Paystack transaction reference.
   reference       String         @unique
   userId          String
+  /// One session is one vendor's share of the cart; each vendor is paid separately.
   vendorId        String
-  inventoryItemId String?
-  name            String
-  sku             String?
-  quantity        Int
-  unitPrice       Decimal        @db.Decimal(14, 2)
   total           Decimal        @db.Decimal(14, 2)
   currency        String         @default("NGN") @db.Char(3)
   fulfilment      Fulfilment
@@ -443,14 +467,36 @@ model CheckoutSession {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vendor        Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
-  inventoryItem InventoryItem? @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
-  order         Order?         @relation(fields: [orderId], references: [id])
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  order  Order?         @relation(fields: [orderId], references: [id])
+  lines  CheckoutLine[]
 
   @@index([status, expiresAt])
   @@index([userId, createdAt])
   @@map("checkout_sessions")
+}
+
+/// One product in a checkout, frozen as the buyer saw it: name, brand, photo
+/// and price are copied here so a later edit by the vendor cannot rewrite what
+/// was agreed to.
+model CheckoutLine {
+  id              String  @id @default(cuid())
+  sessionId       String
+  inventoryItemId String?
+  name            String
+  sku             String?
+  brand           String?
+  imageUrl        String?
+  quantity        Int
+  unitPrice       Decimal @db.Decimal(14, 2)
+  lineTotal       Decimal @db.Decimal(14, 2)
+
+  session       CheckoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem?  @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@map("checkout_lines")
 }
 
 // ---------------------------------------------------------------------------
