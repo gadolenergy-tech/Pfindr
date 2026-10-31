@@ -29,7 +29,7 @@ import { formatMoney } from "@/lib/vendor-api";
 const MAX_QTY = 1000;
 
 /**
- * The page behind "View product images": the photo, brand and description the
+ * The page behind "View product": the photo, brand and description the
  * buyer is agreeing to, with Add to cart / Pay now on the same page. Seeing
  * this before paying is what settles "which brand did I order?" later.
  */
@@ -234,6 +234,24 @@ function ProductDetail({ id }: { id: string }) {
               </button>
             </div>
           )}
+
+          <section data-testid="product-specs" className="rounded-xl border border-white/[0.07] bg-white/[0.02] divide-y divide-white/[0.06]">
+            <h2 className="px-4 py-2.5 text-[11px] uppercase tracking-widest text-slate-500 font-semibold">Product details</h2>
+            {[
+              ["Name", p.name],
+              ["Brand / manufacturer", p.brand ?? "Not stated"],
+              ["Category", p.category?.name ?? "General"],
+              ["Sold per", p.unit],
+              ["Availability", soldOut ? "Out of stock" : p.quantity !== null ? `${p.quantity.toLocaleString()} ${p.unit} in stock` : "In stock"],
+              ["Seller", p.vendor.businessName],
+              ["Last updated", new Date(p.updatedAt).toLocaleDateString(undefined, { dateStyle: "medium" })],
+            ].map(([label, value]) => (
+              <div key={label} className="flex justify-between gap-4 px-4 py-2 text-[13px]">
+                <span className="text-slate-500">{label}</span>
+                <span className="text-slate-200 text-right">{value}</span>
+              </div>
+            ))}
+          </section>
 
           <p className="text-[11px] text-slate-600 leading-relaxed">
             Check the photo, brand and description above before you pay. They are recorded with your order, and the vendor is expected to supply this exact product.

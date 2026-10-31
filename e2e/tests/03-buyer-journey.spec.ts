@@ -84,12 +84,12 @@ test("search shows both brands, each with Buy now, and no 'Message vendor' butto
   await a.click();
   const details = page.getByTestId(`search-result-details-${alpha.id}`);
   await expect(details).toBeVisible();
-  await expect(page.getByTestId(`search-view-images-${alpha.id}`)).toHaveText(/View product images/);
+  await expect(page.getByTestId(`search-view-images-${alpha.id}`)).toHaveText(/View product/);
   await expect(page.getByText("Message vendor")).toHaveCount(0);
   await expect(details.getByText("Citadel Pharmacy")).toBeVisible();
 });
 
-test("View product images opens a page with the photo, brand, description and vendor", async () => {
+test("View product opens a page with the photo, brand, description and vendor", async () => {
   await openSearch(page, NAME);
   await page.getByTestId(`search-result-${alpha.id}`).click();
   await page.getByTestId(`search-view-images-${alpha.id}`).click();

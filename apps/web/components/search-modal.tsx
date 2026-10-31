@@ -805,7 +805,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                                   onClick={() => viewProduct(v)}
                                   className="text-[11px] font-semibold text-blue-300 border border-blue-500/25 bg-blue-500/[0.08] hover:bg-blue-500/[0.15] rounded-lg px-3 py-1.5 flex items-center gap-1.5 transition-colors"
                                 >
-                                  <Images className="h-3 w-3" /> View product images
+                                  <Images className="h-3 w-3" /> View product
                                 </button>
                               </div>
                             </div>
