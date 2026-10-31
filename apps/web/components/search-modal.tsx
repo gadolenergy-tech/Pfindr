@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "@/lib/cart";
 import { Search, X, MapPin, Package, ScanSearch, Camera, ImageUp, CheckCircle2, Loader2, Phone, AlertTriangle, Clock, Navigation, TrendingUp, ChevronDown, LocateFixed, Images, ShoppingCart } from "lucide-react";
 import { CheckoutDialog, type CheckoutItem } from "@/components/checkout-dialog";
 import type { DiscoverResult } from "@finder/shared";
@@ -192,6 +193,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
   const router = useRouter();
   const { user } = useAuth();
   const { toast } = useToast();
+  const cart = useCart();
 
   useEffect(() => {
     if (open) {
@@ -301,6 +303,13 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
     saveCity(city.label);
     setPickerOpen(false);
     setSelectedIdx(0);
+  }
+
+  /** Puts the product in the cart and leaves the results open so the buyer keeps shopping. */
+  function addToCart(v: ResultRow) {
+    if (!v.buy) return;
+    cart.add({ ...v.buy, brand: v.buy.brand ?? null, imageUrl: v.buy.imageUrl ?? null, vendorId: v.vendorId }, 1);
+    toast({ title: "Added to cart", description: v.product });
   }
 
   /** Opens the product page: photo, brand and description, with Add to cart there. */
@@ -783,10 +792,11 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                                 {v.buy && (
                                   <button
                                     type="button"
-                                    onClick={() => setCheckout(v.buy)}
+                                    data-testid={`search-add-to-cart-${v.id}`}
+                                    onClick={() => addToCart(v)}
                                     className="text-[11px] font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg px-3 py-1.5 flex items-center gap-1.5 transition-colors"
                                   >
-                                    <ShoppingCart className="h-3 w-3" /> Buy now
+                                    <ShoppingCart className="h-3 w-3" /> Add to cart
                                   </button>
                                 )}
                                 <button

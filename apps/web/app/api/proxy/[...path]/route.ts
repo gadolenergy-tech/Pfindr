@@ -85,11 +85,14 @@ async function forward(req: NextRequest, path: string[]): Promise<Response> {
     statusText: upstream.statusText,
   });
 
-  upstream.headers.forEach((value, key) => {
-    if (key.toLowerCase() === "set-cookie") return;
-    if (STRIPPED.has(key.toLowerCase())) return;
-    response.headers.set(key, value);
-  });
+  // Allowlist rather than copy-everything: the body above is already decoded and
+  // re-buffered, so any upstream header describing its encoding or length
+  // (content-encoding, content-length, etag/vary tied to a compressed variant)
+  // would make the browser fail with ERR_CONTENT_DECODING_FAILED.
+  for (const name of ["content-type", "cache-control", "retry-after", "location", "x-request-id"]) {
+    const value = upstream.headers.get(name);
+    if (value) response.headers.set(name, value);
+  }
 
   // getSetCookie preserves multiple Set-Cookie headers, which a plain get()
   // would collapse into one malformed value.
