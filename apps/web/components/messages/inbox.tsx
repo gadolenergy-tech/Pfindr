@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Archive, Loader2, MessageSquare, Search, Send } from "lucide-react";
+import { Archive, ArrowLeft, Loader2, MessageSquare, Search, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { conversationsApi, timeAgo, type ConversationDetail } from "@/lib/vendor-api";
@@ -19,6 +19,8 @@ const timeFormat = new Intl.DateTimeFormat("en-NG", { hour: "numeric", minute: "
 
 export function Inbox({ emptyHint }: { emptyHint: string }) {
   const [selected, setSelected] = useState<string | null>(null);
+  /** Phones show the list or the open thread, never both; wide screens show both. */
+  const [showThread, setShowThread] = useState(false);
   const [search, setSearch] = useState("");
   const [draft, setDraft] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -74,6 +76,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
     mutationFn: (id: string) => conversationsApi.archive(id),
     onSuccess: () => {
       setSelected(null);
+      setShowThread(false);
       void queryClient.invalidateQueries({ queryKey: ["conversations"] });
       toast({ title: "Conversation archived", description: "A new reply will bring it back." });
     },
@@ -95,7 +98,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
   return (
     <>
       {/* Conversation List */}
-      <div className="w-72 border-r border-white/[0.05] flex flex-col bg-[#04091a] shrink-0">
+      <div className={`${showThread ? "hidden md:flex" : "flex"} w-full md:w-72 border-r border-white/[0.05] flex-col bg-[#04091a] shrink-0`}>
         <div className="p-4 border-b border-white/[0.05]">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-white">Messages</h2>
@@ -121,7 +124,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
             </p>
           )}
           {filtered.map((c) => (
-            <button key={c.id} onClick={() => setSelected(c.id)}
+            <button key={c.id} onClick={() => { setSelected(c.id); setShowThread(true); }}
               className={`w-full flex items-start gap-3 px-4 py-3.5 border-b border-white/[0.03] text-left transition-all ${selected === c.id ? "bg-blue-500/[0.08]" : "hover:bg-white/[0.03]"}`}>
               <div className="shrink-0">
                 <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/[0.08] flex items-center justify-center">
@@ -149,7 +152,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className={`${showThread ? "flex" : "hidden md:flex"} flex-1 flex-col min-w-0`}>
         {!conversation ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center gap-3">
             <MessageSquare className="h-8 w-8 text-slate-700" />
@@ -158,7 +161,11 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
         ) : (
           <>
             {/* Chat Header */}
-            <div className="h-16 flex items-center gap-3 px-6 border-b border-white/[0.05] bg-[#040a15]/90 backdrop-blur">
+            <div className="h-16 flex items-center gap-3 px-3 md:px-6 border-b border-white/[0.05] bg-[#040a15]/90 backdrop-blur">
+              <button onClick={() => setShowThread(false)} aria-label="Back to conversations"
+                className="md:hidden p-2 -ml-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04]">
+                <ArrowLeft className="h-4 w-4" />
+              </button>
               <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/[0.08] flex items-center justify-center shrink-0">
                 <span className="text-sm font-bold text-slate-400">{conversation.counterpart.name[0]?.toUpperCase()}</span>
               </div>
@@ -180,10 +187,10 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+            <div className="flex-1 overflow-y-auto px-3 md:px-6 py-5 space-y-4">
               {conversation.messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.fromMe ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-sm rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                  <div className={`max-w-[85%] md:max-w-sm break-words rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.fromMe
                       ? "bg-blue-600 text-white rounded-tr-sm"
                       : "bg-white/[0.05] border border-white/[0.07] text-slate-200 rounded-tl-sm"
@@ -200,7 +207,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
             </div>
 
             {/* Input */}
-            <form onSubmit={submit} className="px-6 py-4 border-t border-white/[0.05]">
+            <form onSubmit={submit} className="px-3 md:px-6 py-4 border-t border-white/[0.05]">
               <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 py-2.5">
                 <input
                   value={draft}

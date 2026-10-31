@@ -123,6 +123,55 @@ async function main() {
     });
   }
 
+  console.log("Seeding demo buyer and empty-catalogue vendor...");
+  await prisma.user.upsert({
+    where: { email: "buyer@finder.network" },
+    update: {},
+    create: {
+      email: "buyer@finder.network",
+      passwordHash,
+      fullName: "Demo Buyer",
+      phone: "+2348011111111",
+      role: "USER",
+      emailVerified: true,
+    },
+  });
+
+  // A verified vendor with nothing listed yet: the first-upload experience.
+  const newVendorUser = await prisma.user.upsert({
+    where: { email: "newvendor@finder.network" },
+    update: {},
+    create: {
+      email: "newvendor@finder.network",
+      passwordHash,
+      fullName: "Demo New Vendor",
+      phone: "+2348022222222",
+      role: "VENDOR",
+      emailVerified: true,
+    },
+  });
+  await prisma.vendor.upsert({
+    where: { userId: newVendorUser.id },
+    update: {},
+    create: {
+      userId: newVendorUser.id,
+      businessName: "Greenfield Supplies",
+      slug: "greenfield-supplies",
+      description: "Demo vendor with an empty catalogue, for trying the first inventory upload.",
+      categoryId: healthcare.id,
+      contactEmail: "newvendor@finder.network",
+      contactPhone: "+2348022222222",
+      status: "VERIFIED",
+      verifiedAt: new Date(),
+      addressLine1: "3 Trans-Amadi Road",
+      city: "Port Harcourt",
+      state: "Rivers",
+      country: "Nigeria",
+      latitude: 4.8,
+      longitude: 7.03,
+    },
+  });
+
   console.log("Seeding proximity-test vendors...");
   const count = await seedProximityVendors(prisma, passwordHash);
   console.log(`  ${count} vendors across Port Harcourt and other cities`);
@@ -130,6 +179,8 @@ async function main() {
   console.log("Seed complete.");
   console.log("  admin@finder.network  / Finder123!");
   console.log("  vendor@finder.network / Finder123!");
+  console.log("  newvendor@finder.network / Finder123!  (empty catalogue)");
+  console.log("  buyer@finder.network  / Finder123!");
 }
 
 main()

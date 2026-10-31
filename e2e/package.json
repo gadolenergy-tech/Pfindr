@@ -1,0 +1,19 @@
+{
+  "name": "@finder/e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser end-to-end suite: real web + API + a throwaway Postgres database, with local stand-ins for S3 and Paystack.",
+  "scripts": {
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "dotenv": "^17.0.0",
+    "pg": "^8.13.0",
+    "tsx": "^4.23.15"
+  }
+}

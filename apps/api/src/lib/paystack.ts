@@ -8,7 +8,8 @@ import { AppError } from "./errors";
  * https://paystack.com/docs/api/transaction/
  */
 
-const BASE_URL = "https://api.paystack.co";
+// Overridable so the end-to-end suite can point at a local stand-in.
+const BASE_URL = process.env.PAYSTACK_BASE_URL ?? "https://api.paystack.co";
 
 export const paymentsEnabled = () => env.paystack.secretKey.length > 0;
 

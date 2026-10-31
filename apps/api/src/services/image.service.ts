@@ -69,6 +69,15 @@ export async function rememberItemImage(vendorId: string, item: ItemLike, url: s
   });
 }
 
+/**
+ * Drops a photo from the library once no product of the vendor's wears it, so a
+ * photo the vendor removed or replaced does not come back on the next match.
+ */
+export async function forgetImage(vendorId: string, url: string) {
+  const stillWorn = await prisma.inventoryItem.count({ where: { vendorId, imageUrl: url } });
+  if (stillWorn === 0) await prisma.vendorImage.deleteMany({ where: { vendorId, url } });
+}
+
 /** Adds freshly uploaded photos to the library, then matches them to products. */
 export async function registerImages(vendorId: string, images: { url: string; fileName: string }[]) {
   for (const { url } of images) assertOwnImageUrl(vendorId, url);

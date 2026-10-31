@@ -47,7 +47,9 @@ Seeded accounts (development only):
 | Account                 | Password     | Role   |
 | ----------------------- | ------------ | ------ |
 | `admin@finder.network`  | `Finder123!` | ADMIN  |
-| `vendor@finder.network` | `Finder123!` | VENDOR |
+| `vendor@finder.network` | `Finder123!` | VENDOR (Citadel Pharmacy, stocked) |
+| `newvendor@finder.network` | `Finder123!` | VENDOR (Greenfield Supplies, empty catalogue) |
+| `buyer@finder.network` | `Finder123!` | USER |
 
 ## Scripts
 
@@ -143,3 +145,14 @@ search, messaging, affiliate or admin surfaces renders hardcoded data.
   driver adapter in `src/lib/prisma.ts`.
 - Every API response uses the envelope `{ ok: true, data }` or
   `{ ok: false, error }`. The fetch wrappers in each app unwrap it.
+
+## End-to-end tests
+
+A browser suite (Playwright) drives the real web app, API and database as a buyer and as vendors: sign-in and the show/hide password eye, manual and CSV inventory, per-product photos, buying and payment, messaging, and cross-account isolation.
+
+```bash
+npx playwright install chromium   # once
+npm run e2e
+```
+
+It is self-contained: it rebuilds a separate `finder_network_e2e` database and seeds the demo accounts above, starts the API (:5120) and web app (:3120) on their own ports, and runs local stand-ins for S3 and Paystack, so it needs no credentials and never touches the development database. Reports land in `e2e/playwright-report`.

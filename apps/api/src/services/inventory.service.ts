@@ -3,7 +3,7 @@ import type { CreateInventoryItemInput, UpdateInventoryItemInput } from "@finder
 import { notFound } from "../lib/errors";
 import { assertOwnImageUrl } from "../lib/storage";
 import { readPreferences } from "./preferences.service";
-import { findImage, loadImageIndex, rememberItemImage } from "./image.service";
+import { findImage, forgetImage, loadImageIndex, rememberItemImage } from "./image.service";
 import { prisma } from "../lib/prisma";
 import { decimalToNumber, toIso } from "../lib/serialize";
 
@@ -280,8 +280,12 @@ export async function updateInventoryItem(
     },
     include: inventoryInclude,
   });
-  // Remember a newly chosen photo; clearing one leaves the library untouched.
+  // Remember a newly chosen photo. A photo the vendor removed or swapped out is
+  // forgotten too, or the next library match would quietly put it back.
   if (input.imageUrl) await rememberItemImage(vendorId, item, item.imageUrl);
+  if (input.imageUrl !== undefined && current.imageUrl && current.imageUrl !== item.imageUrl) {
+    await forgetImage(vendorId, current.imageUrl);
+  }
   return serializeInventoryItem(item);
 }
 

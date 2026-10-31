@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "e2e"
   ],
   "scripts": {
     "dev": "turbo run dev",
@@ -16,7 +17,8 @@
     "db:seed": "npm run db:seed --workspace @finder/api",
     "db:studio": "npm run db:studio --workspace @finder/api",
     "postinstall": "npm run build --workspace @finder/shared",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "e2e": "npm run e2e --workspace @finder/e2e"
   },
   "packageManager": "npm@11.12.1",
   "devDependencies": {

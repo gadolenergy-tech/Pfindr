@@ -119,7 +119,20 @@ describe("the library remembers photos", () => {
     expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: item.id } })).imageUrl).toBe(photo(v.id, "mine.jpg"));
   });
 
-  it("remembers a photo added by hand and re-applies it on the match-images click", async () => {
+  it("remembers a photo added by hand, so it survives the product being deleted and re-imported", async () => {
+    const v = await makeVendor();
+    const item = await makeItem(v.id, { sku: "G1", name: "Gas Cylinder 12.5kg" });
+    await updateInventoryItem(v.id, item.id, { imageUrl: photo(v.id, "gas.jpg") });
+    await prisma.inventoryItem.delete({ where: { id: item.id } });
+    const again = await makeItem(v.id, { sku: "G1", name: "Gas Cylinder 12.5kg" });
+
+    const result = await matchLibraryToItems(v.id);
+
+    expect(result.matched).toBe(1);
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: again.id } })).imageUrl).toBe(photo(v.id, "gas.jpg"));
+  });
+
+  it("does not bring back a photo the vendor removed", async () => {
     const v = await makeVendor();
     const item = await makeItem(v.id, { sku: "G1", name: "Gas Cylinder 12.5kg" });
     await updateInventoryItem(v.id, item.id, { imageUrl: photo(v.id, "gas.jpg") });
@@ -127,8 +140,23 @@ describe("the library remembers photos", () => {
 
     const result = await matchLibraryToItems(v.id);
 
-    expect(result.matched).toBe(1);
-    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: item.id } })).imageUrl).toBe(photo(v.id, "gas.jpg"));
+    expect(result.matched).toBe(0);
+    expect((await prisma.inventoryItem.findUniqueOrThrow({ where: { id: item.id } })).imageUrl).toBeNull();
+    expect(await prisma.vendorImage.count({ where: { vendorId: v.id } })).toBe(0);
+  });
+
+  it("forgets a photo that was replaced, but keeps one another product still wears", async () => {
+    const v = await makeVendor();
+    const a = await makeItem(v.id, { sku: "A1", name: "Item A" });
+    const b = await makeItem(v.id, { sku: "B1", name: "Item B" });
+    await updateInventoryItem(v.id, a.id, { imageUrl: photo(v.id, "shared.jpg") });
+    await updateInventoryItem(v.id, b.id, { imageUrl: photo(v.id, "shared.jpg") });
+
+    await updateInventoryItem(v.id, a.id, { imageUrl: photo(v.id, "new.jpg") });
+
+    const urls = (await prisma.vendorImage.findMany({ where: { vendorId: v.id } })).map((i) => i.url).sort();
+    expect(urls).toContain(photo(v.id, "shared.jpg")); // B still uses it
+    expect(urls).toContain(photo(v.id, "new.jpg"));
   });
 
   it("keeps libraries separate between vendors", async () => {

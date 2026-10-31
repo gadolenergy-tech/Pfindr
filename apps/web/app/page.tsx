@@ -85,17 +85,31 @@ export default function Home() {
   const [resumeSearch, setResumeSearch] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [hoveredCat, setHoveredCat] = useState<number | null>(null);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
+  /** A tap that arrived while the session was still loading; settled once it is known. */
+  const [searchRequested, setSearchRequested] = useState(false);
 
   /** Search requires a signed-in account; anonymous visitors go to login first. */
   function openSearch() {
+    // Until /auth/me settles, a signed-in visitor looks anonymous; wait rather than bounce them to login.
+    if (loading) {
+      setSearchRequested(true);
+      return;
+    }
     if (!user) {
       router.push("/login?next=/");
       return;
     }
     setSearchOpen(true);
   }
+
+  useEffect(() => {
+    if (loading || !searchRequested) return;
+    setSearchRequested(false);
+    if (user) setSearchOpen(true);
+    else router.push("/login?next=/");
+  }, [loading, searchRequested, user, router]);
 
   // "Back to search" and "Keep shopping" land here with ?search=resume.
   useEffect(() => {
