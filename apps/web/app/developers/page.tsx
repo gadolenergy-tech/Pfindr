@@ -128,13 +128,13 @@ export default function DeveloperPortal() {
                 Build on top of Finder's AI-powered inventory discovery infrastructure. Our APIs give you programmatic access to real-time inventory data, vendor information, AI-powered search, and location-based availability across Finder Network.
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { icon: Zap, title: "Simple & Predictable", desc: "Plain JSON over HTTPS. Every response uses the same { ok, data, meta } envelope.", color: "text-amber-400" },
                 { icon: Shield, title: "Secure by Default", desc: "Scoped API keys, hashed at rest and revocable instantly, with per-key rate limits.", color: "text-blue-400" },
                 { icon: Globe, title: "Global Infrastructure", desc: "Multi-region deployment ready for enterprise and government scale.", color: "text-green-400" },
               ].map((f) => (
-                <div key={f.title} className="p-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
+                <div key={f.title} className="min-w-0 p-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
                   <f.icon className={`h-5 w-5 ${f.color} mb-3`} />
                   <div className="text-[12px] font-semibold text-white mb-1">{f.title}</div>
                   <div className="text-[11px] text-slate-500 leading-relaxed">{f.desc}</div>
@@ -412,7 +412,7 @@ export default function DeveloperPortal() {
                 <h1 className="text-2xl font-bold text-white">Developer Portal</h1>
                 <p className="text-slate-500 text-sm mt-1">Build intelligent inventory discovery into your applications</p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <Link href="/partners">
                   <Button size="sm" variant="ghost" className="border border-white/[0.07] text-slate-400 hover:text-white gap-2">
                     <Globe className="h-3.5 w-3.5" /> Partner Program

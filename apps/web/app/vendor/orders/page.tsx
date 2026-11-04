@@ -133,7 +133,7 @@ function OrdersView() {
     <div className="min-h-screen flex bg-[#040a15]">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-8 py-4 flex items-center justify-between">
+        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-bold text-white">Orders</h1>
             <p className="text-xs text-slate-500 mt-0.5">Manage and track all procurement orders</p>
@@ -154,7 +154,7 @@ function OrdersView() {
           </div>
         </div>
 
-        <div className="px-8 py-7 space-y-6 max-w-6xl">
+        <div className="px-4 sm:px-8 py-7 space-y-6 max-w-6xl">
           {/* Stat Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {TABS.map((t) => {

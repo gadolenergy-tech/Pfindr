@@ -12,5 +12,10 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
 
   if (PUBLIC_VENDOR_ROUTES.includes(pathname)) return <>{children}</>;
 
-  return <AuthGuard roles={["VENDOR", "ADMIN"]}>{children}</AuthGuard>;
+  return (
+    <AuthGuard roles={["VENDOR", "ADMIN"]}>
+      {/* clears the fixed mobile top bar rendered by VendorSidebar */}
+      <div className="max-lg:pt-14">{children}</div>
+    </AuthGuard>
+  );
 }

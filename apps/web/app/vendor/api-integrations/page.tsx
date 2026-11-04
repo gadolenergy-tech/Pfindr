@@ -103,7 +103,7 @@ export default function VendorApiIntegrations() {
     <div className="min-h-screen flex bg-[#040a15]">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-8 py-4 flex items-center justify-between">
+        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-bold text-white">API & Integrations</h1>
             <p className="text-xs text-slate-500 mt-0.5">Connect Finder to your existing tools and infrastructure</p>
@@ -115,7 +115,7 @@ export default function VendorApiIntegrations() {
           </a>
         </div>
 
-        <div className="px-8 py-7 max-w-5xl space-y-10">
+        <div className="px-4 sm:px-8 py-7 max-w-5xl space-y-10">
           {/* API Keys */}
           <Section title="API Keys" sub={`Authenticate calls to ${PUBLIC_API_BASE} with Authorization: Bearer <key>`}>
             <KeyManager />

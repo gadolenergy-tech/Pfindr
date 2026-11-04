@@ -60,12 +60,12 @@ export default function VendorCustomers() {
     <div className="min-h-screen flex bg-[#040a15]">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-8 py-4">
+        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4">
           <h1 className="text-lg font-bold text-white">Customers</h1>
           <p className="text-xs text-slate-500 mt-0.5">Customer directory and retention metrics</p>
         </div>
 
-        <div className="px-8 py-7 max-w-6xl space-y-6">
+        <div className="px-4 sm:px-8 py-7 max-w-6xl space-y-6">
           {/* Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {metrics.map((m) => (

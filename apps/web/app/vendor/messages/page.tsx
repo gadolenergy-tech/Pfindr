@@ -7,7 +7,7 @@ export default function VendorMessages() {
   return (
     <div className="min-h-screen flex bg-[#040a15]">
       <VendorSidebar />
-      <main className="flex-1 flex overflow-hidden h-screen">
+      <main className="flex-1 flex overflow-hidden h-[calc(100dvh-3.5rem)] lg:h-screen">
         <Inbox emptyHint="No messages yet. Buyers reach you here when they request a quote from search." />
       </main>
     </div>

@@ -142,10 +142,10 @@ export default function VendorDashboard() {
       <VendorSidebar />
 
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 flex items-center justify-between px-8 border-b border-white/[0.06] bg-[#040a15]/90 backdrop-blur-xl z-10 sticky top-0">
-          <div className="flex items-center gap-4">
-            <div className="font-semibold text-lg text-white">Dashboard Overview</div>
-            <div className="flex items-center gap-2 text-[11px] text-slate-500">
+        <header className="min-h-16 py-2 gap-3 flex items-center justify-between px-4 sm:px-8 border-b border-white/[0.06] bg-[#040a15]/90 backdrop-blur-xl z-10 sticky top-14 lg:top-0">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="font-semibold text-base sm:text-lg text-white truncate">Dashboard Overview</div>
+            <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-500">
               <div className={`w-1.5 h-1.5 rounded-full ${vendor?.listingPaused ? "bg-amber-400" : "bg-green-400 animate-pulse shadow-[0_0_6px_rgba(74,222,128,0.5)]"}`} />
               <span>{vendor?.listingPaused ? "Listings Paused" : "Network Live"}</span>
             </div>
@@ -166,7 +166,7 @@ export default function VendorDashboard() {
           </div>
         </header>
 
-        <div className="flex-1 p-8 overflow-y-auto space-y-8 bg-[#040a15]">
+        <div className="flex-1 p-4 sm:p-8 overflow-y-auto space-y-8 bg-[#040a15]">
           {vendor && vendor.status !== "VERIFIED" && (
             <div className="flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] px-5 py-4">
               <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
@@ -338,7 +338,7 @@ export default function VendorDashboard() {
           </div>
 
           <Card className="bg-[#06101f] border-white/[0.07] rounded-2xl">
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
               <div>
                 <CardTitle className="text-white">Recent Orders</CardTitle>
                 <CardDescription className="text-slate-400">Your latest recorded orders</CardDescription>

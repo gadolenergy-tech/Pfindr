@@ -199,15 +199,15 @@ export default function VendorSettings() {
     <div className="min-h-screen flex bg-[#040a15]">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-8 py-4">
+        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4">
           <h1 className="text-lg font-bold text-white">Settings</h1>
           <p className="text-xs text-slate-500 mt-0.5">Manage your business profile, account, and preferences</p>
         </div>
 
-        <div className="px-8 py-7 max-w-4xl">
+        <div className="px-4 sm:px-8 py-7 max-w-4xl">
           <div className="grid lg:grid-cols-4 gap-6">
             {/* Sidebar Nav */}
-            <div className="space-y-1">
+            <div className="flex lg:block gap-1 lg:space-y-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 [&>button]:shrink-0 lg:[&>button]:w-full [&>button]:w-auto [&>button]:whitespace-nowrap">
               {TABS.map((t) => (
                 <button key={t.id} onClick={() => { setTab(t.id); setMessage(null); }}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[12px] font-medium transition-all text-left ${tab === t.id ? "bg-blue-500/10 border border-blue-500/20 text-blue-400" : "text-slate-500 hover:text-white hover:bg-white/[0.04]"}`}>
