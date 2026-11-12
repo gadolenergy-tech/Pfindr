@@ -37,7 +37,7 @@ type AffiliateMe = {
   payouts?: { id: string; amount: number; method: string; status: string; requestedAt: string; paidAt: string | null }[];
 };
 
-const TT_STYLE = { backgroundColor: "#060d1f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px" };
+const TT_STYLE = { backgroundColor: "var(--raised)", border: "1px solid var(--line)", borderRadius: "12px" };
 const MIN_PAYOUT = 5_000;
 
 function exportReport(data: AffiliateMe) {
@@ -91,7 +91,7 @@ export default function AffiliateDashboard() {
 
   if (isLoading || !aff) {
     return (
-      <div className="min-h-screen bg-[#040a15] flex items-center justify-center">
+      <div className="min-h-screen bg-canvas flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
       </div>
     );
@@ -114,7 +114,7 @@ export default function AffiliateDashboard() {
   const pendingPayout = (data.payouts ?? []).find((p) => p.status === "PENDING");
 
   return (
-    <div className="min-h-screen bg-[#040a15] text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       <Navbar />
       <div className="pt-28 pb-20 px-4">
         <div className="container mx-auto max-w-5xl space-y-8">
@@ -127,7 +127,7 @@ export default function AffiliateDashboard() {
                   {data.tier!.name} Tier{aff.status !== "ACTIVE" ? ` · ${aff.status.toLowerCase()}` : ""}
                 </span>
               </div>
-              <h1 className="text-2xl font-bold text-white">Affiliate Dashboard</h1>
+              <h1 className="text-2xl font-bold text-foreground">Affiliate Dashboard</h1>
               <p className="text-slate-500 text-sm mt-1">Affiliate ID: <span className="text-slate-300 font-mono">{aff.code}</span></p>
               {data.tier!.next && (
                 <p className="text-[11px] text-slate-500 mt-1">
@@ -136,21 +136,21 @@ export default function AffiliateDashboard() {
               )}
             </div>
             <div className="flex gap-3">
-              <Button asChild size="sm" variant="ghost" className="text-slate-400 hover:text-white gap-2 border border-white/[0.06]">
+              <Button asChild size="sm" variant="ghost" className="text-slate-400 hover:text-foreground gap-2 border border-line">
                 <Link href="/affiliate"><ExternalLink className="h-4 w-4" /> Program Info</Link>
               </Button>
               <Button size="sm" variant="ghost" onClick={() => exportReport(data)} disabled={!data.referrals?.length}
-                className="text-slate-400 hover:text-white gap-2 border border-white/[0.06]">
+                className="text-slate-400 hover:text-foreground gap-2 border border-line">
                 <Download className="h-4 w-4" /> Export Report
               </Button>
             </div>
           </div>
 
           {/* Referral Link Generator */}
-          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
+          <div className="bg-wash-1 border border-line rounded-2xl p-5">
             <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-3">Your Referral Link</p>
             <div className="flex items-center gap-3">
-              <div className="flex-1 bg-[#030810] border border-white/[0.07] rounded-xl px-4 py-3 font-mono text-[12px] text-blue-300 truncate">
+              <div className="flex-1 bg-sunken border border-line rounded-xl px-4 py-3 font-mono text-[12px] text-blue-300 truncate">
                 {aff.link}
               </div>
               <button onClick={handleCopy}
@@ -165,7 +165,7 @@ export default function AffiliateDashboard() {
           {/* KPI Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {kpis.map((k) => (
-              <div key={k.label} className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-4">
+              <div key={k.label} className="bg-raised border border-line rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <k.icon className={`h-3.5 w-3.5 ${k.color}`} />
                   <span className="text-[9px] uppercase tracking-widest text-slate-500 font-semibold">{k.label}</span>
@@ -177,8 +177,8 @@ export default function AffiliateDashboard() {
           </div>
 
           {/* Earnings Chart */}
-          <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6">
-            <h3 className="text-sm font-semibold text-white mb-1">Earnings History</h3>
+          <div className="bg-raised border border-line rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-1">Earnings History</h3>
             <p className="text-[11px] text-slate-500 mb-5">Monthly commission earnings (₦)</p>
             <div className="h-[180px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -189,10 +189,10 @@ export default function AffiliateDashboard() {
                       <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--line-soft)" vertical={false} />
                   <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v: number) => `₦${compact(v)}`} />
-                  <Tooltip contentStyle={TT_STYLE} itemStyle={{ color: "#fff" }} formatter={(v: number) => [formatMoney(v), "Earnings"]} />
+                  <Tooltip contentStyle={TT_STYLE} itemStyle={{ color: "hsl(var(--foreground))" }} formatter={(v: number) => [formatMoney(v), "Earnings"]} />
                   <Area type="monotone" dataKey="earnings" stroke="#10b981" strokeWidth={2} fill="url(#earnGrad)" dot={false} activeDot={{ r: 4, fill: "#10b981" }} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -200,10 +200,10 @@ export default function AffiliateDashboard() {
           </div>
 
           {/* Referrals Table */}
-          <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6">
+          <div className="bg-raised border border-line rounded-2xl p-6">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h3 className="text-sm font-semibold text-white">Your Referrals</h3>
+                <h3 className="text-sm font-semibold text-foreground">Your Referrals</h3>
                 <p className="text-[11px] text-slate-500 mt-0.5">A referral becomes active when the vendor is verified or the user confirms their email</p>
               </div>
             </div>
@@ -212,8 +212,8 @@ export default function AffiliateDashboard() {
                 <p className="text-[12px] text-slate-600 text-center py-8">No referrals yet — share your link to get started.</p>
               )}
               {(data.referrals ?? []).map((r) => (
-                <div key={r.id} className="flex items-center gap-4 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition-all">
-                  <div className="w-8 h-8 rounded-full bg-slate-800 border border-white/[0.08] flex items-center justify-center shrink-0">
+                <div key={r.id} className="flex items-center gap-4 p-3.5 rounded-xl bg-wash-1 border border-line-soft hover:bg-wash-2 transition-all">
+                  <div className="w-8 h-8 rounded-full bg-slate-800 border border-line flex items-center justify-center shrink-0">
                     <span className="text-[11px] font-bold text-slate-400">{r.name[0]?.toUpperCase()}</span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -232,10 +232,10 @@ export default function AffiliateDashboard() {
           </div>
 
           {/* Withdraw */}
-          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
+          <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
-                <h3 className="text-sm font-semibold text-white">Available Balance</h3>
+                <h3 className="text-sm font-semibold text-foreground">Available Balance</h3>
                 <div className="text-3xl font-bold text-green-400 tabular-nums mt-1">{formatMoney(aff.available)}</div>
                 <p className="text-[11px] text-slate-500 mt-1">
                   {pendingPayout
@@ -256,7 +256,7 @@ export default function AffiliateDashboard() {
               Commission is credited to your balance by the Finder team as referred vendors start paying for Finder.
             </div>
             {(data.payouts ?? []).length > 0 && (
-              <div className="border-t border-white/[0.05] pt-3 space-y-1.5">
+              <div className="border-t border-line-soft pt-3 space-y-1.5">
                 {(data.payouts ?? []).map((p) => (
                   <div key={p.id} className="flex items-center justify-between text-[11px]">
                     <span className="text-slate-400">{formatDate(p.requestedAt)} · {p.method === "PAYSTACK" ? "Paystack" : "Bank transfer"}</span>
@@ -274,9 +274,9 @@ export default function AffiliateDashboard() {
       <Footer />
 
       <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
-        <DialogContent className="bg-[#060d1f] border-white/[0.08]">
+        <DialogContent className="bg-raised border-line">
           <DialogHeader>
-            <DialogTitle className="text-white">Request a withdrawal</DialogTitle>
+            <DialogTitle className="text-foreground">Request a withdrawal</DialogTitle>
             <DialogDescription>Up to {formatMoney(aff.available)} is available.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -287,12 +287,12 @@ export default function AffiliateDashboard() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder={`Amount (min ${MIN_PAYOUT.toLocaleString()})`}
-              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500/40"
+              className="w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-foreground outline-none focus:border-blue-500/40"
             />
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value as typeof method)}
-              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-slate-300 outline-none"
+              className="w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-slate-300 outline-none"
             >
               <option value="BANK_TRANSFER">Bank transfer</option>
               <option value="PAYSTACK">Paystack</option>

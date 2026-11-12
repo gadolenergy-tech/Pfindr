@@ -12,9 +12,9 @@ import { ApiError } from "@/lib/api";
 import { inventoryApi, STATUS_LABEL } from "@/lib/vendor-api";
 
 const INPUT =
-  "w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/20 transition-all";
+  "w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/20 transition-all";
 const SELECT =
-  "w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-slate-300 outline-none focus:border-blue-500/40 transition-all appearance-none";
+  "w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-slate-300 outline-none focus:border-blue-500/40 transition-all appearance-none";
 const LABEL =
   "block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold";
 
@@ -100,8 +100,8 @@ export function ManualEntry() {
   return (
     <div className="space-y-8">
       <div className="grid md:grid-cols-2 gap-6">
-        <form onSubmit={submit} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
-          <h3 className="text-sm font-semibold text-white mb-4">Add New Product</h3>
+        <form onSubmit={submit} className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Add New Product</h3>
           <div>
             <label className={LABEL}>Product Name</label>
             <input value={form.name} onChange={(e) => set("name")(e.target.value)} placeholder="e.g. Amoxicillin 500mg" className={INPUT} />
@@ -178,13 +178,13 @@ export function ManualEntry() {
             <div className="flex items-center gap-3">
               {form.imageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
-                <img src={form.imageUrl} alt="Product preview" className="w-14 h-14 rounded-lg object-cover border border-white/[0.08]" />
+                <img src={form.imageUrl} alt="Product preview" className="w-14 h-14 rounded-lg object-cover border border-line" />
               )}
               <ImageUploadButton
                 purpose="product"
                 onUploaded={(url) => set("imageUrl")(url)}
                 onError={(message) => toast({ title: "Upload failed", description: message, variant: "destructive" })}
-                className="text-[11px] text-slate-300 border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60"
+                className="text-[11px] text-slate-300 border border-line-strong bg-wash-2 hover:bg-wash-4 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60"
               >
                 {form.imageUrl ? "Change photo" : "Upload photo (optional)"}
               </ImageUploadButton>

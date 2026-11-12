@@ -8,6 +8,7 @@ import { Menu, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Discover" },
@@ -35,7 +36,7 @@ export function Navbar() {
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-xl py-3"
+          ? "bg-background/80 backdrop-blur-xl border-b border-line-strong shadow-xl py-3"
           : "bg-transparent border-transparent py-5"
       }`}
     >
@@ -67,12 +68,12 @@ export function Navbar() {
                   href={link.href}
                   className={`relative px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
                     active
-                      ? "text-white"
-                      : "text-muted-foreground hover:text-white hover:bg-white/[0.04]"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-wash-2"
                   }`}
                 >
                   {active && (
-                    <span className="absolute inset-0 rounded-md bg-white/[0.05] border border-white/[0.07]" />
+                    <span className="absolute inset-0 rounded-md bg-wash-3 border border-line" />
                   )}
                   <span className="relative">{link.label}</span>
                   {active && (
@@ -85,11 +86,12 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           {user ? (
             <>
               <Link
                 href={user.role === "VENDOR" ? "/vendor/dashboard" : "/messages"}
-                className="text-sm font-medium text-muted-foreground hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-md hover:bg-wash-2"
               >
                 {user.role === "VENDOR" ? "Dashboard" : "Messages"}
               </Link>
@@ -97,7 +99,7 @@ export function Navbar() {
                 <Link
                   href="/orders"
                   data-testid="link-nav-orders"
-                  className="text-sm font-medium text-muted-foreground hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-md hover:bg-wash-2"
                 >
                   My orders
                 </Link>
@@ -107,7 +109,7 @@ export function Navbar() {
                   href="/cart"
                   data-testid="link-nav-cart"
                   aria-label={`Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
-                  className="relative text-muted-foreground hover:text-white transition-colors p-2 rounded-md hover:bg-white/[0.04]"
+                  className="relative text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-wash-2"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   {cartCount > 0 && (
@@ -122,14 +124,14 @@ export function Navbar() {
                 size="sm"
                 variant="outline"
                 onClick={() => void logout()}
-                className="h-9 px-4 text-sm border-white/[0.12]"
+                className="h-9 px-4 text-sm border-line-strong"
               >
                 Log out
               </Button>
             </>
           ) : (
             <>
-              <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]">
+              <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-md hover:bg-wash-2">
                 Login
               </Link>
               <Button
@@ -144,6 +146,8 @@ export function Navbar() {
           )}
         </div>
 
+        <div className="flex items-center gap-1 md:hidden">
+        <ThemeToggle />
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden text-slate-300">
@@ -153,7 +157,7 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="w-[300px] sm:w-[360px] bg-[#060d1f]/98 backdrop-blur-2xl border-white/[0.07]"
+            className="w-[300px] sm:w-[360px] bg-raised/98 backdrop-blur-2xl border-line"
           >
             <nav className="flex flex-col gap-1 mt-10">
               {NAV_LINKS.map((link) => {
@@ -164,8 +168,8 @@ export function Navbar() {
                     href={link.href}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-150 ${
                       active
-                        ? "text-white bg-white/[0.06] border border-white/[0.08]"
-                        : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
+                        ? "text-foreground bg-wash-3 border border-line"
+                        : "text-slate-400 hover:text-foreground hover:bg-wash-2"
                     }`}
                   >
                     {active && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />}
@@ -176,18 +180,18 @@ export function Navbar() {
               <div className="flex flex-col gap-2.5 mt-6 px-1">
                 {user ? (
                   <>
-                    <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-white border border-white/[0.07] hover:bg-white/[0.05]">
+                    <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-foreground border border-line hover:bg-wash-3">
                       <Link href={user.role === "VENDOR" ? "/vendor/dashboard" : "/messages"}>
                         {user.role === "VENDOR" ? "Dashboard" : "Messages"}
                       </Link>
                     </Button>
                     {user.role !== "VENDOR" && (
-                      <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-white border border-white/[0.07] hover:bg-white/[0.05]">
+                      <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-foreground border border-line hover:bg-wash-3">
                         <Link href="/orders">My orders</Link>
                       </Button>
                     )}
                     {user.role !== "VENDOR" && (
-                      <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-white border border-white/[0.07] hover:bg-white/[0.05]">
+                      <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-foreground border border-line hover:bg-wash-3">
                         <Link href="/cart">Cart{cartCount > 0 ? ` (${cartCount})` : ""}</Link>
                       </Button>
                     )}
@@ -200,7 +204,7 @@ export function Navbar() {
                   </>
                 ) : (
                   <>
-                    <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-white border border-white/[0.07] hover:bg-white/[0.05]">
+                    <Button asChild variant="ghost" className="w-full justify-start text-slate-400 hover:text-foreground border border-line hover:bg-wash-3">
                       <Link href="/login">Login</Link>
                     </Button>
                     <Button asChild className="w-full justify-start bg-blue-600 hover:bg-blue-500">
@@ -212,6 +216,7 @@ export function Navbar() {
             </nav>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );

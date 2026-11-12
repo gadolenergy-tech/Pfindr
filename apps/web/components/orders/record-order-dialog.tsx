@@ -21,7 +21,7 @@ import {
 } from "@/lib/vendor-api";
 
 const INPUT =
-  "w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all";
+  "w-full bg-wash-2 border border-line rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all";
 const LABEL =
   "block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold";
 
@@ -138,9 +138,9 @@ export function RecordOrderDialog({
         onOpenChange(next);
       }}
     >
-      <DialogContent className="max-w-2xl bg-[#060d1f] border-white/[0.08] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl bg-raised border-line max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white">Record an order</DialogTitle>
+          <DialogTitle className="text-foreground">Record an order</DialogTitle>
           <DialogDescription>
             Log a sale agreed with a buyer. The quantities come off your live stock immediately.
           </DialogDescription>
@@ -266,7 +266,7 @@ export function RecordOrderDialog({
 
         <DialogFooter className="items-center sm:justify-between gap-3">
           <div className="text-sm text-slate-400">
-            Total <span className="text-white font-bold tabular-nums">{formatMoney(total)}</span>
+            Total <span className="text-foreground font-bold tabular-nums">{formatMoney(total)}</span>
           </div>
           <Button onClick={submit} disabled={create.isPending} className="bg-blue-600 hover:bg-blue-500">
             {create.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

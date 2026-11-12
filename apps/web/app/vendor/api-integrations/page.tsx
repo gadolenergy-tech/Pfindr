@@ -73,15 +73,15 @@ const PAYMENTS = [
 
 function IntegrationCard({ name, logo, desc }: { name: string; logo: string; desc: string }) {
   return (
-    <div className="flex items-center gap-3 p-3.5 bg-white/[0.02] border border-white/[0.05] rounded-xl hover:bg-white/[0.04] transition-all group">
-      <div className="w-9 h-9 rounded-lg bg-slate-800 border border-white/[0.08] flex items-center justify-center shrink-0">
+    <div className="flex items-center gap-3 p-3.5 bg-wash-1 border border-line-soft rounded-xl hover:bg-wash-2 transition-all group">
+      <div className="w-9 h-9 rounded-lg bg-slate-800 border border-line flex items-center justify-center shrink-0">
         <span className="text-[9px] font-bold text-slate-400">{logo}</span>
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[11px] font-semibold text-slate-300 truncate">{name}</div>
         <div className="text-[9px] text-slate-600">{desc}</div>
       </div>
-      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-700 bg-white/[0.03] border border-white/[0.05] px-1.5 py-0.5 rounded-full shrink-0">Soon</span>
+      <span className="text-[8px] font-bold uppercase tracking-wider text-slate-700 bg-wash-2 border border-line-soft px-1.5 py-0.5 rounded-full shrink-0">Soon</span>
     </div>
   );
 }
@@ -90,7 +90,7 @@ function Section({ title, sub, children }: { title: string; sub: string; childre
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-sm font-bold text-white">{title}</h2>
+        <h2 className="text-sm font-bold text-foreground">{title}</h2>
         <p className="text-[11px] text-slate-500 mt-0.5">{sub}</p>
       </div>
       {children}
@@ -100,16 +100,16 @@ function Section({ title, sub, children }: { title: string; sub: string; childre
 
 export default function VendorApiIntegrations() {
   return (
-    <div className="min-h-screen flex bg-[#040a15]">
+    <div className="min-h-screen flex bg-canvas">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="sticky top-14 lg:top-0 z-20 bg-canvas/95 backdrop-blur border-b border-line-soft px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-bold text-white">API & Integrations</h1>
+            <h1 className="text-lg font-bold text-foreground">API & Integrations</h1>
             <p className="text-xs text-slate-500 mt-0.5">Connect Finder to your existing tools and infrastructure</p>
           </div>
           <a href="/developers" target="_blank" rel="noopener noreferrer">
-            <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white gap-2 border border-white/[0.06]">
+            <Button size="sm" variant="ghost" className="text-slate-400 hover:text-foreground gap-2 border border-line">
               <ExternalLink className="h-3.5 w-3.5" /> Developer Portal
             </Button>
           </a>
@@ -125,14 +125,14 @@ export default function VendorApiIntegrations() {
           <Section title="Core APIs" sub="Programmatic access to all Finder platform capabilities">
             <div className="grid md:grid-cols-2 gap-4">
               {CORE_APIS.map((api) => (
-                <div key={api.title} className={`p-5 rounded-2xl border ${api.border} bg-white/[0.015] hover:bg-white/[0.03] transition-all`}>
+                <div key={api.title} className={`p-5 rounded-2xl border ${api.border} bg-wash-1 hover:bg-wash-2 transition-all`}>
                   <div className="flex items-start justify-between mb-3">
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${api.bg} border ${api.border}`}>
                       <api.icon className={`h-4.5 w-4.5 ${api.color}`} style={{ width: "18px", height: "18px" }} />
                     </div>
                     {api.badge}
                   </div>
-                  <h3 className="text-sm font-bold text-white mb-1">{api.title}</h3>
+                  <h3 className="text-sm font-bold text-foreground mb-1">{api.title}</h3>
                   <p className="text-[11px] text-slate-500 leading-relaxed mb-3">{api.desc}</p>
                   <a href="/developers" className={`text-[10px] font-semibold ${api.color} inline-flex items-center gap-1 hover:gap-2 transition-all`}>
                     View Docs <ArrowRight className="h-3 w-3" />
@@ -144,7 +144,7 @@ export default function VendorApiIntegrations() {
 
           {/* Webhook Events Preview */}
           <Section title="Webhook Events" sub="Subscribe to platform events and receive real-time notifications">
-            <div className="bg-[#030810] border border-white/[0.06] rounded-2xl p-5 font-mono text-[11px] space-y-2">
+            <div className="bg-sunken border border-line rounded-2xl p-5 font-mono text-[11px] space-y-2">
               {[
                 { event: "order.created", desc: "// New order placed by a buyer" },
                 { event: "inventory.updated", desc: "// Stock level changed for a product" },
@@ -188,7 +188,7 @@ export default function VendorApiIntegrations() {
           </div>
 
           {/* Enterprise Notice */}
-          <div className="flex items-start gap-4 p-5 bg-white/[0.015] border border-white/[0.06] rounded-2xl">
+          <div className="flex items-start gap-4 p-5 bg-wash-1 border border-line rounded-2xl">
             <Zap className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
               <div className="text-[12px] font-semibold text-slate-300 mb-1">Enterprise Integration Support</div>

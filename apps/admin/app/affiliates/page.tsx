@@ -63,7 +63,7 @@ export default function AffiliatesPage() {
 
   return (
     <AdminShell title="Affiliates" description="Referral partners, commission and payouts">
-      <Alert className="border-white/[0.08]">
+      <Alert className="border-line">
         <Info className="h-4 w-4" />
         <AlertDescription>
           Finder has no subscription billing yet, so commission is credited by hand here. Each affiliate&apos;s tier
@@ -78,7 +78,7 @@ export default function AffiliatesPage() {
       ) : affiliates && affiliates.length > 0 ? (
         <div className="space-y-3">
           {affiliates.map((a) => (
-            <Card key={a.id} className="bg-card border-white/[0.06]">
+            <Card key={a.id} className="bg-card border-line">
               <CardContent className="pt-6 space-y-4">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
@@ -96,7 +96,7 @@ export default function AffiliatesPage() {
                     </p>
                   </div>
                   <div className="flex gap-1.5">
-                    <Button size="sm" variant="outline" className="border-white/[0.08]" onClick={() => promptCredit(a)}>
+                    <Button size="sm" variant="outline" className="border-line" onClick={() => promptCredit(a)}>
                       <PlusCircle className="h-4 w-4 mr-1.5" /> Credit
                     </Button>
                     {a.status === "ACTIVE" ? (
@@ -122,7 +122,7 @@ export default function AffiliatesPage() {
                     ["Balance", naira.format(a.balance)],
                     ["Earned", naira.format(a.totalEarned)],
                   ].map(([label, value]) => (
-                    <div key={label} className="rounded-lg bg-white/[0.02] border border-white/[0.04] py-2">
+                    <div key={label} className="rounded-lg bg-wash-1 border border-line-soft py-2">
                       <div className="text-[10px] uppercase tracking-wide text-slate-600">{label}</div>
                       <div className="text-sm font-semibold text-slate-200 tabular-nums">{value}</div>
                     </div>
@@ -155,7 +155,7 @@ export default function AffiliatesPage() {
           ))}
         </div>
       ) : (
-        <Card className="bg-card border-white/[0.06]">
+        <Card className="bg-card border-line">
           <CardContent className="py-16 text-center">
             <Share2 className="h-8 w-8 text-slate-700 mx-auto mb-3" />
             <p className="text-sm text-slate-500">No affiliates yet.</p>

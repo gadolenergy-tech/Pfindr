@@ -73,7 +73,7 @@ export default function PayoutsPage() {
 
   return (
     <AdminShell title="Payouts" description="What Finder owes vendors from Buy now orders">
-      <Alert className="border-white/[0.08]">
+      <Alert className="border-line">
         <Info className="h-4 w-4" />
         <AlertDescription>
           Buy now payments land in Finder&apos;s Paystack account. Send the money to the vendor by bank transfer, then
@@ -87,7 +87,7 @@ export default function PayoutsPage() {
       ) : rows && rows.length > 0 ? (
         <div className="space-y-3">
           {rows.map((r) => (
-            <Card key={`${r.vendorId}-${r.currency}`} className="bg-card border-white/[0.06]">
+            <Card key={`${r.vendorId}-${r.currency}`} className="bg-card border-line">
               <CardContent className="pt-6 flex items-center justify-between gap-4 flex-wrap">
                 <div className="min-w-0">
                   <h3 className="font-semibold text-slate-200 truncate">{r.businessName}</h3>
@@ -99,13 +99,13 @@ export default function PayoutsPage() {
                     ["Paid out", money(r.paidOut, r.currency)],
                     ["Owed", money(r.owed, r.currency)],
                   ].map(([label, v]) => (
-                    <div key={label} className="rounded-lg bg-white/[0.02] border border-white/[0.04] px-3 py-2">
+                    <div key={label} className="rounded-lg bg-wash-1 border border-line-soft px-3 py-2">
                       <div className="text-[10px] uppercase tracking-wide text-slate-600">{label}</div>
                       <div className={`text-sm font-semibold tabular-nums ${label === "Owed" && r.owed < 0 ? "text-rose-400" : "text-slate-200"}`}>{v}</div>
                     </div>
                   ))}
                 </div>
-                <Button size="sm" variant="outline" className="border-white/[0.08]" onClick={() => open(r)}>
+                <Button size="sm" variant="outline" className="border-line" onClick={() => open(r)}>
                   <Banknote className="h-4 w-4 mr-1.5" /> {r.owed > 0 ? "Record payout" : "View"}
                 </Button>
               </CardContent>
@@ -113,7 +113,7 @@ export default function PayoutsPage() {
           ))}
         </div>
       ) : (
-        <Card className="bg-card border-white/[0.06]">
+        <Card className="bg-card border-line">
           <CardContent className="py-16 text-center">
             <Banknote className="h-8 w-8 text-slate-700 mx-auto mb-3" />
             <p className="text-sm text-slate-500">No paid Buy now orders yet.</p>

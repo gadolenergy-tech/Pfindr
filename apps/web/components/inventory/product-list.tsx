@@ -17,10 +17,10 @@ import {
 } from "@/lib/vendor-api";
 
 const INPUT =
-  "w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/20 transition-all";
+  "w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40 focus:ring-1 focus:ring-blue-500/20 transition-all";
 const LABEL = "block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold";
 const PHOTO_BUTTON =
-  "text-[11px] text-slate-300 border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60";
+  "text-[11px] text-slate-300 border border-line-strong bg-wash-2 hover:bg-wash-4 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60";
 
 /** Photos uploaded to the bucket at once; the rest wait their turn. */
 const UPLOAD_CONCURRENCY = 3;
@@ -88,7 +88,7 @@ function ProductRow({ item }: { item: InventoryItem }) {
     toast({ title: "Upload failed", description: message, variant: "destructive" });
 
   return (
-    <div data-testid={`product-row-${item.id}`} className="bg-white/[0.02] border border-white/[0.05] rounded-xl hover:bg-white/[0.04] transition-all">
+    <div data-testid={`product-row-${item.id}`} className="bg-wash-1 border border-line-soft rounded-xl hover:bg-wash-2 transition-all">
       <div className="flex items-center gap-3 p-3.5">
         <div
           className={`w-1.5 h-10 rounded-full shrink-0 ${
@@ -97,13 +97,13 @@ function ProductRow({ item }: { item: InventoryItem }) {
         />
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
-          <img src={item.imageUrl} alt={`${item.name} photo`} className="w-11 h-11 rounded-lg object-cover border border-white/[0.06] shrink-0" />
+          <img src={item.imageUrl} alt={`${item.name} photo`} className="w-11 h-11 rounded-lg object-cover border border-line shrink-0" />
         ) : (
           <ImageUploadButton
             purpose="product"
             onUploaded={async (url) => { await setPhoto.mutateAsync(url); }}
             onError={uploadFailed}
-            className="w-11 h-11 rounded-lg border border-dashed border-white/[0.15] text-slate-500 hover:text-blue-300 hover:border-blue-500/40 flex items-center justify-center shrink-0 transition-colors"
+            className="w-11 h-11 rounded-lg border border-dashed border-line-strong text-slate-500 hover:text-blue-300 hover:border-blue-500/40 flex items-center justify-center shrink-0 transition-colors"
           >
             <Camera className="h-4 w-4" aria-label={`Add photo for ${item.name}`} />
           </ImageUploadButton>
@@ -134,9 +134,9 @@ function ProductRow({ item }: { item: InventoryItem }) {
       </div>
 
       {open && (
-        <div className="px-3.5 pb-3.5 space-y-3 border-t border-white/[0.04] pt-3">
+        <div className="px-3.5 pb-3.5 space-y-3 border-t border-line-soft pt-3">
           <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-xl bg-white/[0.03] border border-white/[0.07] overflow-hidden flex items-center justify-center shrink-0">
+            <div className="w-16 h-16 rounded-xl bg-wash-2 border border-line overflow-hidden flex items-center justify-center shrink-0">
               {item.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
                 <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -291,7 +291,7 @@ function PhotoToolbar({ totalItems, withPhotos }: { totalItems: number; withPhot
   const missing = totalItems - withPhotos;
 
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 space-y-2.5">
+    <div className="rounded-xl border border-line bg-wash-1 p-3.5 space-y-2.5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-[12px] font-semibold text-slate-200">Product photos</div>
@@ -352,7 +352,7 @@ export function ProductList() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-sm font-semibold text-white">Your Products</h3>
+        <h3 className="text-sm font-semibold text-foreground">Your Products</h3>
         <span className="text-[11px] text-slate-500">{summary?.totalItems ?? 0} items</span>
       </div>
 
@@ -364,11 +364,11 @@ export function ProductList() {
       </div>
 
       {isLoading ? (
-        [0, 1, 2, 3].map((i) => <div key={i} className="h-[68px] bg-white/[0.02] border border-white/[0.05] rounded-xl animate-pulse" />)
+        [0, 1, 2, 3].map((i) => <div key={i} className="h-[68px] bg-wash-1 border border-line-soft rounded-xl animate-pulse" />)
       ) : items && items.length > 0 ? (
         items.map((item) => <ProductRow key={item.id} item={item} />)
       ) : (
-        <div className="text-center py-10 border border-dashed border-white/[0.06] rounded-xl">
+        <div className="text-center py-10 border border-dashed border-line rounded-xl">
           <Package className="h-6 w-6 text-slate-700 mx-auto mb-2" />
           <p className="text-[12px] text-slate-500">
             {search ? "No products match that search." : "No products yet — add your first one."}

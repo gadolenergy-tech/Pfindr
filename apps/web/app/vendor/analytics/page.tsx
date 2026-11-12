@@ -9,8 +9,8 @@ import { TrendingUp, ShoppingCart, Users, Eye } from "lucide-react";
 
 type Period = "daily" | "weekly" | "monthly";
 
-const TT_STYLE = { backgroundColor: "#060d1f", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" };
-const TT_ITEM = { color: "#fff" };
+const TT_STYLE = { backgroundColor: "var(--raised)", border: "1px solid var(--line)", borderRadius: "12px", boxShadow: "0 20px 40px rgb(0 0 0 / 0.18)" };
+const TT_ITEM = { color: "hsl(var(--foreground))" };
 
 /** ₦1.2M / ₦84K / ₦950 for chart axes. */
 function nairaCompact(v: number): string {
@@ -39,18 +39,18 @@ export default function VendorAnalytics() {
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#040a15]">
+    <div className="min-h-screen flex bg-canvas">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="sticky top-14 lg:top-0 z-20 bg-canvas/95 backdrop-blur border-b border-line-soft px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-bold text-white">Analytics</h1>
+            <h1 className="text-lg font-bold text-foreground">Analytics</h1>
             <p className="text-xs text-slate-500 mt-0.5">Performance metrics and business intelligence</p>
           </div>
-          <div className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1">
+          <div className="flex items-center gap-1 bg-wash-2 border border-line rounded-xl p-1">
             {(["daily", "weekly", "monthly"] as Period[]).map((p) => (
               <button key={p} onClick={() => setPeriod(p)}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold capitalize transition-all ${period === p ? "bg-blue-600 text-white" : "text-slate-500 hover:text-white"}`}>
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold capitalize transition-all ${period === p ? "bg-blue-600 text-white" : "text-slate-500 hover:text-foreground"}`}>
                 {p}
               </button>
             ))}
@@ -61,7 +61,7 @@ export default function VendorAnalytics() {
           {/* KPI Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {kpis.map((k) => (
-              <div key={k.label} className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-4">
+              <div key={k.label} className="bg-raised border border-line rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <k.icon className={`h-3.5 w-3.5 ${k.color}`} />
                   <span className="text-[9px] uppercase tracking-widest text-slate-500 font-semibold">{k.label}</span>
@@ -76,8 +76,8 @@ export default function VendorAnalytics() {
           </div>
 
           {/* Revenue Chart */}
-          <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6">
-            <h3 className="text-sm font-semibold text-white mb-1">Revenue</h3>
+          <div className="bg-raised border border-line rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-1">Revenue</h3>
             <p className="text-[11px] text-slate-500 mb-5">Total earnings per {period === "daily" ? "day" : period === "weekly" ? "week" : "month"}</p>
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -88,7 +88,7 @@ export default function VendorAnalytics() {
                       <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--line-soft)" vertical={false} />
                   <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v: number) => nairaCompact(v)} />
                   <Tooltip contentStyle={TT_STYLE} itemStyle={TT_ITEM} formatter={(v: number) => [formatMoney(v), "Revenue"]} />
@@ -100,8 +100,8 @@ export default function VendorAnalytics() {
 
           {/* Orders + Customer Growth */}
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6">
-              <h3 className="text-sm font-semibold text-white mb-1">Orders</h3>
+            <div className="bg-raised border border-line rounded-2xl p-6">
+              <h3 className="text-sm font-semibold text-foreground mb-1">Orders</h3>
               <p className="text-[11px] text-slate-500 mb-5">Orders received per period, excluding cancellations</p>
               <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -112,7 +112,7 @@ export default function VendorAnalytics() {
                         <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.2} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--line-soft)" vertical={false} />
                     <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                     <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} allowDecimals={false} />
                     <Tooltip contentStyle={TT_STYLE} itemStyle={TT_ITEM} />
@@ -122,13 +122,13 @@ export default function VendorAnalytics() {
               </div>
             </div>
 
-            <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6">
-              <h3 className="text-sm font-semibold text-white mb-1">Customer Growth</h3>
+            <div className="bg-raised border border-line rounded-2xl p-6">
+              <h3 className="text-sm font-semibold text-foreground mb-1">Customer Growth</h3>
               <p className="text-[11px] text-slate-500 mb-5">New customers per month</p>
               <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={growth ?? []}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--line-soft)" vertical={false} />
                     <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                     <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                     <Tooltip contentStyle={TT_STYLE} itemStyle={TT_ITEM} />
@@ -140,15 +140,15 @@ export default function VendorAnalytics() {
           </div>
 
           {/* Best Selling Products */}
-          <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6">
-            <h3 className="text-sm font-semibold text-white mb-5">Best Selling Products</h3>
+          <div className="bg-raised border border-line rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Best Selling Products</h3>
             <div className="space-y-3">
               {topProducts && topProducts.length === 0 && (
                 <p className="text-[12px] text-slate-600 text-center py-6">No sales yet — best sellers appear once you record orders.</p>
               )}
               {(topProducts ?? []).map((p, i) => (
-                <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-all">
-                  <div className="w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[11px] font-bold text-slate-500 shrink-0">
+                <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-wash-1 hover:bg-wash-2 transition-all">
+                  <div className="w-7 h-7 rounded-lg bg-wash-2 border border-line flex items-center justify-center text-[11px] font-bold text-slate-500 shrink-0">
                     {i + 1}
                   </div>
                   <div className="flex-1 min-w-0">

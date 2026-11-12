@@ -43,7 +43,7 @@ function Stat({
 }) {
   return (
     <Link href={href}>
-      <Card className="bg-card border-white/[0.06] transition-colors hover:border-white/[0.15] hover:bg-white/[0.02] cursor-pointer">
+      <Card className="bg-card border-line transition-colors hover:border-line-strong hover:bg-wash-1 cursor-pointer">
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div>
@@ -53,7 +53,7 @@ function Stat({
               {loading ? (
                 <Skeleton className="h-8 w-16 mt-2" />
               ) : (
-                <p className={`text-3xl font-bold mt-1 ${accent ?? "text-white"}`}>
+                <p className={`text-3xl font-bold mt-1 ${accent ?? "text-foreground"}`}>
                   {value?.toLocaleString() ?? "—"}
                 </p>
               )}
@@ -105,12 +105,12 @@ export default function OverviewPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="bg-card border-white/[0.06]">
+        <Card className="bg-card border-line">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">Queues</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center justify-between rounded-xl border border-white/[0.06] px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-line px-4 py-3">
               <div className="flex items-center gap-3">
                 <ShieldAlert className="h-4 w-4 text-amber-400" />
                 <span className="text-sm text-slate-300">Vendors to verify</span>
@@ -124,7 +124,7 @@ export default function OverviewPage() {
                 </Button>
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-white/[0.06] px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-line px-4 py-3">
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-blue-400" />
                 <span className="text-sm text-slate-300">Unhandled messages</span>
@@ -138,7 +138,7 @@ export default function OverviewPage() {
                 </Button>
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-white/[0.06] px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-line px-4 py-3">
               <div className="flex items-center gap-3">
                 <Handshake className="h-4 w-4 text-emerald-400" />
                 <span className="text-sm text-slate-300">New partner inquiries</span>
@@ -155,7 +155,7 @@ export default function OverviewPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-white/[0.06]">
+        <Card className="bg-card border-line">
           <CardHeader>
             <CardTitle className="text-base">Deepest stock on the network</CardTitle>
           </CardHeader>

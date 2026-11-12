@@ -200,7 +200,7 @@ export default function Home() {
             
             <motion.h1 
               variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-              className="text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-[-0.02em] text-white leading-[1.1]"
+              className="text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-[-0.02em] text-foreground leading-[1.1]"
             >
               Find What's Available.<br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-200">Instantly.</span>
@@ -226,7 +226,7 @@ export default function Home() {
                 Start Searching <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Link href="/how-it-works">
-                <Button data-testid="btn-hero-demo" size="lg" variant="outline" className="h-14 px-8 text-lg font-medium border-white/15 hover:bg-white/5 backdrop-blur-sm w-full sm:w-auto">
+                <Button data-testid="btn-hero-demo" size="lg" variant="outline" className="h-14 px-8 text-lg font-medium border-line-strong hover:bg-wash-3 backdrop-blur-sm w-full sm:w-auto">
                   Watch Demo
                 </Button>
               </Link>
@@ -237,7 +237,7 @@ export default function Home() {
               className="pt-6 text-sm text-slate-500"
             >
               <span className="inline-flex items-center">
-                50K+ Vendors <span className="mx-3 text-white/20">/</span> 12M+ Products <span className="mx-3 text-white/20">/</span> &lt;2s Response
+                50K+ Vendors <span className="mx-3 text-foreground/20">/</span> 12M+ Products <span className="mx-3 text-foreground/20">/</span> &lt;2s Response
               </span>
             </motion.div>
           </motion.div>
@@ -255,16 +255,16 @@ export default function Home() {
             <div className="absolute -inset-px bg-gradient-to-br from-blue-500/30 via-cyan-500/10 to-transparent rounded-[2rem] blur-xl" />
             <div className="absolute -inset-2 bg-blue-500/[0.05] rounded-[2.5rem] blur-2xl" />
 
-            <div className="relative bg-[#060d1f]/90 backdrop-blur-2xl border border-white/[0.08] rounded-[1.75rem] overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)] max-h-[500px] overflow-y-auto">
+            <div className="relative bg-raised/90 backdrop-blur-2xl border border-line rounded-[1.75rem] overflow-hidden shadow-[var(--modal-shadow)] max-h-[500px] overflow-y-auto">
               
               {/* Header / Window Chrome */}
-              <div className="px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.02] flex justify-between items-center relative">
+              <div className="px-5 py-3.5 border-b border-line bg-wash-1 flex justify-between items-center relative">
                 <div className="flex gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
                 </div>
-                <div className="absolute left-1/2 -translate-x-1/2 bg-white/[0.05] rounded-md h-6 flex items-center px-3 gap-2">
+                <div className="absolute left-1/2 -translate-x-1/2 bg-wash-3 rounded-md h-6 flex items-center px-3 gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-[11px] text-slate-500 font-mono">finder.ai / discovery</span>
                 </div>
@@ -275,8 +275,8 @@ export default function Home() {
               </div>
 
               {/* Search Bar Row */}
-              <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3">
-                <div className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 flex items-center gap-2">
+              <div className="px-5 py-4 border-b border-line flex items-center gap-3">
+                <div className="flex-1 bg-wash-2 border border-line rounded-xl px-4 py-2.5 flex items-center gap-2">
                   <Search className="h-4 w-4 text-slate-500" />
                   <div className="text-sm font-mono text-slate-300 flex items-center">
                     amoxicillin 500mg
@@ -300,7 +300,7 @@ export default function Home() {
                   </span>
                   <span className="font-mono text-blue-300 text-[11px]">{heroProgress}%</span>
                 </div>
-                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                <div className="h-1 w-full bg-wash-3 rounded-full overflow-hidden">
                   <motion.div 
                     className="h-full bg-gradient-to-r from-blue-600 to-cyan-400 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
                     style={{ width: `${heroProgress}%` }}
@@ -326,7 +326,7 @@ export default function Home() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: vendor.delay, duration: 0.4 }}
-                      className="bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/10 rounded-xl p-3.5 flex justify-between items-center transition-colors"
+                      className="bg-wash-2 hover:bg-wash-3 border border-line hover:border-line-strong rounded-xl p-3.5 flex justify-between items-center transition-colors"
                     >
                       <div className="flex gap-3 items-center">
                         <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
@@ -343,7 +343,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-semibold text-white">{vendor.price}</div>
+                        <div className="text-sm font-semibold text-foreground">{vendor.price}</div>
                         <div className="text-[10px] text-green-400 mt-0.5">In Stock</div>
                       </div>
                     </motion.div>
@@ -362,7 +362,7 @@ export default function Home() {
       </section>
 
       {/* SECTION 2 — ANIMATED METRICS */}
-      <section className="py-24 relative bg-[#040a15]">
+      <section className="py-24 relative bg-canvas">
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-[11px] uppercase tracking-[0.2em] text-slate-500 text-center mb-12">NETWORK INTELLIGENCE AT SCALE</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
@@ -380,19 +380,19 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white/[0.02] border border-white/[0.05] rounded-2xl px-6 py-7 text-center relative overflow-hidden group hover:bg-white/[0.03] hover:border-white/[0.08] transition-all duration-300"
+                className="bg-wash-1 border border-line-soft rounded-2xl px-6 py-7 text-center relative overflow-hidden group hover:bg-wash-2 hover:border-line transition-all duration-300"
               >
                 <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-blue-500/50 animate-pulse" />
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/25 to-transparent" />
                 <div className="flex items-baseline justify-center gap-0.5 mb-1">
-                  <span className="text-[2rem] font-bold text-white leading-none tabular-nums tracking-tight" style={{ fontVariantNumeric: "tabular-nums" }}>
+                  <span className="text-[2rem] font-bold text-foreground leading-none tabular-nums tracking-tight" style={{ fontVariantNumeric: "tabular-nums" }}>
                     {stat.animated ? <AnimatedCounter target={stat.num as number} suffix="" /> : stat.text}
                   </span>
                   {stat.animated && stat.suffix && (
-                    <span className="text-xl font-bold text-white/70 leading-none">{stat.suffix}</span>
+                    <span className="text-xl font-bold text-foreground/70 leading-none">{stat.suffix}</span>
                   )}
                 </div>
-                <div className="h-px w-6 bg-white/[0.08] mx-auto my-3" />
+                <div className="h-px w-6 bg-wash-4 mx-auto my-3" />
                 <div className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-medium">{stat.label}</div>
               </motion.div>
             ))}
@@ -403,10 +403,10 @@ export default function Home() {
       <LiveTicker />
 
       {/* SECTION 3 — HOW FINDER WORKS */}
-      <section className="py-32 relative bg-[#040a15] overflow-hidden border-t border-white/5">
+      <section className="py-32 relative bg-canvas overflow-hidden border-t border-line-soft">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Intelligence in Motion</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">Intelligence in Motion</h2>
             <p className="text-xl text-slate-400 font-light">From intent to fulfillment — our AI agents route every search through a live vendor graph in real time.</p>
           </div>
 
@@ -427,11 +427,11 @@ export default function Home() {
                     className={`relative flex gap-6 py-4 rounded-xl transition-all duration-500 cursor-pointer ${isActive ? 'border-l-2 border-l-blue-500 pl-4 bg-transparent' : 'border-l-2 border-l-transparent pl-4'}`} 
                     onClick={() => setActiveStep(i)}
                   >
-                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-500 ${isActive ? 'bg-primary border-primary text-white shadow-[0_0_20px_rgba(59,130,246,0.6)] scale-110' : 'bg-background border-white/20 text-slate-500'}`}>
+                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-500 ${isActive ? 'bg-primary border-primary text-white shadow-[0_0_20px_rgba(59,130,246,0.6)] scale-110' : 'bg-background border-line-strong text-slate-500'}`}>
                       <step.icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className={`text-xl font-bold transition-colors ${isActive ? 'text-white' : 'text-slate-400'}`}>{step.title}</h4>
+                      <h4 className={`text-xl font-bold transition-colors ${isActive ? 'text-foreground' : 'text-slate-400'}`}>{step.title}</h4>
                       <p className={`mt-1 transition-colors ${isActive ? 'text-slate-300' : 'text-slate-600'}`}>{step.desc}</p>
                     </div>
                   </div>
@@ -442,8 +442,8 @@ export default function Home() {
             {/* Visualization Panel */}
             <div className="relative aspect-square md:aspect-[4/3] w-full max-w-lg mx-auto">
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-[2.5rem] blur-3xl opacity-30" />
-              <div className="absolute inset-0 bg-[#040a15]/90 backdrop-blur-2xl border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center p-8">
-                <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+              <div className="absolute inset-0 bg-canvas/90 backdrop-blur-2xl border border-line rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center p-8">
+                <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
                 
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -456,16 +456,16 @@ export default function Home() {
                   >
                     {activeStep === 0 && (
                       <div className="w-full max-w-sm space-y-2">
-                        <div className="bg-white/5 border border-white/10 rounded-xl h-14 flex items-center px-4 shadow-inner">
+                        <div className="bg-wash-3 border border-line-strong rounded-xl h-14 flex items-center px-4 shadow-inner">
                           <Search className="text-slate-400 w-5 h-5 mr-3" />
                           <div className="text-slate-200 text-sm flex items-center">
                             find construction equipment
                             <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ duration: 1, repeat: Infinity }} className="ml-1 inline-block w-1.5 h-4 bg-blue-500" />
                           </div>
                         </div>
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white/5 border border-white/10 rounded-lg p-2 text-left space-y-1">
-                          <div className="px-3 py-2 hover:bg-white/5 rounded cursor-pointer text-sm text-slate-300">Heavy machinery rentals</div>
-                          <div className="px-3 py-2 hover:bg-white/5 rounded cursor-pointer text-sm text-slate-300">Power tools wholesale</div>
+                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-wash-3 border border-line-strong rounded-lg p-2 text-left space-y-1">
+                          <div className="px-3 py-2 hover:bg-wash-3 rounded cursor-pointer text-sm text-slate-300">Heavy machinery rentals</div>
+                          <div className="px-3 py-2 hover:bg-wash-3 rounded cursor-pointer text-sm text-slate-300">Power tools wholesale</div>
                         </motion.div>
                       </div>
                     )}
@@ -486,7 +486,7 @@ export default function Home() {
                             initial={{ x: 50, opacity: 0 }} 
                             animate={{ x: 0, opacity: 1 }} 
                             transition={{ delay: i * 0.15 }}
-                            className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4"
+                            className="bg-wash-3 border border-line-strong rounded-xl p-4 flex items-center gap-4"
                           >
                             <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                               <MapPin className="w-4 h-4 text-blue-400" />
@@ -500,14 +500,14 @@ export default function Home() {
                       </div>
                     )}
                     {activeStep === 3 && (
-                      <div className="w-full bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                        <div className="bg-black/40 px-4 py-3 border-b border-white/5 flex justify-between text-xs font-semibold text-slate-400">
+                      <div className="w-full bg-wash-3 border border-line-strong rounded-xl overflow-hidden">
+                        <div className="bg-wash-3 px-4 py-3 border-b border-line-soft flex justify-between text-xs font-semibold text-slate-400">
                           <span>ITEM</span>
                           <span>STOCK</span>
                         </div>
                         <div className="p-4 space-y-4">
                           {[1,2,3].map((i) => (
-                            <div key={i} className="flex justify-between items-center border-b border-white/5 pb-3 last:border-0 last:pb-0">
+                            <div key={i} className="flex justify-between items-center border-b border-line-soft pb-3 last:border-0 last:pb-0">
                               <div className="w-1/3 h-2.5 bg-slate-300 rounded" />
                               <div className="text-green-400 font-mono text-sm font-bold">1,24{i}</div>
                             </div>
@@ -520,7 +520,7 @@ export default function Home() {
                         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto border border-green-500/30 shadow-[0_0_40px_rgba(34,197,94,0.2)]">
                           <CheckCircle2 className="w-10 h-10 text-green-400" />
                         </motion.div>
-                        <div className="text-xl font-bold text-white">Connected</div>
+                        <div className="text-xl font-bold text-foreground">Connected</div>
                         <Button className="w-full h-12 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-lg pointer-events-none">
                           Send Message
                         </Button>
@@ -535,11 +535,11 @@ export default function Home() {
       </section>
 
       {/* SECTION 4 — CATEGORIES */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <section className="py-24 relative bg-[#040a15]">
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-wash-4 to-transparent" />
+      <section className="py-24 relative bg-canvas">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Built for Every Sector</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Built for Every Sector</h2>
             <p className="text-xl text-slate-400 font-light">One platform. Every critical industry. Real-time inventory intelligence that never sleeps.</p>
           </div>
 
@@ -555,10 +555,10 @@ export default function Home() {
                 data-testid={`category-${cat.label.toLowerCase().replace(/s|&/g, "-")}`}
               >
                 <div
-                  className="h-full bg-white/[0.02] border border-white/[0.05] rounded-3xl overflow-hidden transition-all duration-300 relative"
+                  className="h-full bg-wash-1 border border-line-soft rounded-3xl overflow-hidden transition-all duration-300 relative"
                   style={hoveredCat === i ? {
                     borderColor: `${cat.glow.replace("0.3", "0.4")}`,
-                    backgroundColor: "rgba(255,255,255,0.03)",
+                    backgroundColor: "var(--wash-2)",
                     boxShadow: `0 0 40px -10px ${cat.glow}`
                   } : {}}
                 >
@@ -570,7 +570,7 @@ export default function Home() {
                       <cat.icon className={`h-6 w-6 ${cat.color}`} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-2">{cat.label}</h3>
+                      <h3 className="text-xl font-bold text-foreground mb-2">{cat.label}</h3>
                       <p className="text-slate-400 text-sm">{cat.desc}</p>
                     </div>
                     <div className={`absolute bottom-10 right-10 transition-all duration-300 ${hoveredCat === i ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-1"}`}>
@@ -585,13 +585,13 @@ export default function Home() {
       </section>
 
       {/* SECTION 5 — VENDOR NETWORK SHOWCASE */}
-      <section className="py-24 relative overflow-hidden bg-[#040a15] border-t border-white/5">
+      <section className="py-24 relative overflow-hidden bg-canvas border-t border-line-soft">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-white">Join the Vendor Network</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground">Join the Vendor Network</h2>
               <p className="text-xl text-slate-400 font-light">Turn searches into sales. Connect your inventory to millions of buyers searching in real-time.</p>
               
               <ul className="space-y-4">
@@ -611,7 +611,7 @@ export default function Home() {
 
               <div className="pt-4">
                 <Link href={vendorCtaHref}>
-                  <Button size="lg" className="bg-white text-black hover:bg-slate-200 font-semibold px-8 h-12">
+                  <Button size="lg" className="bg-foreground text-background hover:bg-foreground/90 font-semibold px-8 h-12">
                     {user?.role === "VENDOR" ? "Go to Dashboard" : "Become a Vendor"} <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -619,21 +619,21 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="bg-[#06101f] border border-white/[0.07] rounded-2xl p-6 shadow-2xl relative">
+              <div className="bg-raised border border-line rounded-2xl p-6 shadow-2xl relative">
                 <div className="absolute top-4 right-4 text-[10px] bg-green-500/10 border border-green-500/20 text-green-400 px-2 py-1 rounded-md">
                   ↑ 18% this week
                 </div>
                 
-                <h3 className="text-lg font-semibold text-white mb-6">Performance Dashboard</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-6">Performance Dashboard</h3>
                 
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.04]">
+                  <div className="bg-wash-2 rounded-lg p-3 border border-line-soft">
                     <div className="text-xs text-slate-400 mb-1">Total Views</div>
-                    <div className="text-2xl font-bold text-white">12.4k</div>
+                    <div className="text-2xl font-bold text-foreground">12.4k</div>
                   </div>
-                  <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.04]">
+                  <div className="bg-wash-2 rounded-lg p-3 border border-line-soft">
                     <div className="text-xs text-slate-400 mb-1">New Orders</div>
-                    <div className="text-2xl font-bold text-white">84</div>
+                    <div className="text-2xl font-bold text-foreground">84</div>
                   </div>
                 </div>
 
@@ -652,17 +652,17 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-white">Recent Activity</h4>
+                  <h4 className="text-sm font-medium text-foreground">Recent Activity</h4>
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center text-sm p-2 bg-white/[0.02] rounded pl-2 border-l-2 border-l-green-400">
+                    <div className="flex justify-between items-center text-sm p-2 bg-wash-1 rounded pl-2 border-l-2 border-l-green-400">
                       <span className="text-slate-300">New Order #892</span>
                       <span className="text-slate-500">2m ago</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm p-2 bg-white/[0.02] rounded pl-2 border-l-2 border-l-blue-400">
+                    <div className="flex justify-between items-center text-sm p-2 bg-wash-1 rounded pl-2 border-l-2 border-l-blue-400">
                       <span className="text-slate-300">Inventory Synced</span>
                       <span className="text-slate-500">15m ago</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm p-2 bg-white/[0.02] rounded pl-2 border-l-2 border-l-amber-400">
+                    <div className="flex justify-between items-center text-sm p-2 bg-wash-1 rounded pl-2 border-l-2 border-l-amber-400">
                       <span className="text-slate-300">Buyer Inquiry</span>
                       <span className="text-slate-500">1h ago</span>
                     </div>
@@ -675,23 +675,23 @@ export default function Home() {
       </section>
 
       {/* SECTION 6 — SOCIAL PROOF */}
-      <section className="py-24 bg-[#040a15] border-t border-white/5 relative overflow-hidden">
+      <section className="py-24 bg-canvas border-t border-line-soft relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4 text-white">Trusted by Industry Leaders</h2>
+            <h2 className="text-3xl font-bold mb-4 text-foreground">Trusted by Industry Leaders</h2>
             <p className="text-slate-500 text-lg font-light mt-3">Businesses across every sector rely on Finder to source smarter.</p>
           </div>
           
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale mb-16">
             {/* Logos mockup */}
-            <div className="text-xl font-bold text-white flex items-center gap-2"><div className="w-6 h-6 bg-white rounded-sm" /> ACME Corp</div>
-            <div className="text-xl font-bold text-white flex items-center gap-2"><div className="w-6 h-6 bg-white rounded-full" /> GlobalSys</div>
-            <div className="text-xl font-bold text-white flex items-center gap-2"><div className="w-6 h-6 bg-white rotate-45" /> Nexus</div>
-            <div className="text-xl font-bold text-white flex items-center gap-2"><div className="w-6 h-6 bg-white rounded-tr-xl" /> Prime Logistics</div>
+            <div className="text-xl font-bold text-foreground flex items-center gap-2"><div className="w-6 h-6 bg-foreground rounded-sm" /> ACME Corp</div>
+            <div className="text-xl font-bold text-foreground flex items-center gap-2"><div className="w-6 h-6 bg-foreground rounded-full" /> GlobalSys</div>
+            <div className="text-xl font-bold text-foreground flex items-center gap-2"><div className="w-6 h-6 bg-foreground rotate-45" /> Nexus</div>
+            <div className="text-xl font-bold text-foreground flex items-center gap-2"><div className="w-6 h-6 bg-foreground rounded-tr-xl" /> Prime Logistics</div>
           </div>
 
           {/* Marquee */}
-          <div className="overflow-hidden w-full flex mb-20 border-y border-white/[0.05] py-4 bg-white/[0.01]">
+          <div className="overflow-hidden w-full flex mb-20 border-y border-line-soft py-4 bg-wash-1">
             <div className="flex animate-marquee whitespace-nowrap" style={{ animationDuration: '30s' }}>
               {[...Array(2)].map((_, i) => (
                 <div key={i} className="flex items-center">
@@ -712,7 +712,7 @@ export default function Home() {
               { text: "Our sales increased 40% after joining the network. Buyers find us instantly now.", author: "Michael Chen", role: "Owner, Chen Industrial Supply" },
               { text: "The API integration was flawless. Real-time inventory syncing just works.", author: "Elena Rodriguez", role: "CTO, QuickMeds" }
             ].map((t, i) => (
-              <div key={i} className="bg-white/[0.02] border border-white/5 border-l-2 border-l-blue-500/30 rounded-2xl p-8">
+              <div key={i} className="bg-wash-1 border border-line-soft border-l-2 border-l-blue-500/30 rounded-2xl p-8">
                 <div className="flex gap-1 mb-4">
                   {[1,2,3,4,5].map(s => <Star key={s} className="w-4 h-4 text-blue-400 fill-blue-400" />)}
                 </div>
@@ -720,7 +720,7 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-slate-800 ring-2 ring-blue-500/20" />
                   <div>
-                    <div className="text-sm font-semibold text-white">{t.author}</div>
+                    <div className="text-sm font-semibold text-foreground">{t.author}</div>
                     <div className="text-xs text-slate-500">{t.role}</div>
                   </div>
                 </div>
@@ -731,7 +731,7 @@ export default function Home() {
       </section>
 
       {/* TRUST SIGNALS BAR */}
-      <section className="py-16 bg-[#030810] border-t border-white/[0.04] relative overflow-hidden">
+      <section className="py-16 bg-sunken border-t border-line-soft relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/10 via-transparent to-blue-950/10 pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
           <p className="text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 mb-10 font-medium">Enterprise-Grade Infrastructure</p>
@@ -744,7 +744,7 @@ export default function Home() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="text-center p-5 rounded-2xl border border-white/[0.04] bg-white/[0.015] hover:bg-white/[0.03] transition-all duration-300 group"
+                className="text-center p-5 rounded-2xl border border-line-soft bg-wash-1 hover:bg-wash-2 transition-all duration-300 group"
               >
                 <div className={`text-2xl font-bold mb-1 tabular-nums tracking-tight ${item.color}`} style={{ fontVariantNumeric: "tabular-nums" }}>{item.value}</div>
                 <div className="text-[12px] font-semibold text-slate-300 mb-0.5">{item.label}</div>
@@ -766,7 +766,7 @@ export default function Home() {
       {/* CTA SECTION */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-br from-blue-950/30 via-background to-background">
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-[0_0_40px_rgba(59,130,246,0.12)]">Ready to Join the Network?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground drop-shadow-[0_0_40px_rgba(59,130,246,0.12)]">Ready to Join the Network?</h2>
           <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto font-light">Whether you are looking to source products or sell inventory, Finder connects you instantly.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
@@ -778,7 +778,7 @@ export default function Home() {
                 Start Searching Free
               </Button>
             <Link href={vendorCtaHref}>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-white/20 hover:bg-white/10 w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-line-strong hover:bg-wash-4 w-full sm:w-auto">
                 {user?.role === "VENDOR" ? "Go to Dashboard" : "Become a Vendor"}
               </Button>
             </Link>

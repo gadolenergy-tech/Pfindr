@@ -192,7 +192,7 @@ function LoginForm() {
       {/* Right side graphic */}
       <div className="hidden lg:flex w-1/2 bg-card items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--line-soft)_1px,transparent_1px),linear-gradient(to_bottom,var(--line-soft)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
         <div className="relative z-10 max-w-md p-8 bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl">
           <div className="flex items-center gap-4 mb-6">
@@ -200,7 +200,7 @@ function LoginForm() {
               <Search className="h-6 w-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg text-white">Network Intelligence</h3>
+              <h3 className="font-semibold text-lg text-foreground">Network Intelligence</h3>
               <p className="text-muted-foreground text-sm">Real-time node discovery</p>
             </div>
           </div>

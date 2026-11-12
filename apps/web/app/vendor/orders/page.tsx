@@ -130,12 +130,12 @@ function OrdersView() {
   });
 
   return (
-    <div className="min-h-screen flex bg-[#040a15]">
+    <div className="min-h-screen flex bg-canvas">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="sticky top-14 lg:top-0 z-20 bg-canvas/95 backdrop-blur border-b border-line-soft px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-bold text-white">Orders</h1>
+            <h1 className="text-lg font-bold text-foreground">Orders</h1>
             <p className="text-xs text-slate-500 mt-0.5">Manage and track all procurement orders</p>
           </div>
           <div className="flex items-center gap-2">
@@ -144,7 +144,7 @@ function OrdersView() {
               variant="ghost"
               disabled={!orders?.length}
               onClick={() => orders && exportOrdersCsv(orders)}
-              className="text-slate-400 hover:text-white gap-2"
+              className="text-slate-400 hover:text-foreground gap-2"
             >
               <Download className="h-4 w-4" /> Export
             </Button>
@@ -160,7 +160,7 @@ function OrdersView() {
             {TABS.map((t) => {
               const cfg = STATUS_CONFIG[t];
               return (
-                <div key={t} className={`p-4 rounded-2xl border cursor-pointer transition-all ${tab === t ? `${cfg.bg} ${cfg.border}` : "bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]"}`}
+                <div key={t} className={`p-4 rounded-2xl border cursor-pointer transition-all ${tab === t ? `${cfg.bg} ${cfg.border}` : "bg-wash-1 border-line hover:bg-wash-2"}`}
                   onClick={() => setTab(tab === t ? "All" : t)}>
                   <div className="flex items-center gap-2 mb-1">
                     <cfg.icon className={`h-3.5 w-3.5 ${cfg.color}`} />
@@ -177,12 +177,12 @@ function OrdersView() {
             <div className="relative flex-1 max-w-sm min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
               <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search orders, buyers, products…"
-                className="pl-9 bg-white/[0.03] border-white/[0.07] text-slate-200 placeholder:text-slate-600 h-9" />
+                className="pl-9 bg-wash-2 border-line text-slate-200 placeholder:text-slate-600 h-9" />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {(["All", ...TABS] as const).map((t) => (
                 <button key={t} onClick={() => setTab(t)}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${tab === t ? "bg-blue-600 text-white" : "bg-white/[0.03] border border-white/[0.06] text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}>
+                  className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${tab === t ? "bg-blue-600 text-white" : "bg-wash-2 border border-line text-slate-400 hover:text-foreground hover:bg-wash-3"}`}>
                   {t}
                 </button>
               ))}
@@ -198,7 +198,7 @@ function OrdersView() {
           <div className="space-y-2">
             {isLoading &&
               [0, 1, 2].map((i) => (
-                <div key={i} className="h-[72px] bg-white/[0.02] border border-white/[0.06] rounded-2xl animate-pulse" />
+                <div key={i} className="h-[72px] bg-wash-1 border border-line rounded-2xl animate-pulse" />
               ))}
             {!isLoading && filtered.length === 0 && (
               <div className="text-center py-12 space-y-3">
@@ -206,7 +206,7 @@ function OrdersView() {
                   {search || tab !== "All" ? "No orders match this filter" : "No orders yet"}
                 </p>
                 {!search && tab === "All" && (
-                  <Button size="sm" variant="outline" onClick={() => setRecording(true)} className="border-white/[0.08] text-slate-300">
+                  <Button size="sm" variant="outline" onClick={() => setRecording(true)} className="border-line text-slate-300">
                     <Plus className="h-4 w-4 mr-1" /> Record your first order
                   </Button>
                 )}
@@ -218,15 +218,15 @@ function OrdersView() {
               const isOpen = expanded === order.id;
               const busy = transition.isPending && transition.variables?.id === order.id;
               return (
-                <div key={order.id} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
-                  <button className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.03] transition-all text-left"
+                <div key={order.id} className="bg-wash-1 border border-line rounded-2xl overflow-hidden">
+                  <button className="w-full flex items-center gap-4 px-5 py-4 hover:bg-wash-2 transition-all text-left"
                     onClick={() => setExpanded(isOpen ? null : order.id)}>
                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${cfg.bg} border ${cfg.border}`}>
                       <cfg.icon className={`h-3.5 w-3.5 ${cfg.color}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-semibold text-white">{order.orderNumber}</span>
+                        <span className="text-sm font-semibold text-foreground">{order.orderNumber}</span>
                         <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cfg.bg} ${cfg.border} ${cfg.color}`}>
                           {order.status === "REFUNDED" ? "Refunded" : group}
                         </span>
@@ -241,13 +241,13 @@ function OrdersView() {
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-sm font-bold text-white tabular-nums">{formatMoney(order.total, order.currency)}</div>
+                      <div className="text-sm font-bold text-foreground tabular-nums">{formatMoney(order.total, order.currency)}</div>
                       <div className="text-[10px] text-slate-600">{formatDate(order.placedAt)}</div>
                     </div>
                     <ChevronRight className={`h-4 w-4 text-slate-600 shrink-0 transition-transform ${isOpen ? "rotate-90" : ""}`} />
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 pt-1 border-t border-white/[0.05]">
+                    <div className="px-5 pb-5 pt-1 border-t border-line-soft">
                       <div className="grid sm:grid-cols-3 gap-4 mt-3">
                         {[
                           { label: "Buyer", value: order.customer?.fullName ?? "—" },
@@ -264,13 +264,13 @@ function OrdersView() {
                         ))}
                       </div>
 
-                      <div className="mt-4 border border-white/[0.05] rounded-xl divide-y divide-white/[0.04]">
+                      <div className="mt-4 border border-line-soft rounded-xl divide-y divide-line-soft">
                         {order.items.map((item) => (
                           <div key={item.id} className="flex items-center justify-between px-4 py-2.5 text-[12px]">
                             <span className="text-slate-300 flex items-center gap-2.5">
                               {item.imageUrl && (
                                 // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
-                                <img src={item.imageUrl} alt="" className="w-8 h-8 rounded-md object-cover border border-white/[0.06]" />
+                                <img src={item.imageUrl} alt="" className="w-8 h-8 rounded-md object-cover border border-line" />
                               )}
                               <span>
                                 {item.name}
@@ -280,13 +280,13 @@ function OrdersView() {
                             </span>
                             <span className="text-slate-400 tabular-nums">
                               {item.quantity.toLocaleString()} × {formatMoney(item.unitPrice, order.currency)} ={" "}
-                              <span className="text-white font-semibold">{formatMoney(item.lineTotal, order.currency)}</span>
+                              <span className="text-foreground font-semibold">{formatMoney(item.lineTotal, order.currency)}</span>
                             </span>
                           </div>
                         ))}
                       </div>
                       {order.source === "CHECKOUT" && (
-                        <div className="mt-3 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-[11px] text-slate-400 space-y-1">
+                        <div className="mt-3 rounded-lg border border-line bg-wash-1 px-3 py-2.5 text-[11px] text-slate-400 space-y-1">
                           <div>
                             <span className="text-slate-500">Handover: </span>
                             {order.fulfilment === "DELIVERY" ? `Delivery to ${order.deliveryAddress ?? "—"}` : "Buyer picks up from you"}
@@ -322,7 +322,7 @@ function OrdersView() {
                                 transition.mutate({ id: order.id, status: "REFUNDED" });
                               }
                             }}
-                            className="text-slate-400 hover:text-white text-[11px] h-8">Refund</Button>
+                            className="text-slate-400 hover:text-foreground text-[11px] h-8">Refund</Button>
                         )}
                         {busy && <Loader2 className="h-4 w-4 animate-spin text-slate-500" />}
                       </div>
@@ -342,7 +342,7 @@ function OrdersView() {
 
 export default function VendorOrders() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#040a15]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-canvas" />}>
       <OrdersView />
     </Suspense>
   );

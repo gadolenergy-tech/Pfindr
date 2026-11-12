@@ -98,10 +98,10 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
   return (
     <>
       {/* Conversation List */}
-      <div className={`${showThread ? "hidden md:flex" : "flex"} w-full md:w-72 border-r border-white/[0.05] flex-col bg-[#04091a] shrink-0`}>
-        <div className="p-4 border-b border-white/[0.05]">
+      <div className={`${showThread ? "hidden md:flex" : "flex"} w-full md:w-72 border-r border-line-soft flex-col bg-rail shrink-0`}>
+        <div className="p-4 border-b border-line-soft">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-white">Messages</h2>
+            <h2 className="text-sm font-bold text-foreground">Messages</h2>
             {totalUnread > 0 && (
               <span className="text-[9px] font-bold bg-blue-500 text-white rounded-full min-w-5 h-5 px-1 flex items-center justify-center">{totalUnread}</span>
             )}
@@ -109,7 +109,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
             <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search…"
-              className="pl-8 h-8 bg-white/[0.03] border-white/[0.06] text-slate-200 placeholder:text-slate-600 text-[12px]" />
+              className="pl-8 h-8 bg-wash-2 border-line text-slate-200 placeholder:text-slate-600 text-[12px]" />
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -125,15 +125,15 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
           )}
           {filtered.map((c) => (
             <button key={c.id} onClick={() => { setSelected(c.id); setShowThread(true); }}
-              className={`w-full flex items-start gap-3 px-4 py-3.5 border-b border-white/[0.03] text-left transition-all ${selected === c.id ? "bg-blue-500/[0.08]" : "hover:bg-white/[0.03]"}`}>
+              className={`w-full flex items-start gap-3 px-4 py-3.5 border-b border-line-soft text-left transition-all ${selected === c.id ? "bg-blue-500/[0.08]" : "hover:bg-wash-2"}`}>
               <div className="shrink-0">
-                <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/[0.08] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-slate-800 border border-line flex items-center justify-center">
                   <span className="text-sm font-bold text-slate-400">{c.counterpart.name[0]?.toUpperCase()}</span>
                 </div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
-                  <span className={`text-[12px] font-semibold truncate ${selected === c.id ? "text-white" : "text-slate-300"}`}>{c.counterpart.name}</span>
+                  <span className={`text-[12px] font-semibold truncate ${selected === c.id ? "text-foreground" : "text-slate-300"}`}>{c.counterpart.name}</span>
                   <span className="text-[9px] text-slate-600 shrink-0 ml-2">{timeAgo(c.lastMessageAt)}</span>
                 </div>
                 <div className="text-[10px] text-slate-400 truncate">{c.subject}</div>
@@ -161,16 +161,16 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
         ) : (
           <>
             {/* Chat Header */}
-            <div className="h-16 flex items-center gap-3 px-3 md:px-6 border-b border-white/[0.05] bg-[#040a15]/90 backdrop-blur">
+            <div className="h-16 flex items-center gap-3 px-3 md:px-6 border-b border-line-soft bg-canvas/90 backdrop-blur">
               <button onClick={() => setShowThread(false)} aria-label="Back to conversations"
-                className="md:hidden p-2 -ml-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04]">
+                className="md:hidden p-2 -ml-1 rounded-lg text-slate-400 hover:text-foreground hover:bg-wash-2">
                 <ArrowLeft className="h-4 w-4" />
               </button>
-              <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/[0.08] flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-full bg-slate-800 border border-line flex items-center justify-center shrink-0">
                 <span className="text-sm font-bold text-slate-400">{conversation.counterpart.name[0]?.toUpperCase()}</span>
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold text-white truncate">{conversation.counterpart.name}</div>
+                <div className="text-sm font-semibold text-foreground truncate">{conversation.counterpart.name}</div>
                 <div className="text-[10px] text-slate-500 truncate">
                   {conversation.subject}
                   {conversation.counterpart.email && ` · ${conversation.counterpart.email}`}
@@ -179,7 +179,7 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
               <button
                 onClick={() => archive.mutate(conversation.id)}
                 disabled={archive.isPending}
-                className="p-2 rounded-lg text-slate-600 hover:text-slate-300 hover:bg-white/[0.04]"
+                className="p-2 rounded-lg text-slate-600 hover:text-slate-300 hover:bg-wash-2"
                 title="Archive conversation"
               >
                 <Archive className="h-4 w-4" />
@@ -193,10 +193,10 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
                   <div className={`max-w-[85%] md:max-w-sm break-words rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.fromMe
                       ? "bg-blue-600 text-white rounded-tr-sm"
-                      : "bg-white/[0.05] border border-white/[0.07] text-slate-200 rounded-tl-sm"
+                      : "bg-wash-3 border border-line text-slate-200 rounded-tl-sm"
                   }`}>
                     {msg.body}
-                    <div className={`text-[9px] mt-1 ${msg.fromMe ? "text-blue-200" : "text-slate-600"}`}>
+                    <div className={`text-[9px] mt-1 ${msg.fromMe ? "text-white/70" : "text-slate-600"}`}>
                       {timeFormat.format(new Date(msg.createdAt))}
                       {msg.fromMe && msg.readAt && " · Read"}
                     </div>
@@ -207,18 +207,18 @@ export function Inbox({ emptyHint }: { emptyHint: string }) {
             </div>
 
             {/* Input */}
-            <form onSubmit={submit} className="px-3 md:px-6 py-4 border-t border-white/[0.05]">
-              <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 py-2.5">
+            <form onSubmit={submit} className="px-3 md:px-6 py-4 border-t border-line-soft">
+              <div className="flex items-center gap-3 bg-wash-2 border border-line rounded-2xl px-4 py-2.5">
                 <input
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Type a message…"
                   maxLength={5000}
-                  className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-600 outline-none"
+                  className="flex-1 bg-transparent text-sm text-foreground placeholder:text-slate-600 outline-none"
                 />
                 <button type="submit" disabled={!draft.trim() || send.isPending}
                   aria-label="Send"
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${draft.trim() ? "bg-blue-600 hover:bg-blue-500" : "bg-white/[0.04]"}`}>
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${draft.trim() ? "bg-blue-600 hover:bg-blue-500" : "bg-wash-2"}`}>
                   {send.isPending
                     ? <Loader2 className="h-3.5 w-3.5 animate-spin text-white" />
                     : <Send className={`h-3.5 w-3.5 ${draft.trim() ? "text-white" : "text-slate-600"}`} />}

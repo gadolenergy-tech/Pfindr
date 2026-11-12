@@ -28,7 +28,7 @@ export default function AuditPage() {
       title="Audit log"
       description="Every state change an operator has made"
     >
-      <Card className="bg-card border-white/[0.06]">
+      <Card className="bg-card border-line">
         <CardContent className="pt-6">
           {isLoading ? (
             <div className="space-y-2">

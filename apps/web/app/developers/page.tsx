@@ -29,11 +29,11 @@ const NAV_ITEMS: { id: Section; icon: React.ComponentType<{ className?: string }
 function CodeBlock({ code, language = "json" }: { code: string; language?: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="relative bg-[#020710] border border-white/[0.07] rounded-xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-white/[0.05]">
+    <div className="relative bg-sunken border border-line rounded-xl overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-line-soft">
         <span className="text-[10px] text-slate-600 font-mono uppercase">{language}</span>
         <button onClick={() => { navigator.clipboard.writeText(code).catch(() => {}); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-          className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-white transition-colors">
+          className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-foreground transition-colors">
           {copied ? <CheckCircle2 className="h-3 w-3 text-green-400" /> : <Copy className="h-3 w-3" />}
           {copied ? "Copied" : "Copy"}
         </button>
@@ -46,7 +46,7 @@ function CodeBlock({ code, language = "json" }: { code: string; language?: strin
 function EndpointRow({ method, path, desc }: { method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH"; path: string; desc: string }) {
   const colors: Record<string, string> = { GET: "text-green-400 bg-green-500/10 border-green-500/20", POST: "text-blue-400 bg-blue-500/10 border-blue-500/20", PUT: "text-amber-400 bg-amber-500/10 border-amber-500/20", DELETE: "text-red-400 bg-red-500/10 border-red-500/20", PATCH: "text-violet-400 bg-violet-500/10 border-violet-500/20" };
   return (
-    <div className="flex items-center gap-4 p-3 bg-white/[0.02] border border-white/[0.04] rounded-xl hover:bg-white/[0.04] transition-all">
+    <div className="flex items-center gap-4 p-3 bg-wash-1 border border-line-soft rounded-xl hover:bg-wash-2 transition-all">
       <span className={`text-[9px] font-bold px-2 py-0.5 rounded border shrink-0 ${colors[method]}`}>{method}</span>
       <span className="font-mono text-[11px] text-cyan-300 flex-1">{path}</span>
       <span className="text-[10px] text-slate-500 hidden sm:block">{desc}</span>
@@ -123,7 +123,7 @@ export default function DeveloperPortal() {
         return (
           <div className="space-y-8">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-2">Finder Developer Portal</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Finder Developer Portal</h1>
               <p className="text-slate-400 leading-relaxed">
                 Build on top of Finder's AI-powered inventory discovery infrastructure. Our APIs give you programmatic access to real-time inventory data, vendor information, AI-powered search, and location-based availability across Finder Network.
               </p>
@@ -134,20 +134,20 @@ export default function DeveloperPortal() {
                 { icon: Shield, title: "Secure by Default", desc: "Scoped API keys, hashed at rest and revocable instantly, with per-key rate limits.", color: "text-blue-400" },
                 { icon: Globe, title: "Global Infrastructure", desc: "Multi-region deployment ready for enterprise and government scale.", color: "text-green-400" },
               ].map((f) => (
-                <div key={f.title} className="min-w-0 p-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
+                <div key={f.title} className="min-w-0 p-5 bg-wash-1 border border-line rounded-2xl">
                   <f.icon className={`h-5 w-5 ${f.color} mb-3`} />
-                  <div className="text-[12px] font-semibold text-white mb-1">{f.title}</div>
+                  <div className="text-[12px] font-semibold text-foreground mb-1">{f.title}</div>
                   <div className="text-[11px] text-slate-500 leading-relaxed">{f.desc}</div>
                 </div>
               ))}
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Quick Start</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Quick Start</h2>
               {/* No SDK is published yet — never point developers at an unregistered package name. */}
               <CodeBlock language="javascript" code={QUICK_START} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Base URL</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Base URL</h2>
               <CodeBlock language="text" code={API_BASE} />
               <p className="text-[11px] text-slate-500 mt-2">A separate sandbox is on the roadmap. Until then, test against a second vendor account.</p>
             </div>
@@ -158,16 +158,16 @@ export default function DeveloperPortal() {
         return (
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-2">Authentication</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Authentication</h1>
               <p className="text-slate-400">Every request is authenticated with a scoped API key. Create and revoke keys in the vendor portal under API &amp; Integrations. OAuth 2.0 is on the roadmap.</p>
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">API Key Authentication</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">API Key Authentication</h2>
               <p className="text-[12px] text-slate-500 mb-3">Pass your API key in the <code className="text-cyan-400 bg-cyan-500/10 px-1 rounded">Authorization</code> header with every request.</p>
               <CodeBlock language="http" code={`GET ${API_BASE}/search?q=Paracetamol\nAuthorization: Bearer fndr_live_your_api_key_here`} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Scopes</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Scopes</h2>
               <p className="text-[12px] text-slate-500 mb-3">Each key carries only the scopes you grant it. Calls outside those scopes return <code className="text-cyan-400 bg-cyan-500/10 px-1 rounded">403</code>.</p>
               <CodeBlock language="text" code={SCOPES} />
             </div>
@@ -181,7 +181,7 @@ export default function DeveloperPortal() {
         return (
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-2">Search API</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Search API</h1>
               <p className="text-slate-400">Live stock across verified vendors — the same engine behind Finder search — with location-aware ranking. Only verified vendors that have not paused their listings appear.</p>
             </div>
             <div className="space-y-2">
@@ -191,11 +191,11 @@ export default function DeveloperPortal() {
               <EndpointRow method="POST" path="/v1/search/semantic" desc="AI semantic search — coming soon" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Example Request</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Example Request</h2>
               <CodeBlock language="javascript" code={SEARCH_EXAMPLE} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Response</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Response</h2>
               <CodeBlock code={SEARCH_RESPONSE} />
             </div>
           </div>
@@ -205,7 +205,7 @@ export default function DeveloperPortal() {
         return (
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-2">Inventory API</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Inventory API</h1>
               <p className="text-slate-400">Push and pull your own inventory. Stock status (in stock, low, out) is derived from quantity and your low-stock threshold — you never set it directly, except to mark an item discontinued.</p>
             </div>
             <div className="space-y-2">
@@ -218,7 +218,7 @@ export default function DeveloperPortal() {
               <EndpointRow method="GET" path="/v1/inventory/history" desc="Recent sync runs and their results" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Create Item</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Create Item</h2>
               <CodeBlock language="javascript" code={`POST ${API_BASE}/inventory
 {
   "name": "Amoxicillin 500mg",
@@ -231,7 +231,7 @@ export default function DeveloperPortal() {
 }`} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Sync Stock</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Sync Stock</h2>
               <CodeBlock language="javascript" code={`POST ${API_BASE}/inventory/sync
 {
   "items": [
@@ -249,7 +249,7 @@ export default function DeveloperPortal() {
         return (
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-white mb-2">Webhooks</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Webhooks</h1>
               <p className="text-slate-400">Subscribe to Finder platform events and receive real-time HTTP POST notifications to your endpoint.</p>
               <p className="text-[11px] text-amber-400 mt-2">Coming soon — the event catalogue below is the planned contract. Until then, poll <span className="font-mono">/v1/orders</span> and <span className="font-mono">/v1/inventory/history</span>.</p>
             </div>
@@ -260,14 +260,14 @@ export default function DeveloperPortal() {
                 "customer.new", "customer.returning",
                 "vendor.verified", "vendor.suspended",
               ].map((event) => (
-                <div key={event} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/[0.04] rounded-xl">
+                <div key={event} className="flex items-center gap-3 p-3 bg-wash-1 border border-line-soft rounded-xl">
                   <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/60 shrink-0" />
                   <span className="font-mono text-[11px] text-cyan-300 flex-1">{event}</span>
                 </div>
               ))}
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white mb-3">Webhook Payload</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Webhook Payload</h2>
               <CodeBlock code={`{
   "id": "evt_3K9mXp",
   "type": "inventory.low_stock",
@@ -287,7 +287,7 @@ export default function DeveloperPortal() {
       case "sdks":
         return (
           <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-white mb-2">SDK Downloads</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">SDK Downloads</h1>
             <p className="text-slate-400">Official Finder SDKs are in development. Until they are published, call the REST API directly — it is plain JSON over HTTPS.</p>
             {/* Package names are deliberately not shown: printing an install command for an
                 unpublished name invites typosquatting on whoever copies it. */}
@@ -298,12 +298,12 @@ export default function DeveloperPortal() {
                 { lang: "PHP", pkg: "Not yet published", status: "Planned" },
                 { lang: "Go", pkg: "Not yet published", status: "Planned" },
               ].map((sdk) => (
-                <div key={sdk.lang} className="p-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
+                <div key={sdk.lang} className="p-5 bg-wash-1 border border-line rounded-2xl">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-[12px] font-bold text-white">{sdk.lang}</h3>
+                    <h3 className="text-[12px] font-bold text-foreground">{sdk.lang}</h3>
                     <span className="text-[8px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">{sdk.status}</span>
                   </div>
-                  <div className="font-mono text-[10px] text-slate-500 bg-black/20 px-3 py-2 rounded-lg">{sdk.pkg}</div>
+                  <div className="font-mono text-[10px] text-slate-500 bg-wash-3 px-3 py-2 rounded-lg">{sdk.pkg}</div>
                 </div>
               ))}
             </div>
@@ -313,9 +313,9 @@ export default function DeveloperPortal() {
       case "sandbox":
         return (
           <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-white mb-2">Sandbox Environment</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Sandbox Environment</h1>
             <p className="text-slate-400">An isolated test environment with pre-populated data and simulated events.</p>
-            <div className="p-5 bg-[#06101f] border border-amber-500/20 rounded-2xl">
+            <div className="p-5 bg-raised border border-amber-500/20 rounded-2xl">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-amber-400" />
                 <span className="text-[11px] font-semibold text-amber-400">Coming Soon</span>
@@ -332,16 +332,16 @@ export default function DeveloperPortal() {
       case "changelog":
         return (
           <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-white mb-2">Changelog</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Changelog</h1>
             <div className="space-y-5">
               {[
                 { version: "v1.0.0", date: "Sep 21, 2026", type: "Release", items: ["REST API live under /api/v1 with scoped API keys", "Search, nearby search and autocomplete suggestions", "Inventory CRUD plus SKU-based bulk sync (1,000 rows per call)", "Orders read access", "Rate limiting: 120 requests per minute per key"] },
                 { version: "Roadmap", date: "Planned", type: "Planned", items: ["OAuth 2.0 client credentials", "Outbound webhooks with retries", "Sandbox environment", "Semantic search", "Official SDKs"] },
               ].map((release) => (
-                <div key={release.version} className="relative pl-6 border-l border-white/[0.08]">
-                  <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-[#040a15]" />
+                <div key={release.version} className="relative pl-6 border-l border-line">
+                  <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-canvas" />
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-sm font-bold text-white font-mono">{release.version}</span>
+                    <span className="text-sm font-bold text-foreground font-mono">{release.version}</span>
                     <span className="text-[9px] font-bold uppercase text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded-full">{release.type}</span>
                     <span className="text-[10px] text-slate-600">{release.date}</span>
                   </div>
@@ -361,7 +361,7 @@ export default function DeveloperPortal() {
       case "status":
         return (
           <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-white mb-2">System Status</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">System Status</h1>
             <div className="flex items-center gap-2 px-4 py-3 bg-green-500/[0.07] border border-green-500/20 rounded-xl">
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-[12px] font-semibold text-green-400">All systems operational</span>
@@ -375,7 +375,7 @@ export default function DeveloperPortal() {
                 { name: "Webhooks", uptime: "99.89%", latency: "—", status: "operational" },
                 { name: "Sandbox", uptime: "99.72%", latency: "120ms", status: "degraded" },
               ].map((svc) => (
-                <div key={svc.name} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+                <div key={svc.name} className="flex items-center gap-4 p-4 bg-wash-1 border border-line-soft rounded-xl">
                   <div className={`w-2 h-2 rounded-full shrink-0 ${svc.status === "operational" ? "bg-green-400" : "bg-amber-400"}`} />
                   <div className="flex-1 text-[12px] font-semibold text-slate-300">{svc.name}</div>
                   <div className="text-[10px] text-slate-500">Latency: <span className="text-slate-400">{svc.latency}</span></div>
@@ -397,11 +397,11 @@ export default function DeveloperPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040a15] text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       <Navbar />
       <div className="pt-24 pb-20">
         {/* Hero bar */}
-        <div className="border-b border-white/[0.05] bg-[#030810]">
+        <div className="border-b border-line-soft bg-sunken">
           <div className="container mx-auto px-4 py-8 max-w-6xl">
             <div className="flex items-center justify-between">
               <div>
@@ -409,12 +409,12 @@ export default function DeveloperPortal() {
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                   <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">API v1 · Beta</span>
                 </div>
-                <h1 className="text-2xl font-bold text-white">Developer Portal</h1>
+                <h1 className="text-2xl font-bold text-foreground">Developer Portal</h1>
                 <p className="text-slate-500 text-sm mt-1">Build intelligent inventory discovery into your applications</p>
               </div>
               <div className="flex flex-wrap gap-3">
                 <Link href="/partners">
-                  <Button size="sm" variant="ghost" className="border border-white/[0.07] text-slate-400 hover:text-white gap-2">
+                  <Button size="sm" variant="ghost" className="border border-line text-slate-400 hover:text-foreground gap-2">
                     <Globe className="h-3.5 w-3.5" /> Partner Program
                   </Button>
                 </Link>
@@ -433,7 +433,7 @@ export default function DeveloperPortal() {
             <aside className="w-52 shrink-0 sticky top-24 h-fit space-y-0.5">
               {NAV_ITEMS.map((item) => (
                 <button key={item.id} onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-all text-left ${activeSection === item.id ? "bg-blue-500/10 text-blue-400 border border-blue-500/[0.18]" : "text-slate-500 hover:text-white hover:bg-white/[0.03]"}`}>
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12px] font-medium transition-all text-left ${activeSection === item.id ? "bg-blue-500/10 text-blue-400 border border-blue-500/[0.18]" : "text-slate-500 hover:text-foreground hover:bg-wash-2"}`}>
                   <item.icon className="h-3.5 w-3.5 shrink-0" />
                   {item.label}
                 </button>

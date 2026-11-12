@@ -87,7 +87,7 @@ function VendorsTable() {
               size="sm"
               variant={status === filter ? "default" : "outline"}
               onClick={() => setStatus(filter)}
-              className={status === filter ? "" : "border-white/[0.08]"}
+              className={status === filter ? "" : "border-line"}
             >
               {filter.charAt(0) + filter.slice(1).toLowerCase()}
             </Button>
@@ -99,12 +99,12 @@ function VendorsTable() {
             placeholder="Search name or email"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-9 bg-card border-white/[0.08]"
+            className="pl-9 bg-card border-line"
           />
         </div>
       </div>
 
-      <Card className="bg-card border-white/[0.06]">
+      <Card className="bg-card border-line">
         <CardContent className="pt-6">
           {isLoading ? (
             <div className="space-y-2">

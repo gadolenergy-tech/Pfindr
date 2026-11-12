@@ -57,11 +57,11 @@ export default function VendorCustomers() {
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#040a15]">
+    <div className="min-h-screen flex bg-canvas">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4">
-          <h1 className="text-lg font-bold text-white">Customers</h1>
+        <div className="sticky top-14 lg:top-0 z-20 bg-canvas/95 backdrop-blur border-b border-line-soft px-4 sm:px-8 py-4">
+          <h1 className="text-lg font-bold text-foreground">Customers</h1>
           <p className="text-xs text-slate-500 mt-0.5">Customer directory and retention metrics</p>
         </div>
 
@@ -69,7 +69,7 @@ export default function VendorCustomers() {
           {/* Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {metrics.map((m) => (
-              <div key={m.label} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
+              <div key={m.label} className="bg-wash-1 border border-line rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <m.icon className={`h-3.5 w-3.5 ${m.color}`} />
                   <span className="text-[9px] uppercase tracking-widest text-slate-500 font-semibold">{m.label}</span>
@@ -85,12 +85,12 @@ export default function VendorCustomers() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                 <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search customers…"
-                  className="pl-9 bg-white/[0.03] border-white/[0.07] text-slate-200 placeholder:text-slate-600 h-9" />
+                  className="pl-9 bg-wash-2 border-line text-slate-200 placeholder:text-slate-600 h-9" />
               </div>
               <div className="space-y-2">
                 {isLoading &&
                   [0, 1, 2].map((i) => (
-                    <div key={i} className="h-[66px] bg-white/[0.02] border border-white/[0.05] rounded-2xl animate-pulse" />
+                    <div key={i} className="h-[66px] bg-wash-1 border border-line-soft rounded-2xl animate-pulse" />
                   ))}
                 {!isLoading && (customers ?? []).length === 0 && (
                   <div className="text-center py-12 text-slate-600 text-sm">
@@ -109,8 +109,8 @@ export default function VendorCustomers() {
                         setSelected(isActive ? null : c.id);
                         setShowHistory(false);
                       }}
-                      className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl border text-left transition-all ${isActive ? "bg-blue-500/[0.08] border-blue-500/20" : "bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.04]"}`}>
-                      <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/[0.08] flex items-center justify-center shrink-0">
+                      className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl border text-left transition-all ${isActive ? "bg-blue-500/[0.08] border-blue-500/20" : "bg-wash-1 border-line-soft hover:bg-wash-2"}`}>
+                      <div className="w-9 h-9 rounded-full bg-slate-800 border border-line flex items-center justify-center shrink-0">
                         <span className="text-sm font-bold text-slate-300">{c.fullName[0]?.toUpperCase()}</span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -131,7 +131,7 @@ export default function VendorCustomers() {
             </div>
 
             {/* Customer Profile Panel */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
+            <div className="bg-wash-1 border border-line rounded-2xl p-5">
               {selected && !selectedCustomer && loadingDetail ? (
                 <div className="flex items-center justify-center h-48">
                   <Loader2 className="h-5 w-5 animate-spin text-slate-600" />
@@ -142,7 +142,7 @@ export default function VendorCustomers() {
                     <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-blue-500/20 flex items-center justify-center mx-auto mb-3">
                       <span className="text-xl font-bold text-slate-300">{selectedCustomer.fullName[0]?.toUpperCase()}</span>
                     </div>
-                    <h3 className="text-sm font-bold text-white">{selectedCustomer.fullName}</h3>
+                    <h3 className="text-sm font-bold text-foreground">{selectedCustomer.fullName}</h3>
                     {selectedCustomer.company && <p className="text-[11px] text-slate-400">{selectedCustomer.company}</p>}
                     <p className="text-[11px] text-slate-500">{selectedCustomer.email ?? selectedCustomer.phone ?? ""}</p>
                   </div>
@@ -161,7 +161,7 @@ export default function VendorCustomers() {
                       </div>
                     ))}
                   </div>
-                  <div className="pt-3 border-t border-white/[0.06] space-y-2">
+                  <div className="pt-3 border-t border-line space-y-2">
                     {selectedCustomer.email ? (
                       <a href={`mailto:${selectedCustomer.email}`}
                         className="block text-center w-full py-2 text-[11px] font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-xl hover:bg-blue-500/15 transition-colors">
@@ -174,7 +174,7 @@ export default function VendorCustomers() {
                       </a>
                     ) : null}
                     <button onClick={() => setShowHistory(!showHistory)}
-                      className="w-full py-2 text-[11px] font-semibold text-slate-400 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:bg-white/[0.05] transition-colors">
+                      className="w-full py-2 text-[11px] font-semibold text-slate-400 bg-wash-1 border border-line rounded-xl hover:bg-wash-3 transition-colors">
                       {showHistory ? "Hide Order History" : "View Order History"}
                     </button>
                     {showHistory && (
@@ -183,7 +183,7 @@ export default function VendorCustomers() {
                           <p className="text-[11px] text-slate-600 text-center py-2">No orders yet.</p>
                         )}
                         {selectedCustomer.recentOrders.map((o) => (
-                          <div key={o.id} className="flex items-center justify-between text-[11px] px-3 py-2 bg-white/[0.02] rounded-lg">
+                          <div key={o.id} className="flex items-center justify-between text-[11px] px-3 py-2 bg-wash-1 rounded-lg">
                             <span className="text-slate-300 font-mono">{o.orderNumber}</span>
                             <span className="text-slate-500">{o.status.toLowerCase()}</span>
                             <span className="text-slate-300 tabular-nums">{formatMoney(o.total, o.currency)}</span>

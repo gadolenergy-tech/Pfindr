@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-background: hsl(var(--background));
@@ -57,6 +57,19 @@
   --color-sidebar-accent-border: var(--sidebar-accent-border);
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
+  /* Theme-aware surfaces, hairlines and tints (values in :root / .dark below). */
+  --color-canvas: var(--canvas);
+  --color-rail: var(--rail);
+  --color-sunken: var(--sunken);
+  --color-raised: var(--raised);
+  --color-line-soft: var(--line-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-wash-1: var(--wash-1);
+  --color-wash-2: var(--wash-2);
+  --color-wash-3: var(--wash-3);
+  --color-wash-4: var(--wash-4);
+
   --font-sans: var(--app-font-sans);
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
@@ -67,18 +80,150 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Base Light and Dark are the same for this strictly dark futuristic app */
+/* Light theme (default token set). The dark theme overrides these in .dark;
+   next-themes puts `light` or `dark` on <html>. */
 :root {
+  color-scheme: light;
+
+  --button-outline: rgba(15,23,42, .12);
+  --badge-outline: rgba(15,23,42, .08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(15,23,42, .04);
+  --elevate-2: rgba(15,23,42, .08);
+
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --border: 214 32% 88%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --card-border: 214 32% 88%;
+
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 222 47% 11%;
+  --sidebar-border: 214 32% 88%;
+  --sidebar-primary: 221 83% 53%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 193 82% 31%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-ring: 221 83% 53%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --popover-border: 214 32% 88%;
+
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 193 82% 31%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 210 40% 94%;
+  --muted-foreground: 215 16% 42%;
+
+  --accent: 221 83% 53%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 214 32% 82%;
+  --ring: 221 83% 53%;
+
+  --chart-1: 221 83% 53%;
+  --chart-2: 193 82% 31%;
+  --chart-3: 215 20% 65%;
+  --chart-4: 222 47% 11%;
+  --chart-5: 214 32% 88%;
+
+  /* Page surfaces: canvas = page, rail = sidebars, sunken = wells and code
+     blocks, raised = cards and dialogs. */
+  --canvas: #f5f7fb;
+  --rail: #ffffff;
+  --sunken: #edf1f7;
+  --raised: #ffffff;
+  --panel-gradient: linear-gradient(160deg, #ffffff 0%, #f5f7fb 100%);
+  --modal-shadow: 0 40px 100px -30px rgb(15 23 42 / 0.35), 0 0 0 1px rgb(15 23 42 / 0.06);
+
+  /* Hairlines and translucent tints, drawn in the foreground colour. */
+  --line-soft: rgb(15 23 42 / 0.08);
+  --line: rgb(15 23 42 / 0.12);
+  --line-strong: rgb(15 23 42 / 0.2);
+  --wash-1: rgb(15 23 42 / 0.025);
+  --wash-2: rgb(15 23 42 / 0.045);
+  --wash-3: rgb(15 23 42 / 0.07);
+  --wash-4: rgb(15 23 42 / 0.11);
+
+  --app-font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+  --radius: .5rem;
+
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --primary-border: hsl(var(--primary));
+  --secondary-border: hsl(var(--secondary));
+  --muted-border: hsl(var(--muted));
+  --accent-border: hsl(var(--accent));
+  --destructive-border: hsl(var(--destructive));
+}
+
+/* The pages were written against a dark canvas, so they use the slate scale
+   for text (slate-300 = strong, slate-600 = faint) and the 200-400 accent
+   shades for coloured text. In light mode those scales are mirrored so the
+   same classes stay readable: `text-slate-300` is dark ink, `text-blue-400`
+   is a deeper blue. Dark mode keeps Tailwind's stock values. */
+:root:not(.dark) {
+  --color-slate-50: #020617;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-400: #475569;
+  --color-slate-500: #64748b;
+  --color-slate-600: #8492a6;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #f1f5f9;
+  --color-slate-950: #f8fafc;
+
+  --color-blue-200: #1e40af;
+  --color-blue-300: #1d4ed8;
+  --color-blue-400: #2563eb;
+  --color-indigo-300: #4338ca;
+  --color-indigo-400: #4f46e5;
+  --color-violet-400: #7c3aed;
+  --color-red-300: #b91c1c;
+  --color-red-400: #dc2626;
+  --color-rose-300: #be123c;
+  --color-rose-400: #e11d48;
+  --color-orange-400: #c2410c;
+  --color-amber-200: #78350f;
+  --color-amber-300: #92400e;
+  --color-amber-400: #b45309;
+  --color-yellow-400: #a16207;
+  --color-green-300: #166534;
+  --color-green-400: #15803d;
+  --color-emerald-300: #065f46;
+  --color-emerald-400: #047857;
+  --color-cyan-300: #155e75;
+  --color-cyan-400: #0e7490;
+}
+
+.dark {
+  color-scheme: dark;
+
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
-  --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
   --background: 225 50% 8%;
   --foreground: 210 40% 98%;
   --border: 220 42% 20%;
-  
+
   --card: 222 47% 11%;
   --card-foreground: 210 40% 98%;
   --card-border: 220 42% 20%;
@@ -98,7 +243,7 @@
 
   --primary: 217 91% 60%;
   --primary-foreground: 0 0% 100%;
-  
+
   --secondary: 189 94% 43%;
   --secondary-foreground: 0 0% 100%;
 
@@ -120,34 +265,20 @@
   --chart-4: 210 40% 98%;
   --chart-5: 220 42% 20%;
 
-  --app-font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
-  --app-font-serif: Georgia, serif;
-  --app-font-mono: Menlo, monospace;
-  --radius: .5rem; 
+  --canvas: #040a15;
+  --rail: #04091a;
+  --sunken: #030810;
+  --raised: #06101f;
+  --panel-gradient: linear-gradient(160deg, #0b1830 0%, #060d1f 60%, #040913 100%);
+  --modal-shadow: 0 48px 140px -20px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(255 255 255 / 0.04), 0 0 100px -30px rgb(59 130 246 / 0.18);
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(225 50% 4% / 0.5);
-  --shadow-xs: 0px 2px 0px 0px hsl(225 50% 4% / 0.5);
-  --shadow-sm: 0px 2px 0px 0px hsl(225 50% 4% / 0.5), 0px 1px 2px -1px hsl(225 50% 4% / 0.5);
-  --shadow: 0px 2px 0px 0px hsl(225 50% 4% / 0.5), 0px 1px 2px -1px hsl(225 50% 4% / 0.5);
-  --shadow-md: 0px 2px 0px 0px hsl(225 50% 4% / 0.5), 0px 2px 4px -1px hsl(225 50% 4% / 0.5);
-  --shadow-lg: 0px 2px 0px 0px hsl(225 50% 4% / 0.5), 0px 4px 6px -1px hsl(225 50% 4% / 0.5);
-  --shadow-xl: 0px 2px 0px 0px hsl(225 50% 4% / 0.5), 0px 8px 10px -1px hsl(225 50% 4% / 0.5);
-  --shadow-2xl: 0px 2px 0px 0px hsl(225 50% 4% / 0.5);
-  
-  --tracking-normal: 0em;
-  --spacing: 0.25rem;
-
-  --sidebar-primary-border: hsl(var(--sidebar-primary));
-  --sidebar-accent-border: hsl(var(--sidebar-accent));
-  --primary-border: hsl(var(--primary));
-  --secondary-border: hsl(var(--secondary));
-  --muted-border: hsl(var(--muted));
-  --accent-border: hsl(var(--accent));
-  --destructive-border: hsl(var(--destructive));
-}
-
-.dark {
-  /* Same variables for explicit dark classes if needed, we force dark theme globally */
+  --line-soft: rgb(255 255 255 / 0.045);
+  --line: rgb(255 255 255 / 0.07);
+  --line-strong: rgb(255 255 255 / 0.12);
+  --wash-1: rgb(255 255 255 / 0.02);
+  --wash-2: rgb(255 255 255 / 0.035);
+  --wash-3: rgb(255 255 255 / 0.055);
+  --wash-4: rgb(255 255 255 / 0.09);
 }
 
 @layer base {

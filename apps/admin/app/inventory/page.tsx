@@ -41,7 +41,7 @@ export default function InventoryPage() {
       title="Inventory"
       description="Network-wide stock overview"
     >
-      <Alert className="border-white/[0.08]">
+      <Alert className="border-line">
         <Info className="h-4 w-4" />
         <AlertDescription>
           This view reads the ten deepest stock lines on the network. Full
@@ -50,7 +50,7 @@ export default function InventoryPage() {
         </AlertDescription>
       </Alert>
 
-      <Card className="bg-card border-white/[0.06]">
+      <Card className="bg-card border-line">
         <CardContent className="pt-6">
           {isLoading ? (
             <div className="space-y-2">

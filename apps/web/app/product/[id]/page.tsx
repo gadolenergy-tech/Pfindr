@@ -66,7 +66,7 @@ function ProductDetail({ id }: { id: string }) {
     return (
       <div className="max-w-md mx-auto text-center py-24">
         <Package className="h-10 w-10 text-slate-600 mx-auto" />
-        <h1 className="text-lg font-semibold text-white mt-4">{gone ? "This product is no longer available" : "We couldn't load this product"}</h1>
+        <h1 className="text-lg font-semibold text-foreground mt-4">{gone ? "This product is no longer available" : "We couldn't load this product"}</h1>
         <p className="text-sm text-slate-500 mt-1">{gone ? "The vendor may have sold out or removed it." : "Please try again in a moment."}</p>
         <Link href="/?search=resume" className="inline-block mt-5 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2 text-sm font-semibold text-white">Back to search</Link>
       </div>
@@ -118,13 +118,13 @@ function ProductDetail({ id }: { id: string }) {
 
   return (
     <>
-      <Link href="/?search=resume" data-testid="product-back" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors">
+      <Link href="/?search=resume" data-testid="product-back" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to search
       </Link>
 
       <div className="mt-5 grid md:grid-cols-2 gap-8">
         {/* Photo */}
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] aspect-square overflow-hidden flex items-center justify-center">
+        <div className="rounded-2xl border border-line bg-wash-1 aspect-square overflow-hidden flex items-center justify-center">
           {p.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
             <img data-testid="product-image" src={p.imageUrl} alt={`${p.name}${p.brand ? ` by ${p.brand}` : ""}`} className="w-full h-full object-contain" />
@@ -141,7 +141,7 @@ function ProductDetail({ id }: { id: string }) {
         <div className="space-y-5">
           <div>
             {p.category && <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">{p.category.name}</div>}
-            <h1 className="text-2xl font-bold text-white mt-1 leading-tight">{p.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground mt-1 leading-tight">{p.name}</h1>
             {p.brand ? (
               <p data-testid="product-brand" className="text-sm text-slate-300 mt-1.5">
                 <span className="text-slate-500">Brand / manufacturer: </span>
@@ -156,8 +156,8 @@ function ProductDetail({ id }: { id: string }) {
             <p data-testid="product-description" className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">{p.description}</p>
           )}
 
-          <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 space-y-1.5">
-            <div className="flex items-center gap-2 text-sm text-white font-semibold">
+          <div className="rounded-xl border border-line bg-wash-1 p-4 space-y-1.5">
+            <div className="flex items-center gap-2 text-sm text-foreground font-semibold">
               {p.vendor.businessName}
               {p.vendor.verified && (
                 <span className="flex items-center gap-0.5 text-[11px] text-blue-400 font-medium"><CheckCircle2 className="h-3 w-3" /> Verified</span>
@@ -173,7 +173,7 @@ function ProductDetail({ id }: { id: string }) {
             <div>
               {buyable ? (
                 <>
-                  <div className="text-3xl font-bold text-white tabular-nums">{formatMoney(p.price!, p.currency)}</div>
+                  <div className="text-3xl font-bold text-foreground tabular-nums">{formatMoney(p.price!, p.currency)}</div>
                   <div className="text-xs text-slate-500">per {p.unit}</div>
                 </>
               ) : (
@@ -189,13 +189,13 @@ function ProductDetail({ id }: { id: string }) {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <span className="text-[12px] font-medium text-slate-300">Quantity</span>
-                <div className="flex items-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
-                  <button type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 1} className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="Fewer">
+                <div className="flex items-center rounded-lg border border-line bg-wash-2">
+                  <button type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 1} className="p-2 text-slate-400 hover:text-foreground disabled:opacity-30" aria-label="Fewer">
                     <Minus className="h-3.5 w-3.5" />
                   </button>
                   <input type="number" min={1} max={maxQty} value={quantity} onChange={(e) => setQty(Number(e.target.value))}
-                    className="w-14 bg-transparent text-center text-sm text-white tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
-                  <button type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= maxQty} className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="More">
+                    className="w-14 bg-transparent text-center text-sm text-foreground tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
+                  <button type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= maxQty} className="p-2 text-slate-400 hover:text-foreground disabled:opacity-30" aria-label="More">
                     <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
@@ -216,8 +216,8 @@ function ProductDetail({ id }: { id: string }) {
                 <div data-testid="product-in-cart" className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-green-500/25 bg-green-500/10 px-4 py-2.5 text-[12px] text-green-300">
                   <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" /> {inCart.quantity} in your cart</span>
                   <span className="flex items-center gap-4">
-                    <Link href="/?search=resume" className="font-semibold text-slate-200 hover:text-white">Keep shopping</Link>
-                    <Link href="/cart" className="font-semibold text-white hover:underline">View cart &amp; pay</Link>
+                    <Link href="/?search=resume" className="font-semibold text-slate-200 hover:text-foreground">Keep shopping</Link>
+                    <Link href="/cart" className="font-semibold text-foreground hover:underline">View cart &amp; pay</Link>
                   </span>
                 </div>
               )}
@@ -235,7 +235,7 @@ function ProductDetail({ id }: { id: string }) {
             </div>
           )}
 
-          <section data-testid="product-specs" className="rounded-xl border border-white/[0.07] bg-white/[0.02] divide-y divide-white/[0.06]">
+          <section data-testid="product-specs" className="rounded-xl border border-line bg-wash-1 divide-y divide-line">
             <h2 className="px-4 py-2.5 text-[11px] uppercase tracking-widest text-slate-500 font-semibold">Product details</h2>
             {[
               ["Name", p.name],
@@ -270,7 +270,7 @@ export default function ProductPage() {
   const params = useParams<{ id: string }>();
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#040a15]">
+      <div className="min-h-screen bg-canvas">
         <Navbar />
         <main className="pt-28 pb-16 px-4 max-w-5xl mx-auto">
           <ProductDetail id={params.id} />

@@ -43,14 +43,14 @@ const TABS: { id: SettingsTab; icon: React.ComponentType<{ className?: string }>
   { id: "preferences", icon: Sliders, label: "Preferences" },
 ];
 
-const FIELD = "bg-white/[0.03] border-white/[0.07] text-slate-200 h-10";
-const SELECT = "w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-sm text-slate-300 outline-none focus:border-blue-500/40 transition-all appearance-none";
+const FIELD = "bg-wash-2 border-line text-slate-200 h-10";
+const SELECT = "w-full bg-wash-2 border border-line rounded-xl px-4 py-3 text-sm text-slate-300 outline-none focus:border-blue-500/40 transition-all appearance-none";
 
 function Banner({ kind, children }: { kind: "ok" | "error" | "info"; children: React.ReactNode }) {
   const style = {
     ok: "text-green-400 bg-green-500/10 border-green-500/20",
     error: "text-red-300 bg-red-500/10 border-red-500/20",
-    info: "text-slate-400 bg-white/[0.02] border-white/[0.06]",
+    info: "text-slate-400 bg-wash-1 border-line",
   }[kind];
   const Icon = kind === "ok" ? CheckCircle2 : kind === "error" ? AlertCircle : Info;
   return (
@@ -78,17 +78,17 @@ function Toggle({ label, sub, checked, onChange, disabled, badge }: {
   badge?: string;
 }) {
   return (
-    <div className={`flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl ${disabled ? "opacity-50" : ""}`}>
+    <div className={`flex items-center justify-between p-4 bg-wash-1 border border-line-soft rounded-xl ${disabled ? "opacity-50" : ""}`}>
       <div>
         <div className="text-[12px] font-semibold text-slate-200 flex items-center gap-2">
           {label}
-          {badge && <span className="text-[8px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-white/[0.06] text-slate-500">{badge}</span>}
+          {badge && <span className="text-[8px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-wash-3 text-slate-500">{badge}</span>}
         </div>
         <div className="text-[10px] text-slate-500 mt-0.5">{sub}</div>
       </div>
       <button type="button" role="switch" aria-checked={checked} disabled={disabled}
         onClick={() => onChange?.(!checked)}
-        className={`relative rounded-full transition-all duration-200 shrink-0 ${checked ? "bg-blue-600" : "bg-white/[0.1]"}`}
+        className={`relative rounded-full transition-all duration-200 shrink-0 ${checked ? "bg-blue-600" : "bg-wash-4"}`}
         style={{ width: "40px", height: "22px" }}>
         <div className="absolute rounded-full bg-white transition-all duration-200 shadow"
           style={{ width: "18px", height: "18px", top: "2px", left: checked ? "20px" : "2px" }} />
@@ -196,11 +196,11 @@ export default function VendorSettings() {
   const loading = !vendor || !prefs;
 
   return (
-    <div className="min-h-screen flex bg-[#040a15]">
+    <div className="min-h-screen flex bg-canvas">
       <VendorSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4">
-          <h1 className="text-lg font-bold text-white">Settings</h1>
+        <div className="sticky top-14 lg:top-0 z-20 bg-canvas/95 backdrop-blur border-b border-line-soft px-4 sm:px-8 py-4">
+          <h1 className="text-lg font-bold text-foreground">Settings</h1>
           <p className="text-xs text-slate-500 mt-0.5">Manage your business profile, account, and preferences</p>
         </div>
 
@@ -210,7 +210,7 @@ export default function VendorSettings() {
             <div className="flex lg:block gap-1 lg:space-y-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 [&>button]:shrink-0 lg:[&>button]:w-full [&>button]:w-auto [&>button]:whitespace-nowrap">
               {TABS.map((t) => (
                 <button key={t.id} onClick={() => { setTab(t.id); setMessage(null); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[12px] font-medium transition-all text-left ${tab === t.id ? "bg-blue-500/10 border border-blue-500/20 text-blue-400" : "text-slate-500 hover:text-white hover:bg-white/[0.04]"}`}>
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[12px] font-medium transition-all text-left ${tab === t.id ? "bg-blue-500/10 border border-blue-500/20 text-blue-400" : "text-slate-500 hover:text-foreground hover:bg-wash-2"}`}>
                   <t.icon className="h-3.5 w-3.5 shrink-0" />
                   {t.label}
                 </button>
@@ -226,10 +226,10 @@ export default function VendorSettings() {
               ) : (
                 <>
                   {tab === "profile" && (
-                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-5">
-                      <h2 className="text-sm font-semibold text-white">Business Profile</h2>
-                      <div className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl">
-                        <div className="w-14 h-14 rounded-xl bg-slate-800 border border-white/[0.08] flex items-center justify-center text-xl font-bold text-slate-400 overflow-hidden">
+                    <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-5">
+                      <h2 className="text-sm font-semibold text-foreground">Business Profile</h2>
+                      <div className="flex items-center gap-4 p-4 bg-wash-1 border border-line-soft rounded-xl">
+                        <div className="w-14 h-14 rounded-xl bg-slate-800 border border-line flex items-center justify-center text-xl font-bold text-slate-400 overflow-hidden">
                           {vendor?.logoUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
                             <img src={vendor.logoUrl} alt={`${profile.businessName} logo`} className="w-full h-full object-cover" />
@@ -245,7 +245,7 @@ export default function VendorSettings() {
                               purpose="logo"
                               onUploaded={async (url) => { await saveLogo.mutateAsync(url); }}
                               onError={(text) => flash("error", text)}
-                              className="text-[10px] text-slate-300 border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-3 py-1 rounded-lg transition-colors disabled:opacity-60"
+                              className="text-[10px] text-slate-300 border border-line-strong bg-wash-2 hover:bg-wash-4 px-3 py-1 rounded-lg transition-colors disabled:opacity-60"
                             >
                               {vendor?.logoUrl ? "Change logo" : "Upload logo"}
                             </ImageUploadButton>
@@ -264,7 +264,7 @@ export default function VendorSettings() {
                       <FieldGroup label="Business Description">
                         <textarea value={profile.description} onChange={(e) => setProfile({ ...profile, description: e.target.value })}
                           rows={3} maxLength={2000} placeholder="What you supply, who you serve…"
-                          className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500/40 transition-all resize-none" />
+                          className="w-full bg-wash-2 border border-line rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-blue-500/40 transition-all resize-none" />
                       </FieldGroup>
                       <FieldGroup label="Business Category">
                         <select value={profile.categorySlug} onChange={(e) => setProfile({ ...profile, categorySlug: e.target.value })} className={SELECT}>
@@ -313,8 +313,8 @@ export default function VendorSettings() {
 
                   {tab === "account" && (
                     <div className="space-y-4">
-                      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
-                        <h2 className="text-sm font-semibold text-white">Sign-in Email</h2>
+                      <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
+                        <h2 className="text-sm font-semibold text-foreground">Sign-in Email</h2>
                         <FieldGroup label="Current Email">
                           <Input value={user?.email ?? ""} readOnly className={`${FIELD} opacity-70`} />
                         </FieldGroup>
@@ -323,9 +323,9 @@ export default function VendorSettings() {
                           Your public contact email is under Business Profile.
                         </Banner>
                       </div>
-                      <form className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4"
+                      <form className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4"
                         onSubmit={(e) => { e.preventDefault(); changePassword.mutate(); }}>
-                        <h2 className="text-sm font-semibold text-white">Change Password</h2>
+                        <h2 className="text-sm font-semibold text-foreground">Change Password</h2>
                         {([
                           ["currentPassword", "Current Password", "current-password"],
                           ["password", "New Password", "new-password"],
@@ -344,8 +344,8 @@ export default function VendorSettings() {
                           Update Password
                         </Button>
                       </form>
-                      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-3">
-                        <h2 className="text-sm font-semibold text-white">Security</h2>
+                      <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-3">
+                        <h2 className="text-sm font-semibold text-foreground">Security</h2>
                         <Toggle label="Two-Factor Authentication" sub="Require a verification code on login" checked={false} disabled badge="Soon" />
                         <Toggle label="Login Notifications" sub="Email alert when your account is accessed from a new device" checked={false} disabled badge="Soon" />
                       </div>
@@ -353,8 +353,8 @@ export default function VendorSettings() {
                   )}
 
                   {tab === "notifications" && prefs && (
-                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-3">
-                      <h2 className="text-sm font-semibold text-white mb-4">Notification Preferences</h2>
+                    <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-3">
+                      <h2 className="text-sm font-semibold text-foreground mb-4">Notification Preferences</h2>
                       <Banner kind="info">Your choices are saved now. Email delivery is not live yet — alerts show in your dashboard and inbox meanwhile.</Banner>
                       <Toggle label="New Order Alerts" sub="Notified immediately when an order is recorded" checked={prefs.notifications.newOrders} onChange={(v) => setPref("notifications", "newOrders", v)} />
                       <Toggle label="Low Stock Warnings" sub="Alert when inventory drops below threshold levels" checked={prefs.notifications.lowStock} onChange={(v) => setPref("notifications", "lowStock", v)} />
@@ -370,8 +370,8 @@ export default function VendorSettings() {
                   )}
 
                   {tab === "privacy" && prefs && (
-                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-3">
-                      <h2 className="text-sm font-semibold text-white mb-4">Privacy Settings</h2>
+                    <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-3">
+                      <h2 className="text-sm font-semibold text-foreground mb-4">Privacy Settings</h2>
                       {/* Paused platform-wide: hiding prices or stock breaks buying and the product pages.
                           The server ignores these values too (PRIVACY_CONTROLS_ENABLED in preferences.service). */}
                       <Banner kind="info">
@@ -385,7 +385,7 @@ export default function VendorSettings() {
                       <Toggle label="Show Pricing" sub="Display prices in search; off asks buyers to request a quote" checked disabled badge="Paused" />
                       <Toggle label="Allow Buyer Reviews" sub="Verified buyers can leave ratings on your profile" checked={prefs.privacy.allowReviews} disabled badge="Paused" />
                       <Toggle label="Share Analytics with Finder" sub="Help Finder improve search quality with anonymized data" checked={prefs.privacy.shareAnalytics} disabled badge="Paused" />
-                      <div className="pt-4 border-t border-white/[0.05]">
+                      <div className="pt-4 border-t border-line-soft">
                         <p className="text-[11px] text-slate-500 mb-3">Data management</p>
                         <p className="text-[11px] text-slate-600">
                           Export your inventory as CSV from the Inventory page and your orders from the Orders page.
@@ -399,8 +399,8 @@ export default function VendorSettings() {
                   )}
 
                   {tab === "preferences" && prefs && (
-                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-5">
-                      <h2 className="text-sm font-semibold text-white">Platform Preferences</h2>
+                    <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-5">
+                      <h2 className="text-sm font-semibold text-foreground">Platform Preferences</h2>
                       <FieldGroup label="Default Currency for New Products">
                         <select value={prefs.defaults.currency} onChange={(e) => setPref("defaults", "currency", e.target.value)} className={SELECT}>
                           <option value="NGN">Nigerian Naira (₦)</option>

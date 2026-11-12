@@ -79,7 +79,7 @@ export default function PartnersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040a15] text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       <Navbar />
 
       {/* Hero */}
@@ -103,19 +103,19 @@ export default function PartnersPage() {
       </section>
 
       {/* Partner Types */}
-      <section className="py-20 px-4 border-t border-white/[0.04]">
+      <section className="py-20 px-4 border-t border-line-soft">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-white mb-3">Partnership Categories</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-3">Partnership Categories</h2>
             <p className="text-slate-500 font-light max-w-xl mx-auto">Finder partners with organisations at every layer of the supply chain and digital infrastructure stack.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PARTNER_TYPES.map((p) => (
-              <div key={p.title} className={`p-6 rounded-2xl border ${p.border} bg-white/[0.015] hover:bg-white/[0.03] transition-all`}>
+              <div key={p.title} className={`p-6 rounded-2xl border ${p.border} bg-wash-1 hover:bg-wash-2 transition-all`}>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${p.bg} border ${p.border}`}>
                   <p.icon className={`h-5 w-5 ${p.color}`} />
                 </div>
-                <h3 className="text-sm font-bold text-white mb-2">{p.title}</h3>
+                <h3 className="text-sm font-bold text-foreground mb-2">{p.title}</h3>
                 <p className="text-[11px] text-slate-500 leading-relaxed">{p.desc}</p>
               </div>
             ))}
@@ -124,12 +124,12 @@ export default function PartnersPage() {
       </section>
 
       {/* Benefits */}
-      <section className="py-20 px-4 bg-[#030810] border-t border-white/[0.04]">
+      <section className="py-20 px-4 bg-sunken border-t border-line-soft">
         <div className="container mx-auto max-w-5xl">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold mb-4">Why Partner with Finder</div>
-              <h2 className="text-3xl font-bold text-white mb-5">Everything you need to grow with us</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-5">Everything you need to grow with us</h2>
               <p className="text-slate-400 font-light mb-8 leading-relaxed">
                 Finder is building the global infrastructure layer for physical inventory discovery. Partners gain early access to distribution, APIs, and a rapidly growing network of vendors and buyers.
               </p>
@@ -148,9 +148,9 @@ export default function PartnersPage() {
                 { label: "Daily Searches", value: "84K+", sub: "Real-time inventory queries" },
                 { label: "Countries", value: "8", sub: "African + international markets" },
               ].map((stat) => (
-                <div key={stat.label} className="p-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
+                <div key={stat.label} className="p-5 bg-wash-1 border border-line rounded-2xl">
                   <div className="text-3xl font-bold text-indigo-400 tabular-nums">{stat.value}</div>
-                  <div className="text-[12px] font-semibold text-white mt-1">{stat.label}</div>
+                  <div className="text-[12px] font-semibold text-foreground mt-1">{stat.label}</div>
                   <div className="text-[10px] text-slate-600">{stat.sub}</div>
                 </div>
               ))}
@@ -160,42 +160,42 @@ export default function PartnersPage() {
       </section>
 
       {/* Application Form */}
-      <section id="apply" className="py-20 px-4 border-t border-white/[0.04]">
+      <section id="apply" className="py-20 px-4 border-t border-line-soft">
         <div className="container mx-auto max-w-2xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">Apply for Partnership</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-3">Apply for Partnership</h2>
             <p className="text-slate-500 font-light">Tell us about your organisation and how you'd like to partner with Finder Network.</p>
           </div>
 
           {submitted ? (
-            <div className="text-center py-16 bg-white/[0.02] border border-white/[0.06] rounded-3xl">
+            <div className="text-center py-16 bg-wash-1 border border-line rounded-3xl">
               <CheckCircle2 className="h-12 w-12 text-green-400 mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-white mb-2">Application Received</h3>
+              <h3 className="text-lg font-bold text-foreground mb-2">Application Received</h3>
               <p className="text-slate-500 text-sm">Our partnerships team will review your application and respond within 2–3 business days.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 space-y-5">
+            <form onSubmit={handleSubmit} className="bg-wash-1 border border-line rounded-3xl p-8 space-y-5">
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">Organisation Name *</label>
                   <Input required value={form.org} onChange={(e) => setForm((f) => ({ ...f, org: e.target.value }))}
-                    placeholder="e.g. Acme Systems Ltd" className="bg-white/[0.03] border-white/[0.07] text-slate-200 h-10 placeholder:text-slate-600" />
+                    placeholder="e.g. Acme Systems Ltd" className="bg-wash-2 border-line text-slate-200 h-10 placeholder:text-slate-600" />
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">Contact Name *</label>
                   <Input required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                    placeholder="Your full name" className="bg-white/[0.03] border-white/[0.07] text-slate-200 h-10 placeholder:text-slate-600" />
+                    placeholder="Your full name" className="bg-wash-2 border-line text-slate-200 h-10 placeholder:text-slate-600" />
                 </div>
               </div>
               <div>
                 <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">Business Email *</label>
                 <Input required type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                  placeholder="you@yourcompany.com" className="bg-white/[0.03] border-white/[0.07] text-slate-200 h-10 placeholder:text-slate-600" />
+                  placeholder="you@yourcompany.com" className="bg-wash-2 border-line text-slate-200 h-10 placeholder:text-slate-600" />
               </div>
               <div>
                 <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">Partnership Type *</label>
                 <select required value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
-                  className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-sm text-slate-300 outline-none focus:border-indigo-500/40 transition-all appearance-none">
+                  className="w-full bg-wash-2 border border-line rounded-xl px-4 py-3 text-sm text-slate-300 outline-none focus:border-indigo-500/40 transition-all appearance-none">
                   <option value="" disabled>Select a category…</option>
                   {PARTNER_TYPES_SELECT.map((t) => <option key={t}>{t}</option>)}
                 </select>
@@ -204,7 +204,7 @@ export default function PartnersPage() {
                 <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">How would you like to integrate with Finder? *</label>
                 <textarea required value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   rows={4} placeholder="Briefly describe your organisation, your platform, and the integration opportunity you have in mind…"
-                  className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500/40 transition-all resize-none placeholder:text-slate-600" />
+                  className="w-full bg-wash-2 border border-line rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-indigo-500/40 transition-all resize-none placeholder:text-slate-600" />
               </div>
               <Button type="submit" disabled={submitting} className="w-full h-12 text-base bg-indigo-600 hover:bg-indigo-500 text-white gap-2">
                 {submitting ? "Submitting…" : "Submit Partnership Application"} <ArrowRight className="h-4 w-4" />

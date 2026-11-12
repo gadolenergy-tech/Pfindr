@@ -69,7 +69,7 @@ function ApiIntegration() {
           { label: "Last Sync", value: timeAgo(lastApi?.startedAt), sub: summary?.lastSync ? `Latest of any kind: ${timeAgo(summary.lastSync.startedAt)}` : "Push whenever stock changes", color: "text-blue-400", dot: "bg-blue-400" },
           { label: "Sync Health", value: health === null ? "—" : `${health}/100`, sub: health === null ? "No rows synced yet" : `${rows - failed} of ${rows} rows accepted`, color: "text-cyan-400", dot: "bg-cyan-400" },
         ].map((s, i) => (
-          <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
+          <div key={i} className="bg-wash-1 border border-line rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse`} />
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">{s.label}</span>
@@ -80,12 +80,12 @@ function ApiIntegration() {
         ))}
       </div>
 
-      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-semibold text-white">API Credentials</h3>
+      <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
+        <h3 className="text-sm font-semibold text-foreground">API Credentials</h3>
         <div>
           <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">API Endpoint</label>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-[#030810] border border-white/[0.07] rounded-xl px-4 py-3 text-[12px] font-mono text-blue-300 truncate">{endpoint}</div>
+            <div className="flex-1 bg-sunken border border-line rounded-xl px-4 py-3 text-[12px] font-mono text-blue-300 truncate">{endpoint}</div>
             <CopyButton value={`${PUBLIC_API_BASE}/inventory/sync`} />
           </div>
         </div>
@@ -95,14 +95,14 @@ function ApiIntegration() {
         </div>
       </div>
 
-      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-semibold text-white">How syncing works</h3>
+      <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
+        <h3 className="text-sm font-semibold text-foreground">How syncing works</h3>
         <p className="text-[12px] text-slate-400 leading-relaxed">
           Finder is push-based: call the sync endpoint from your POS or ERP whenever stock changes, or on your own schedule.
           Existing SKUs get new quantities and prices; new SKUs are created when you include a <code className="text-blue-300">name</code>.
           Up to 1,000 rows per call, 120 calls per minute per key.
         </p>
-        <pre className="bg-[#030810] border border-white/[0.07] rounded-xl px-4 py-3 text-[11px] font-mono text-slate-300 overflow-x-auto">{snippet}</pre>
+        <pre className="bg-sunken border border-line rounded-xl px-4 py-3 text-[11px] font-mono text-slate-300 overflow-x-auto">{snippet}</pre>
         <div className="flex items-start gap-3 bg-blue-500/[0.05] border border-blue-500/[0.15] rounded-xl px-4 py-3 text-xs text-slate-400">
           <Lock className="h-3.5 w-3.5 text-blue-400 shrink-0 mt-0.5" />
           Keys are stored only as a SHA-256 hash and can be revoked instantly. Outbound webhooks are on the roadmap.
@@ -123,19 +123,19 @@ function AIDocumentScan() {
               <div className="px-2 py-0.5 bg-blue-500/15 border border-blue-500/30 rounded-full text-[9px] font-bold text-blue-400 uppercase tracking-wider">Finder AI</div>
               <span className="text-[11px] text-slate-500">Signature Feature</span>
             </div>
-            <h3 className="text-base font-semibold text-white">AI Inventory Document Scanner</h3>
+            <h3 className="text-base font-semibold text-foreground">AI Inventory Document Scanner</h3>
             <p className="text-slate-400 text-sm mt-1">
               Upload any inventory document — a photo, PDF invoice, warehouse report, or handwritten stock list. Our AI reads, extracts, and structures your inventory automatically.
             </p>
           </div>
           <button onClick={() => setStage("processing")}
-            className="w-full border-2 border-dashed border-white/[0.08] rounded-2xl p-10 text-center hover:border-blue-500/30 hover:bg-blue-500/[0.02] transition-all duration-300 group">
+            className="w-full border-2 border-dashed border-line rounded-2xl p-10 text-center hover:border-blue-500/30 hover:bg-blue-500/[0.02] transition-all duration-300 group">
             <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500/15 transition-colors">
               <Scan className="h-7 w-7 text-blue-400" />
             </div>
             <p className="text-sm font-medium text-slate-300 mb-1">Upload inventory document</p>
             <p className="text-xs text-slate-600 mb-4">PDF, JPG, PNG, HEIC · Invoices, stock lists, warehouse reports, handwritten sheets</p>
-            <span className="inline-block text-[11px] px-4 py-2 bg-white/[0.05] border border-white/[0.08] rounded-lg text-slate-400 font-medium">Choose Document</span>
+            <span className="inline-block text-[11px] px-4 py-2 bg-wash-3 border border-line rounded-lg text-slate-400 font-medium">Choose Document</span>
           </button>
           <div className="grid grid-cols-3 gap-3">
             {[
@@ -143,7 +143,7 @@ function AIDocumentScan() {
               { icon: Camera, label: "Shelf Photos", desc: "Warehouse & shelf stock" },
               { icon: ClipboardList, label: "Stock Reports", desc: "Excel, word, handwritten" },
             ].map((item) => (
-              <div key={item.label} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 text-center">
+              <div key={item.label} className="bg-wash-1 border border-line-soft rounded-xl p-4 text-center">
                 <item.icon className="h-5 w-5 text-slate-500 mx-auto mb-2" />
                 <div className="text-[11px] font-medium text-slate-300">{item.label}</div>
                 <div className="text-[9px] text-slate-600 mt-0.5">{item.desc}</div>
@@ -158,7 +158,7 @@ function AIDocumentScan() {
             <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4">
               <Scan className="h-8 w-8 text-blue-400 animate-pulse" />
             </div>
-            <h3 className="text-base font-semibold text-white mb-1">AI Reading Document…</h3>
+            <h3 className="text-base font-semibold text-foreground mb-1">AI Reading Document…</h3>
             <p className="text-sm text-slate-400">Applying OCR · Extracting product data · Cleaning & normalizing</p>
           </div>
           {[
@@ -169,7 +169,7 @@ function AIDocumentScan() {
             { label: "Data normalization & cleaning…", done: false },
           ].map((step, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-3 px-4 py-3 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+              className="flex items-center gap-3 px-4 py-3 bg-wash-1 border border-line-soft rounded-xl">
               {step.done ? <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0" /> : <RefreshCw className="h-4 w-4 text-blue-400 animate-spin shrink-0" />}
               <span className={`text-sm ${step.done ? "text-slate-300" : "text-blue-300"}`}>{step.label}</span>
             </motion.div>
@@ -180,7 +180,7 @@ function AIDocumentScan() {
       {stage === "review" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
           <div>
-            <h3 className="text-base font-semibold text-white mb-1">Review AI Results</h3>
+            <h3 className="text-base font-semibold text-foreground mb-1">Review AI Results</h3>
             <p className="text-slate-400 text-sm">AI extracted 11 products. Review and confirm before adding to Finder.</p>
           </div>
           <div className="space-y-2">
@@ -191,7 +191,7 @@ function AIDocumentScan() {
               { name: "Surgical Gloves L", qty: "5,000 pairs", price: "₦120", conf: 91 },
               { name: "N95 Respirator", qty: "600 units", price: "₦950", conf: 89 },
             ].map((product, i) => (
-              <div key={i} className="flex items-center gap-4 p-3.5 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:bg-white/[0.04] transition-all">
+              <div key={i} className="flex items-center gap-4 p-3.5 bg-wash-1 border border-line rounded-xl hover:bg-wash-2 transition-all">
                 <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="text-[12px] font-semibold text-slate-200">{product.name}</div>
@@ -206,7 +206,7 @@ function AIDocumentScan() {
             <div className="text-center text-[11px] text-slate-600 py-1">+ 6 more products</div>
           </div>
           <div className="flex gap-3">
-            <Button variant="ghost" onClick={() => setStage("upload")} className="text-slate-400 hover:text-white">← Rescan</Button>
+            <Button variant="ghost" onClick={() => setStage("upload")} className="text-slate-400 hover:text-foreground">← Rescan</Button>
             <Button className="flex-1 bg-green-600 hover:bg-green-500 text-white gap-2">
               <CheckCircle2 className="h-4 w-4" /> Add 11 Products to Finder
             </Button>
@@ -221,14 +221,14 @@ function CameraCapture() {
   return (
     <div className="space-y-6">
       <div className="text-center py-10 space-y-4">
-        <div className="w-20 h-20 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto">
+        <div className="w-20 h-20 rounded-2xl bg-wash-2 border border-line flex items-center justify-center mx-auto">
           <Camera className="h-10 w-10 text-slate-600" />
         </div>
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-3">
             <Clock className="h-3 w-3" /> Coming Soon
           </div>
-          <h3 className="text-lg font-bold text-white mb-2">Mobile Camera Inventory Capture</h3>
+          <h3 className="text-lg font-bold text-foreground mb-2">Mobile Camera Inventory Capture</h3>
           <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed">
             Point your phone at any shelf, warehouse bin, or inventory board. Finder AI will identify products, estimate quantities, and sync inventory automatically — no typing required.
           </p>
@@ -239,7 +239,7 @@ function CameraCapture() {
             { icon: Zap, label: "AI identifies" },
             { icon: Activity, label: "Auto-syncs" },
           ].map((item) => (
-            <div key={item.label} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 text-center">
+            <div key={item.label} className="bg-wash-1 border border-line-soft rounded-xl p-4 text-center">
               <item.icon className="h-5 w-5 text-slate-500 mx-auto mb-2" />
               <div className="text-[10px] text-slate-500">{item.label}</div>
             </div>
@@ -258,14 +258,14 @@ function FormSubmission() {
       {!submitted ? (
         <>
           <div>
-            <h3 className="text-base font-semibold text-white mb-1">Simple Inventory Submission</h3>
+            <h3 className="text-base font-semibold text-foreground mb-1">Simple Inventory Submission</h3>
             <p className="text-slate-400 text-sm">No technical setup required. Fill out this form and our AI will structure your inventory automatically.</p>
           </div>
-          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
+          <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
             <div>
               <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">What products do you sell?</label>
               <textarea rows={4} placeholder="List your products, one per line. Include quantities if you know them.&#10;e.g.&#10;Paracetamol 1g — 2000 units&#10;Amoxicillin 500mg — 1200&#10;Surgical gloves (large) — 500 pairs"
-                className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all resize-none" />
+                className="w-full bg-wash-2 border border-line rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all resize-none" />
             </div>
             {[
               { label: "Your Business Name", placeholder: "e.g. Lagos General Pharmacy" },
@@ -275,7 +275,7 @@ function FormSubmission() {
               <div key={f.label}>
                 <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">{f.label}</label>
                 <input type="text" placeholder={f.placeholder}
-                  className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all" />
+                  className="w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all" />
               </div>
             ))}
             <div className="flex items-start gap-3 bg-green-500/[0.05] border border-green-500/[0.15] rounded-xl px-4 py-3 text-xs text-slate-400">
@@ -290,9 +290,9 @@ function FormSubmission() {
           <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto">
             <CheckCircle2 className="h-8 w-8 text-green-400" />
           </div>
-          <h3 className="text-xl font-bold text-white">Submission Received</h3>
+          <h3 className="text-xl font-bold text-foreground">Submission Received</h3>
           <p className="text-sm text-slate-400 max-w-sm mx-auto">Our AI is processing your inventory list. You'll be live on Finder within 15 minutes. No action needed.</p>
-          <Button variant="ghost" onClick={() => setSubmitted(false)} className="text-slate-400 hover:text-white text-sm">Submit another list</Button>
+          <Button variant="ghost" onClick={() => setSubmitted(false)} className="text-slate-400 hover:text-foreground text-sm">Submit another list</Button>
         </motion.div>
       )}
     </div>
@@ -373,23 +373,23 @@ export default function VendorInventory() {
   const nextTier = QUALITY_TIERS[3]!;
 
   return (
-    <div className="min-h-screen flex bg-[#040a15] text-foreground">
+    <div className="min-h-screen flex bg-canvas text-foreground">
       <VendorSidebar />
 
       <main className="flex-1 overflow-y-auto">
         {/* Sticky Header */}
-        <div className="sticky top-14 lg:top-0 z-20 bg-[#040a15]/95 backdrop-blur border-b border-white/[0.05] px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="sticky top-14 lg:top-0 z-20 bg-canvas/95 backdrop-blur border-b border-line-soft px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-bold text-white">AI Inventory Sync Center</h1>
+            <h1 className="text-lg font-bold text-foreground">AI Inventory Sync Center</h1>
             <p className="text-xs text-slate-500 mt-0.5">Keep Your Inventory Live On Finder</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className={`flex items-center gap-2 text-[11px] border rounded-full px-3 py-1.5 ${syncPaused ? "text-amber-400 border-amber-500/30 bg-amber-500/[0.07]" : "text-slate-500 border-white/[0.06] bg-white/[0.03]"}`}>
+            <div className={`flex items-center gap-2 text-[11px] border rounded-full px-3 py-1.5 ${syncPaused ? "text-amber-400 border-amber-500/30 bg-amber-500/[0.07]" : "text-slate-500 border-line bg-wash-2"}`}>
               <div className={`w-1.5 h-1.5 rounded-full ${syncPaused ? "bg-amber-400" : "bg-green-400 animate-pulse shadow-[0_0_6px_rgba(74,222,128,0.5)]"}`} />
               {syncPaused ? "Sync Paused" : "Network Live"}
             </div>
             <Link href="/vendor/dashboard">
-              <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white gap-2">
+              <Button size="sm" variant="ghost" className="text-slate-400 hover:text-foreground gap-2">
                 <BarChart3 className="h-4 w-4" /> Dashboard
               </Button>
             </Link>
@@ -430,7 +430,7 @@ export default function VendorInventory() {
                 dot: syncPaused ? "bg-amber-400" : "bg-green-400",
               },
             ].map((s, i) => (
-              <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
+              <div key={i} className="bg-wash-1 border border-line rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <div className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse`} />
                   <span className="text-[9px] uppercase tracking-[0.15em] text-slate-500 font-semibold">{s.label}</span>
@@ -442,7 +442,7 @@ export default function VendorInventory() {
           </div>
 
           {/* Quality Score Banner */}
-          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
+          <div className="bg-wash-1 border border-line rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -460,7 +460,7 @@ export default function VendorInventory() {
               <div className="hidden sm:flex items-center gap-2">
                 {QUALITY_TIERS.map((tier, i) => (
                   <div key={tier.label} className="flex flex-col items-center gap-1">
-                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center ${qualityScore >= tier.pts ? `${tier.bg} ${tier.border}` : "bg-white/[0.02] border-white/[0.06]"}`}>
+                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center ${qualityScore >= tier.pts ? `${tier.bg} ${tier.border}` : "bg-wash-1 border-line"}`}>
                       <Star className={`h-3.5 w-3.5 ${qualityScore >= tier.pts ? tier.color : "text-slate-700"}`} />
                     </div>
                     <span className={`text-[8px] font-semibold ${qualityScore >= tier.pts ? tier.color : "text-slate-700"}`}>{tier.label.split(" ")[0]}</span>
@@ -468,7 +468,7 @@ export default function VendorInventory() {
                 ))}
               </div>
             </div>
-            <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+            <div className="h-1.5 bg-wash-3 rounded-full overflow-hidden">
               <motion.div className="h-full rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyan-400"
                 initial={{ width: "0%" }} animate={{ width: `${qualityScore}%` }} transition={{ duration: 1, ease: "easeOut" }} />
             </div>
@@ -488,9 +488,9 @@ export default function VendorInventory() {
           </div>
 
           {/* Sync Methods Tabs */}
-          <div className="bg-white/[0.015] border border-white/[0.06] rounded-2xl overflow-hidden">
+          <div className="bg-wash-1 border border-line rounded-2xl overflow-hidden">
             {/* Tab Nav */}
-            <div className="flex overflow-x-auto border-b border-white/[0.06] bg-white/[0.01]">
+            <div className="flex overflow-x-auto border-b border-line bg-wash-1">
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -499,15 +499,15 @@ export default function VendorInventory() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-5 py-4 text-[12px] font-medium whitespace-nowrap border-b-2 transition-all duration-150 shrink-0 ${
                       isActive
-                        ? "border-blue-500 text-white bg-white/[0.03]"
-                        : "border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/[0.02]"
+                        ? "border-blue-500 text-foreground bg-wash-2"
+                        : "border-transparent text-slate-500 hover:text-slate-300 hover:bg-wash-1"
                     }`}
                   >
                     <tab.icon className={`h-3.5 w-3.5 ${isActive ? "text-blue-400" : "text-slate-600"}`} />
                     {tab.label}
                     {tab.badge && (
                       <span className={`text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full ${
-                        tab.badge === "AI" ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-white/[0.06] text-slate-500 border border-white/[0.06]"
+                        tab.badge === "AI" ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-wash-3 text-slate-500 border border-line"
                       }`}>{tab.badge}</span>
                     )}
                   </button>
@@ -533,10 +533,10 @@ export default function VendorInventory() {
           {/* Data Controls + Security */}
           <div className="grid md:grid-cols-2 gap-6">
             {/* Data Ownership */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
+            <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <Shield className="h-4 w-4 text-slate-400" />
-                <h3 className="text-sm font-semibold text-white">Data Ownership & Control</h3>
+                <h3 className="text-sm font-semibold text-foreground">Data Ownership & Control</h3>
               </div>
               <p className="text-[11px] text-slate-500">You own your inventory data. Control exactly how it appears on Finder.</p>
               <div className="space-y-2.5">
@@ -546,7 +546,7 @@ export default function VendorInventory() {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left ${
                     syncPaused
                       ? "bg-amber-500/[0.08] border-amber-500/[0.2] text-amber-300"
-                      : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                      : "bg-wash-1 border-line text-slate-300 hover:bg-wash-2"
                   }`}
                 >
                   {syncPaused ? <PlayCircle className="h-4 w-4 text-amber-400 shrink-0" /> : <PauseCircle className="h-4 w-4 text-slate-400 shrink-0" />}
@@ -585,7 +585,7 @@ export default function VendorInventory() {
                     },
                   },
                 ].map((action) => (
-                  <button key={action.label} onClick={action.onClick} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all text-left">
+                  <button key={action.label} onClick={action.onClick} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-wash-1 border border-line hover:bg-wash-2 transition-all text-left">
                     <action.icon className={`h-4 w-4 ${action.color} shrink-0`} />
                     <div className="flex-1">
                       <div className={`text-[12px] font-semibold ${action.color}`}>{action.label}</div>
@@ -597,10 +597,10 @@ export default function VendorInventory() {
             </div>
 
             {/* Enterprise Security */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-4">
+            <div className="bg-wash-1 border border-line rounded-2xl p-6 space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <Lock className="h-4 w-4 text-blue-400" />
-                <h3 className="text-sm font-semibold text-white">Enterprise Security</h3>
+                <h3 className="text-sm font-semibold text-foreground">Enterprise Security</h3>
               </div>
               <p className="text-[11px] text-slate-500">Your inventory data is protected by bank-grade infrastructure at every layer.</p>
               <div className="space-y-2.5">
@@ -611,7 +611,7 @@ export default function VendorInventory() {
                   { label: "Audit Logs", sub: "Full history of every inventory change", active: true, color: "text-green-400" },
                   { label: "Vendor Permissions", sub: "Granular control over what buyers can see", active: true, color: "text-green-400" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-start gap-3 px-4 py-3 bg-white/[0.015] border border-white/[0.04] rounded-xl">
+                  <div key={item.label} className="flex items-start gap-3 px-4 py-3 bg-wash-1 border border-line-soft rounded-xl">
                     <CheckCircle2 className={`h-4 w-4 ${item.color} shrink-0 mt-0.5`} />
                     <div>
                       <div className="text-[12px] font-semibold text-slate-200">{item.label}</div>
@@ -624,7 +624,7 @@ export default function VendorInventory() {
           </div>
 
           {/* Live Network Activity */}
-          <div className="bg-white/[0.015] border border-white/[0.05] rounded-2xl px-6 py-4">
+          <div className="bg-wash-1 border border-line-soft rounded-2xl px-6 py-4">
             <div className="flex items-center gap-2 mb-3">
               <Activity className="h-3.5 w-3.5 text-blue-400" />
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Live Network Activity</span>

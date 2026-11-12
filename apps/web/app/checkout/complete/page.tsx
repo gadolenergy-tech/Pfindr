@@ -62,13 +62,13 @@ function CheckoutResult() {
   if (data.status === "PAID") {
     return (
       <Panel icon={<CheckCircle2 className="h-8 w-8 text-green-400" />} title="Payment received">
-        <div className="mt-5 rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 text-left space-y-3">
+        <div className="mt-5 rounded-xl border border-line bg-wash-1 p-4 text-left space-y-3">
           <Row label="Order" value={data.order?.orderNumber ?? "—"} mono />
           {data.items.map((line, i) => (
             <div key={i} className="flex items-center gap-3">
               {line.imageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
-                <img src={line.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover border border-white/[0.06]" />
+                <img src={line.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover border border-line" />
               )}
               <div className="min-w-0 text-[13px] text-slate-200">
                 {line.quantity} × {line.name}
@@ -87,7 +87,7 @@ function CheckoutResult() {
         </div>
         <div className="mt-5 flex gap-2 justify-center">
           <Link href="/orders" className="rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2 text-sm font-semibold text-white">My orders</Link>
-          <Link href="/messages" className="rounded-lg border border-white/[0.1] px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/[0.04]">Message vendor</Link>
+          <Link href="/messages" className="rounded-lg border border-line-strong px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-wash-2">Message vendor</Link>
         </div>
       </Panel>
     );
@@ -116,9 +116,9 @@ function CheckoutResult() {
 
 function Panel({ icon, title, children }: { icon: React.ReactNode; title: string; children?: React.ReactNode }) {
   return (
-    <div className="max-w-md mx-auto text-center rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8">
+    <div className="max-w-md mx-auto text-center rounded-2xl border border-line bg-wash-1 p-8">
       <div className="flex justify-center mb-4">{icon}</div>
-      <h1 className="text-xl font-bold text-white">{title}</h1>
+      <h1 className="text-xl font-bold text-foreground">{title}</h1>
       {children && <div className="text-sm text-slate-400 mt-2">{children}</div>}
     </div>
   );
@@ -128,7 +128,7 @@ function Row({ label, value, mono, strong }: { label: string; value: string; mon
   return (
     <div className="flex justify-between gap-4 text-[13px]">
       <span className="text-slate-500">{label}</span>
-      <span className={`text-right ${mono ? "font-mono text-slate-200" : strong ? "font-bold text-white" : "text-slate-200"}`}>{value}</span>
+      <span className={`text-right ${mono ? "font-mono text-slate-200" : strong ? "font-bold text-foreground" : "text-slate-200"}`}>{value}</span>
     </div>
   );
 }
@@ -136,7 +136,7 @@ function Row({ label, value, mono, strong }: { label: string; value: string; mon
 export default function CheckoutCompletePage() {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#040a15]">
+      <div className="min-h-screen bg-canvas">
         <Navbar />
         <main className="pt-32 pb-16 px-4">
           <Suspense fallback={<Panel icon={<Loader2 className="h-8 w-8 text-blue-400 animate-spin" />} title="Loading…" />}>

@@ -58,7 +58,7 @@ export default function PartnersPage() {
       ) : partners && partners.length > 0 ? (
         <div className="space-y-3">
           {partners.map((partner) => (
-            <Card key={partner.id} className="bg-card border-white/[0.06]">
+            <Card key={partner.id} className="bg-card border-line">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="min-w-0">
@@ -118,7 +118,7 @@ export default function PartnersPage() {
                           onClick={() =>
                             mutation.mutate({ id: partner.id, status })
                           }
-                          className="border-white/[0.08] text-xs"
+                          className="border-line text-xs"
                         >
                           {status.replace("_", " ").toLowerCase()}
                         </Button>
@@ -131,7 +131,7 @@ export default function PartnersPage() {
           ))}
         </div>
       ) : (
-        <Card className="bg-card border-white/[0.06]">
+        <Card className="bg-card border-line">
           <CardContent className="py-16 text-center">
             <Handshake className="h-8 w-8 text-slate-700 mx-auto mb-3" />
             <p className="text-sm text-slate-500">No partner inquiries yet.</p>

@@ -43,7 +43,7 @@ function CopyButton({ value, label = "Copy" }: { value: string; label?: string }
           setTimeout(() => setCopied(false), 1500);
         });
       }}
-      className="text-slate-400 hover:text-white gap-2 border border-white/[0.06] h-8 shrink-0"
+      className="text-slate-400 hover:text-foreground gap-2 border border-line h-8 shrink-0"
     >
       {copied ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
       {copied ? "Copied" : label}
@@ -100,12 +100,12 @@ export function KeyManager({ compact = false }: { compact?: boolean }) {
           <div className="flex items-start gap-2">
             <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
             <p className="text-[12px] text-slate-300">
-              <span className="font-semibold text-white">Copy &ldquo;{fresh.name}&rdquo; now.</span> This is the only time
+              <span className="font-semibold text-foreground">Copy &ldquo;{fresh.name}&rdquo; now.</span> This is the only time
               the full key is shown — Finder stores just a hash of it.
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <code className="flex-1 bg-[#030810] border border-white/[0.07] rounded-xl px-4 py-2.5 text-[12px] font-mono text-green-300 break-all">
+            <code className="flex-1 bg-sunken border border-line rounded-xl px-4 py-2.5 text-[12px] font-mono text-green-300 break-all">
               {fresh.key}
             </code>
             <CopyButton value={fresh.key} />
@@ -116,10 +116,10 @@ export function KeyManager({ compact = false }: { compact?: boolean }) {
         </div>
       )}
 
-      {isLoading && <div className="h-16 bg-white/[0.02] border border-white/[0.05] rounded-2xl animate-pulse" />}
+      {isLoading && <div className="h-16 bg-wash-1 border border-line-soft rounded-2xl animate-pulse" />}
 
       {shown.map((k) => (
-        <div key={k.id} className={`bg-[#06101f] border rounded-2xl p-4 flex items-center gap-4 ${k.revokedAt ? "border-white/[0.04] opacity-50" : "border-blue-500/[0.12]"}`}>
+        <div key={k.id} className={`bg-raised border rounded-2xl p-4 flex items-center gap-4 ${k.revokedAt ? "border-line-soft opacity-50" : "border-blue-500/[0.12]"}`}>
           <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
             <KeyRound className="h-4 w-4 text-blue-400" />
           </div>
@@ -156,14 +156,14 @@ export function KeyManager({ compact = false }: { compact?: boolean }) {
       )}
 
       {creating ? (
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-4">
+        <div className="bg-wash-1 border border-line rounded-2xl p-5 space-y-4">
           <div>
             <label className="block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold">Key name</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Warehouse POS"
-              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40"
+              className="w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40"
             />
           </div>
           <div>
@@ -177,7 +177,7 @@ export function KeyManager({ compact = false }: { compact?: boolean }) {
                     type="button"
                     onClick={() => setScopes((prev) => (on ? prev.filter((s) => s !== scope) : [...prev, scope]))}
                     className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all ${
-                      on ? "bg-blue-500/15 text-blue-300 border-blue-500/30" : "text-slate-500 border-white/[0.07] hover:text-slate-300"
+                      on ? "bg-blue-500/15 text-blue-300 border-blue-500/30" : "text-slate-500 border-line hover:text-slate-300"
                     }`}
                   >
                     {SCOPE_LABEL[scope]}

@@ -14,7 +14,7 @@ import { useAuth } from "@/lib/auth-context";
 const CHANNELS = ["Website / blog", "Instagram", "X (Twitter)", "LinkedIn", "WhatsApp", "YouTube", "Email list", "In person"];
 
 const INPUT =
-  "w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all";
+  "w-full bg-wash-2 border border-line rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-slate-600 outline-none focus:border-blue-500/40 transition-all";
 const LABEL = "block text-[10px] uppercase tracking-[0.15em] text-slate-500 mb-1.5 font-semibold";
 
 function JoinForm() {
@@ -67,7 +67,7 @@ function JoinForm() {
   const err = (k: string) => (errors[k] ? <p className="text-[11px] text-red-400 mt-1">{errors[k]}</p> : null);
 
   return (
-    <div className="min-h-screen bg-[#040a15] text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       <Navbar />
       <div className="pt-32 pb-20 px-4">
         <div className="container mx-auto max-w-xl">
@@ -80,7 +80,7 @@ function JoinForm() {
             Free to join, no approval wait. You get your referral link as soon as you submit.
           </p>
 
-          <form onSubmit={submit} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 space-y-5">
+          <form onSubmit={submit} className="bg-wash-1 border border-line rounded-2xl p-6 space-y-5">
             {error && (
               <div className="flex items-center gap-2 text-[12px] text-red-300 bg-red-500/[0.06] border border-red-500/20 rounded-xl px-3 py-2">
                 <AlertCircle className="h-4 w-4" /> {error}
@@ -111,7 +111,7 @@ function JoinForm() {
                   return (
                     <button key={c} type="button"
                       onClick={() => setChannels((prev) => (on ? prev.filter((x) => x !== c) : [...prev, c]))}
-                      className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all ${on ? "bg-blue-500/15 text-blue-300 border-blue-500/30" : "text-slate-500 border-white/[0.07] hover:text-slate-300"}`}>
+                      className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all ${on ? "bg-blue-500/15 text-blue-300 border-blue-500/30" : "text-slate-500 border-line hover:text-slate-300"}`}>
                       {c}
                     </button>
                   );

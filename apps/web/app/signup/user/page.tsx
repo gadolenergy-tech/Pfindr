@@ -230,13 +230,13 @@ export default function SignUp() {
 
         <div className="relative z-10 p-16 flex flex-col justify-end h-full">
           <blockquote className="space-y-6">
-            <p className="text-3xl font-medium text-white leading-tight">
+            <p className="text-3xl font-medium text-foreground leading-tight">
               &ldquo;Finder has completely transformed our supply chain. We reduced our sourcing time by 80% and found reliable suppliers for our medical equipment instantly.&rdquo;
             </p>
             <footer className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-full bg-muted border border-border"></div>
               <div>
-                <div className="font-semibold text-white">Sarah Jenkins</div>
+                <div className="font-semibold text-foreground">Sarah Jenkins</div>
                 <div className="text-sm text-muted-foreground">VP of Procurement, Global Health Sys</div>
               </div>
             </footer>

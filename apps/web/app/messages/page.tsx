@@ -8,7 +8,7 @@ import { AuthGuard } from "@/components/auth-guard";
 export default function BuyerMessages() {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#040a15]">
+      <div className="min-h-screen bg-canvas">
         <Navbar />
         <main className="flex h-screen pt-[72px] overflow-hidden">
           <Inbox emptyHint="No conversations yet. Search for a product and request a quote to start one." />

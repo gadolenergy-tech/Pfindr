@@ -385,14 +385,14 @@ export default function VendorSignUp() {
       <div className="hidden lg:flex w-1/2 bg-card relative overflow-hidden items-center justify-center">
         <div className="absolute inset-0 bg-primary/5"></div>
         <div className="max-w-lg p-12 relative z-10">
-          <h2 className="text-4xl font-bold text-white mb-6">Scale your distribution overnight.</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-6">Scale your distribution overnight.</h2>
           <ul className="space-y-6">
             <li className="flex items-start gap-4">
               <div className="bg-primary/20 p-2 rounded-full mt-1">
                 <ShieldCheck className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg text-white">Pre-qualified Buyers</h4>
+                <h4 className="font-semibold text-lg text-foreground">Pre-qualified Buyers</h4>
                 <p className="text-muted-foreground">Never deal with tire-kickers. All buyers are verified entities with active purchase orders.</p>
               </div>
             </li>
@@ -401,7 +401,7 @@ export default function VendorSignUp() {
                 <Building className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg text-white">Automated Quoting</h4>
+                <h4 className="font-semibold text-lg text-foreground">Automated Quoting</h4>
                 <p className="text-muted-foreground">Our AI generates quotes based on your rules, saving your sales team hundreds of hours.</p>
               </div>
             </li>

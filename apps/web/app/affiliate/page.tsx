@@ -23,7 +23,7 @@ const BENEFITS = [
 ];
 
 const TIERS = [
-  { name: "Starter", refs: "1–5 referrals", rate: "8%", bonus: "—", color: "text-slate-400", border: "border-white/[0.08]" },
+  { name: "Starter", refs: "1–5 referrals", rate: "8%", bonus: "—", color: "text-slate-400", border: "border-line" },
   { name: "Growth", refs: "6–20 referrals", rate: "12%", bonus: "₦50,000/mo bonus", color: "text-blue-400", border: "border-blue-500/20", highlight: true },
   { name: "Elite", refs: "21–50 referrals", rate: "18%", bonus: "₦200,000/mo bonus", color: "text-amber-400", border: "border-amber-500/20" },
   { name: "Enterprise", refs: "50+ referrals", rate: "Custom", bonus: "Custom", color: "text-cyan-400", border: "border-cyan-500/20" },
@@ -31,7 +31,7 @@ const TIERS = [
 
 export default function AffiliatePage() {
   return (
-    <div className="min-h-screen bg-[#040a15] text-white">
+    <div className="min-h-screen bg-canvas text-foreground">
       <Navbar />
 
       {/* Hero */}
@@ -54,7 +54,7 @@ export default function AffiliatePage() {
               </Button>
             </Link>
             <Link href="/affiliate/join">
-              <Button size="lg" variant="ghost" className="h-14 px-8 text-base text-slate-400 hover:text-white border border-white/[0.08] hover:bg-white/[0.04]">
+              <Button size="lg" variant="ghost" className="h-14 px-8 text-base text-slate-400 hover:text-foreground border border-line hover:bg-wash-2">
                 View Dashboard
               </Button>
             </Link>
@@ -71,24 +71,24 @@ export default function AffiliatePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-4 border-t border-white/[0.04]">
+      <section className="py-20 px-4 border-t border-line-soft">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-3">How It Works</h2>
             <p className="text-slate-500 font-light">Four simple steps to start earning with Finder.</p>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             {STEPS.map((step, i) => (
               <div key={i} className="relative">
                 {i < STEPS.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-full w-full h-px bg-white/[0.05] z-0" style={{ width: "calc(100% - 3rem)", left: "3rem" }} />
+                  <div className="hidden md:block absolute top-8 left-full w-full h-px bg-wash-3 z-0" style={{ width: "calc(100% - 3rem)", left: "3rem" }} />
                 )}
                 <div className="relative z-10 text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.07] flex items-center justify-center mx-auto mb-4">
+                  <div className="w-14 h-14 rounded-2xl bg-wash-2 border border-line flex items-center justify-center mx-auto mb-4">
                     <step.icon className="h-6 w-6 text-blue-400" />
                   </div>
                   <div className="text-[10px] font-bold text-blue-400/60 uppercase tracking-widest mb-1">{step.step}</div>
-                  <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
+                  <h3 className="text-base font-bold text-foreground mb-2">{step.title}</h3>
                   <p className="text-[12px] text-slate-500 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
@@ -98,19 +98,19 @@ export default function AffiliatePage() {
       </section>
 
       {/* Benefits */}
-      <section className="py-20 px-4 bg-[#030810] border-t border-white/[0.04]">
+      <section className="py-20 px-4 bg-sunken border-t border-line-soft">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-white mb-3">Affiliate Benefits</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-3">Affiliate Benefits</h2>
             <p className="text-slate-500 font-light">Everything you need to succeed as a Finder partner.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {BENEFITS.map((b) => (
-              <div key={b.title} className={`p-6 rounded-2xl border ${b.border} bg-white/[0.015] hover:bg-white/[0.03] transition-all`}>
+              <div key={b.title} className={`p-6 rounded-2xl border ${b.border} bg-wash-1 hover:bg-wash-2 transition-all`}>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${b.bg} border ${b.border}`}>
                   <b.icon className={`h-5 w-5 ${b.color}`} />
                 </div>
-                <h3 className="text-sm font-bold text-white mb-2">{b.title}</h3>
+                <h3 className="text-sm font-bold text-foreground mb-2">{b.title}</h3>
                 <p className="text-[12px] text-slate-500 leading-relaxed">{b.desc}</p>
               </div>
             ))}
@@ -119,20 +119,20 @@ export default function AffiliatePage() {
       </section>
 
       {/* Commission Tiers */}
-      <section className="py-20 px-4 border-t border-white/[0.04]">
+      <section className="py-20 px-4 border-t border-line-soft">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-white mb-3">Commission Structure</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-3">Commission Structure</h2>
             <p className="text-slate-500 font-light">The more vendors you refer, the more you earn — automatically.</p>
           </div>
           <div className="grid md:grid-cols-4 gap-4">
             {TIERS.map((tier) => (
-              <div key={tier.name} className={`p-5 rounded-2xl border ${tier.border} ${tier.highlight ? "bg-blue-500/[0.06]" : "bg-white/[0.015]"} text-center`}>
+              <div key={tier.name} className={`p-5 rounded-2xl border ${tier.border} ${tier.highlight ? "bg-blue-500/[0.06]" : "bg-wash-1"} text-center`}>
                 {tier.highlight && <div className="text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-2">Most Popular</div>}
                 <h3 className={`text-base font-bold mb-1 ${tier.color}`}>{tier.name}</h3>
                 <div className={`text-3xl font-bold tabular-nums mb-1 ${tier.color}`}>{tier.rate}</div>
                 <div className="text-[10px] text-slate-600 mb-3">per vendor/month</div>
-                <div className="text-[10px] text-slate-500 font-medium bg-white/[0.03] border border-white/[0.05] rounded-lg px-3 py-2 mb-2">{tier.refs}</div>
+                <div className="text-[10px] text-slate-500 font-medium bg-wash-2 border border-line-soft rounded-lg px-3 py-2 mb-2">{tier.refs}</div>
                 <div className="text-[10px] text-slate-600">{tier.bonus}</div>
               </div>
             ))}
@@ -141,9 +141,9 @@ export default function AffiliatePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-950/20 via-background to-background border-t border-white/[0.04]">
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-950/20 via-background to-background border-t border-line-soft">
         <div className="container mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Start Earning?</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-4">Ready to Start Earning?</h2>
           <p className="text-slate-400 mb-8 font-light">Join Finder's affiliate program today and start building recurring income.</p>
           <Link href="/affiliate/join">
             <Button size="lg" className="h-14 px-10 text-base bg-blue-600 hover:bg-blue-500 text-white gap-2">

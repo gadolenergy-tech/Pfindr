@@ -235,7 +235,7 @@ export function BulkImport() {
       {stage === "upload" && (
         <>
           <div>
-            <h3 className="text-base font-semibold text-white mb-1">Upload Inventory File</h3>
+            <h3 className="text-base font-semibold text-foreground mb-1">Upload Inventory File</h3>
             <p className="text-slate-400 text-sm">Upload a .csv export from your spreadsheet, POS or ERP. Finder detects your columns and maps them to Finder fields.</p>
           </div>
           <input ref={inputRef} type="file" accept=".csv,text/csv" className="hidden" onChange={onPick} />
@@ -244,17 +244,17 @@ export function BulkImport() {
             onClick={() => inputRef.current?.click()}
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
-            className="w-full border-2 border-dashed border-white/[0.08] rounded-2xl p-12 text-center hover:border-blue-500/30 hover:bg-blue-500/[0.02] transition-all duration-300 group"
+            className="w-full border-2 border-dashed border-line rounded-2xl p-12 text-center hover:border-blue-500/30 hover:bg-blue-500/[0.02] transition-all duration-300 group"
           >
             <UploadCloud className="h-12 w-12 text-slate-600 group-hover:text-blue-400 mx-auto mb-4 transition-colors" />
             <p className="text-sm font-medium text-slate-300 mb-1">Drag and drop your inventory file</p>
             <p className="text-xs text-slate-600 mb-4">or click to browse — .csv · up to {MAX_ROWS.toLocaleString()} rows per import</p>
-            <span className="inline-block text-[11px] px-4 py-2 bg-white/[0.05] border border-white/[0.08] rounded-lg text-slate-400 font-medium">Browse Files</span>
+            <span className="inline-block text-[11px] px-4 py-2 bg-wash-3 border border-line rounded-lg text-slate-400 font-medium">Browse Files</span>
           </button>
           <button
             type="button"
             onClick={downloadTemplate}
-            className="w-full flex items-center gap-3 bg-white/[0.02] border border-white/[0.05] rounded-xl px-5 py-3 text-left hover:bg-white/[0.04] transition-all"
+            className="w-full flex items-center gap-3 bg-wash-1 border border-line-soft rounded-xl px-5 py-3 text-left hover:bg-wash-2 transition-all"
           >
             <FileSpreadsheet className="h-4 w-4 text-green-400 shrink-0" />
             <div className="flex-1">
@@ -273,14 +273,14 @@ export function BulkImport() {
               <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
               <span className="text-[11px] text-blue-400 font-medium uppercase tracking-wider">Column Detection</span>
             </div>
-            <h3 className="text-base font-semibold text-white">{fileName} detected · {rows.length} rows</h3>
+            <h3 className="text-base font-semibold text-foreground">{fileName} detected · {rows.length} rows</h3>
             <p className="text-slate-400 text-sm mt-1">
               Review the mapping before import. Existing SKUs are updated; new SKUs are created when a name is present.
               Photos already in your library are attached automatically by SKU or product name; a Photo File Name column picks one explicitly.
             </p>
           </div>
-          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
-            <div className="grid grid-cols-3 px-5 py-3 border-b border-white/[0.05] bg-white/[0.02]">
+          <div className="bg-wash-1 border border-line rounded-2xl overflow-hidden">
+            <div className="grid grid-cols-3 px-5 py-3 border-b border-line-soft bg-wash-1">
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Your Column</span>
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Finder Field</span>
               <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Confidence</span>
@@ -289,7 +289,7 @@ export function BulkImport() {
               const match = mappings.find((m) => m.field === field);
               const required = field === "sku" || field === "quantity";
               return (
-                <div key={field} className="grid grid-cols-3 px-5 py-3 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                <div key={field} className="grid grid-cols-3 px-5 py-3 border-b border-line-soft hover:bg-wash-1 transition-colors">
                   <span className={`text-[12px] font-mono ${match ? "text-slate-300" : "text-slate-600"}`}>
                     {match?.header ?? "— not found —"}
                   </span>
@@ -298,8 +298,8 @@ export function BulkImport() {
                     {required && <span className="text-red-400"> *</span>}
                   </span>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full ${match ? "bg-green-500" : required ? "bg-red-500/60" : "bg-white/[0.12]"}`} style={{ width: `${match?.confidence ?? 100}%` }} />
+                    <div className="flex-1 h-1 bg-wash-3 rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full ${match ? "bg-green-500" : required ? "bg-red-500/60" : "bg-wash-4"}`} style={{ width: `${match?.confidence ?? 100}%` }} />
                     </div>
                     <span className={`text-[10px] font-semibold tabular-nums shrink-0 ${match ? "text-green-400" : required ? "text-red-400" : "text-slate-500"}`}>
                       {match ? `${match.confidence}%` : required ? "missing" : "optional"}
@@ -315,7 +315,7 @@ export function BulkImport() {
             </p>
           )}
           <div className="flex gap-3">
-            <Button variant="ghost" onClick={reset} className="text-slate-400 hover:text-white">← Back</Button>
+            <Button variant="ghost" onClick={reset} className="text-slate-400 hover:text-foreground">← Back</Button>
             <Button
               onClick={confirmImport}
               disabled={!has("sku") || !has("quantity")}
@@ -329,14 +329,14 @@ export function BulkImport() {
 
       {stage === "importing" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-          <h3 className="text-base font-semibold text-white">Importing your inventory…</h3>
+          <h3 className="text-base font-semibold text-foreground">Importing your inventory…</h3>
           {[
             { label: "Validating file format", done: true },
             { label: `Mapping ${rows.length} rows`, done: true },
             { label: "Syncing to Finder network…", done: false },
           ].map((step, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.12 }}
-              className="flex items-center gap-3 p-3.5 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+              className="flex items-center gap-3 p-3.5 bg-wash-1 border border-line-soft rounded-xl">
               {step.done
                 ? <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0" />
                 : <RefreshCw className="h-4 w-4 text-blue-400 animate-spin shrink-0" />}
@@ -352,7 +352,7 @@ export function BulkImport() {
           <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(74,222,128,0.15)]">
             <CheckCircle2 className="h-8 w-8 text-green-400" />
           </div>
-          <h3 className="text-xl font-bold text-white">{result.updated + result.created} Products Synced</h3>
+          <h3 className="text-xl font-bold text-foreground">{result.updated + result.created} Products Synced</h3>
           <p className="text-sm text-slate-400 max-w-sm mx-auto">Your inventory is now live on Finder. Buyers in your area can discover your products in real time.</p>
           <div className="grid grid-cols-4 gap-3 max-w-md mx-auto mt-4">
             {[
@@ -361,14 +361,14 @@ export function BulkImport() {
               { label: "Photos matched", val: result.imagesMatched, color: "text-cyan-400" },
               { label: "Errors", val: result.failed, color: result.failed ? "text-amber-400" : "text-slate-400" },
             ].map((s) => (
-              <div key={s.label} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-3 text-center">
+              <div key={s.label} className="bg-wash-1 border border-line-soft rounded-xl p-3 text-center">
                 <div className={`text-lg font-bold tabular-nums ${s.color}`}>{s.val}</div>
                 <div className="text-[9px] text-slate-600 mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>
           {result.errors.length > 0 && (
-            <div className="max-w-md mx-auto text-left bg-white/[0.02] border border-white/[0.05] rounded-xl p-3 space-y-1 max-h-40 overflow-y-auto">
+            <div className="max-w-md mx-auto text-left bg-wash-1 border border-line-soft rounded-xl p-3 space-y-1 max-h-40 overflow-y-auto">
               {result.errors.slice(0, 20).map((e) => (
                 <p key={e.sku} className="text-[11px] text-slate-400">
                   <span className="font-mono text-amber-400">{e.sku}</span> — {e.message}
@@ -376,11 +376,11 @@ export function BulkImport() {
               ))}
             </div>
           )}
-          <Button onClick={reset} variant="ghost" className="text-slate-400 hover:text-white text-sm">Import another file</Button>
+          <Button onClick={reset} variant="ghost" className="text-slate-400 hover:text-foreground text-sm">Import another file</Button>
         </motion.div>
       )}
 
-      <div className="pt-4 border-t border-white/[0.06]">
+      <div className="pt-4 border-t border-line">
         <ProductList />
       </div>
     </div>

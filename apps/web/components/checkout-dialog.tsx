@@ -97,13 +97,13 @@ export function CheckoutDialog({
         initial={{ opacity: 0, y: 12, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-md rounded-2xl border border-white/[0.08] p-6 space-y-5 max-h-[90vh] overflow-y-auto"
-        style={{ background: "linear-gradient(160deg, #0b1830 0%, #060d1f 100%)" }}
+        className="relative w-full max-w-md rounded-2xl border border-line p-6 space-y-5 max-h-[90vh] overflow-y-auto"
+        style={{ background: "var(--panel-gradient)" }}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">{quantities ? "Pay now" : "Buy now"}</div>
-            <h2 className="text-[16px] font-semibold text-white mt-1 leading-snug">
+            <h2 className="text-[16px] font-semibold text-foreground mt-1 leading-snug">
               {quantities && items.length > 1 ? `${items.length} products` : item.name}
               {!quantities && item.brand && <span className="text-slate-400 font-normal"> · {item.brand}</span>}
             </h2>
@@ -112,7 +112,7 @@ export function CheckoutDialog({
             </p>
           </div>
           <button type="button" onClick={onClose} disabled={submitting} aria-label="Close"
-            className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/[0.06]">
+            className="p-1.5 rounded-lg text-slate-500 hover:text-foreground hover:bg-wash-3">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -120,8 +120,8 @@ export function CheckoutDialog({
         {/* What you are paying for: the photo and brand shown on the product page */}
         <div className="space-y-2">
           {items.map((i) => (
-            <div key={i.inventoryItemId} className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5">
-              <div className="w-11 h-11 rounded-lg bg-white/[0.04] border border-white/[0.06] overflow-hidden flex items-center justify-center shrink-0">
+            <div key={i.inventoryItemId} className="flex items-center gap-3 rounded-xl border border-line bg-wash-1 p-2.5">
+              <div className="w-11 h-11 rounded-lg bg-wash-2 border border-line overflow-hidden flex items-center justify-center shrink-0">
                 {i.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
                   <img src={i.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -138,7 +138,7 @@ export function CheckoutDialog({
               </div>
               {quantities && (
                 <div className="text-right shrink-0">
-                  <div className="text-[12px] font-semibold text-white tabular-nums">{qtyOf(i)} ×</div>
+                  <div className="text-[12px] font-semibold text-foreground tabular-nums">{qtyOf(i)} ×</div>
                 </div>
               )}
             </div>
@@ -155,15 +155,15 @@ export function CheckoutDialog({
                 {item.stock !== null && ` · ${item.stock.toLocaleString()} in stock`}
               </div>
             </div>
-            <div className="flex items-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
+            <div className="flex items-center rounded-lg border border-line bg-wash-2">
               <button type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 1}
-                className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="Fewer">
+                className="p-2 text-slate-400 hover:text-foreground disabled:opacity-30" aria-label="Fewer">
                 <Minus className="h-3.5 w-3.5" />
               </button>
               <input type="number" min={1} max={maxQty} value={quantity} onChange={(e) => setQty(Number(e.target.value))}
-                className="w-14 bg-transparent text-center text-sm text-white tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
+                className="w-14 bg-transparent text-center text-sm text-foreground tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
               <button type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= maxQty}
-                className="p-2 text-slate-400 hover:text-white disabled:opacity-30" aria-label="More">
+                className="p-2 text-slate-400 hover:text-foreground disabled:opacity-30" aria-label="More">
                 <Plus className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -183,7 +183,7 @@ export function CheckoutDialog({
                 className={`flex items-start gap-2 rounded-xl border p-3 text-left transition-all ${
                   fulfilment === opt.value
                     ? "border-blue-500/40 bg-blue-500/10"
-                    : "border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04]"
+                    : "border-line bg-wash-1 hover:bg-wash-2"
                 }`}>
                 <opt.icon className={`h-4 w-4 mt-px ${fulfilment === opt.value ? "text-blue-400" : "text-slate-500"}`} />
                 <div>
@@ -197,7 +197,7 @@ export function CheckoutDialog({
             <div>
               <textarea value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} rows={2} maxLength={500}
                 placeholder="Delivery address, with a landmark"
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-blue-500/40 resize-none" />
+                className="w-full rounded-xl border border-line bg-wash-2 px-3 py-2 text-sm text-foreground outline-none focus:border-blue-500/40 resize-none" />
               {fieldErrors.deliveryAddress && <p className="text-[11px] text-red-400">{fieldErrors.deliveryAddress}</p>}
             </div>
           )}
@@ -208,7 +208,7 @@ export function CheckoutDialog({
           <label htmlFor="buyerPhone" className="text-[12px] font-medium text-slate-300">Your phone number</label>
           <input id="buyerPhone" type="tel" value={buyerPhone} onChange={(e) => setBuyerPhone(e.target.value)}
             placeholder="+234 800 000 0000" autoComplete="tel"
-            className="w-full h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-white outline-none focus:border-blue-500/40" />
+            className="w-full h-10 rounded-xl border border-line bg-wash-2 px-3 text-sm text-foreground outline-none focus:border-blue-500/40" />
           {fieldErrors.buyerPhone
             ? <p className="text-[11px] text-red-400">{fieldErrors.buyerPhone}</p>
             : <p className="text-[10px] text-slate-500">The vendor uses this to arrange the handover.</p>}
@@ -221,10 +221,10 @@ export function CheckoutDialog({
         )}
 
         {/* Total + pay */}
-        <div className="pt-4 border-t border-white/[0.06] space-y-3">
+        <div className="pt-4 border-t border-line space-y-3">
           <div className="flex items-baseline justify-between">
             <span className="text-[12px] text-slate-400">Total</span>
-            <span data-testid="checkout-total" className="text-xl font-bold text-white tabular-nums">{formatMoney(total, item.currency)}</span>
+            <span data-testid="checkout-total" className="text-xl font-bold text-foreground tabular-nums">{formatMoney(total, item.currency)}</span>
           </div>
           <button type="submit" disabled={submitting}
             className="w-full h-11 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors">

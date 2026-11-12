@@ -51,7 +51,7 @@ export default function ContactPage() {
           {submissions.map((submission) => (
             <Card
               key={submission.id}
-              className={`bg-card border-white/[0.06] ${
+              className={`bg-card border-line ${
                 submission.handledAt ? "opacity-60" : ""
               }`}
             >
@@ -96,7 +96,7 @@ export default function ContactPage() {
                       variant="outline"
                       disabled={mutation.isPending}
                       onClick={() => mutation.mutate(submission.id)}
-                      className="shrink-0 border-white/[0.08]"
+                      className="shrink-0 border-line"
                     >
                       <CheckCircle2 className="mr-1.5 h-4 w-4" /> Mark handled
                     </Button>
@@ -107,7 +107,7 @@ export default function ContactPage() {
           ))}
         </div>
       ) : (
-        <Card className="bg-card border-white/[0.06]">
+        <Card className="bg-card border-line">
           <CardContent className="py-16 text-center">
             <Mail className="h-8 w-8 text-slate-700 mx-auto mb-3" />
             <p className="text-sm text-slate-500">No messages yet.</p>

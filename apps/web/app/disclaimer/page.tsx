@@ -58,7 +58,7 @@ export default function Disclaimer() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-5">
               <AlertTriangle className="h-3 w-3" /> Important Notice
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">Platform Disclaimer</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-4">Platform Disclaimer</h1>
             <p className="text-slate-400 text-lg font-light leading-relaxed">Finder connects buyers and vendors in a live discovery network. Please read this disclaimer carefully to understand Finder's role, limitations, and your responsibilities as a platform user.</p>
             <p className="text-sm text-slate-500 mt-4">Last updated: June 22, 2026 · Finder Platform Inc.</p>
           </div>
@@ -69,7 +69,7 @@ export default function Disclaimer() {
               <div>
                 <p className="text-sm font-semibold text-amber-300 mb-1">Important</p>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Finder is a <strong className="text-white">discovery platform</strong>, not a seller or distributor. Always verify product availability, pricing, and vendor credentials directly before completing any transaction — especially for medical, pharmaceutical, or industrial goods.
+                  Finder is a <strong className="text-foreground">discovery platform</strong>, not a seller or distributor. Always verify product availability, pricing, and vendor credentials directly before completing any transaction — especially for medical, pharmaceutical, or industrial goods.
                 </p>
               </div>
             </div>
@@ -77,25 +77,25 @@ export default function Disclaimer() {
 
           <div className="space-y-8">
             {SECTIONS.map((section) => (
-              <div key={section.title} className="border-b border-white/[0.04] pb-8 last:border-0">
-                <h2 className="text-base font-semibold text-white mb-3">{section.title}</h2>
+              <div key={section.title} className="border-b border-line-soft pb-8 last:border-0">
+                <h2 className="text-base font-semibold text-foreground mb-3">{section.title}</h2>
                 <p className="text-slate-400 text-sm leading-7">{section.body}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-16 p-6 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
-            <h3 className="text-sm font-semibold text-white mb-2">Need Clarification?</h3>
+          <div className="mt-16 p-6 bg-wash-1 border border-line rounded-2xl">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Need Clarification?</h3>
             <p className="text-sm text-slate-400 mb-4">If you have questions about how Finder operates or your rights as a buyer or vendor, our team is available to assist.</p>
             <div className="flex flex-wrap gap-3">
               <Link href="/contact">
                 <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors">Contact Us</button>
               </Link>
               <Link href="/terms">
-                <button className="px-4 py-2 bg-white/[0.05] hover:bg-white/[0.08] text-slate-300 text-sm font-medium rounded-lg border border-white/[0.08] transition-colors">Terms of Service</button>
+                <button className="px-4 py-2 bg-wash-3 hover:bg-wash-4 text-slate-300 text-sm font-medium rounded-lg border border-line transition-colors">Terms of Service</button>
               </Link>
               <Link href="/privacy">
-                <button className="px-4 py-2 bg-white/[0.05] hover:bg-white/[0.08] text-slate-300 text-sm font-medium rounded-lg border border-white/[0.08] transition-colors">Privacy Policy</button>
+                <button className="px-4 py-2 bg-wash-3 hover:bg-wash-4 text-slate-300 text-sm font-medium rounded-lg border border-line transition-colors">Privacy Policy</button>
               </Link>
             </div>
           </div>

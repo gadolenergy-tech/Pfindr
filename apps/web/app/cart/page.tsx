@@ -64,7 +64,7 @@ function CartContents() {
 
   if (cart.items.length === 0) {
     return (
-      <div className="text-center py-20 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+      <div className="text-center py-20 rounded-2xl border border-line bg-wash-1">
         <ShoppingCart className="h-9 w-9 text-slate-600 mx-auto" />
         <p className="text-sm text-slate-400 mt-3">Your cart is empty.</p>
         <Link href="/?search=resume" className="text-sm text-blue-400 hover:underline">Search for a product</Link>
@@ -89,16 +89,16 @@ function CartContents() {
         const currencies = new Set(payableRows.map((r) => r.currency));
         const subtotal = payableRows.reduce((sum, r) => sum + r.unitPrice * r.quantity, 0);
         return (
-          <section key={g.vendorId} data-testid={`cart-vendor-${g.vendorId}`} className="rounded-2xl border border-white/[0.07] bg-white/[0.02]">
-            <header className="px-5 py-3.5 border-b border-white/[0.06]">
-              <div className="text-[14px] font-semibold text-white">{g.vendor}</div>
+          <section key={g.vendorId} data-testid={`cart-vendor-${g.vendorId}`} className="rounded-2xl border border-line bg-wash-1">
+            <header className="px-5 py-3.5 border-b border-line">
+              <div className="text-[14px] font-semibold text-foreground">{g.vendor}</div>
               {g.vendorCity && <div className="text-[11px] text-slate-500">{g.vendorCity}</div>}
             </header>
 
-            <ul className="divide-y divide-white/[0.05]">
+            <ul className="divide-y divide-line-soft">
               {rows.map((r) => (
                 <li key={r.inventoryItemId} data-testid={`cart-line-${r.inventoryItemId}`} className="flex items-center gap-3.5 px-5 py-3.5">
-                  <Link href={`/product/${r.inventoryItemId}`} className="w-14 h-14 rounded-xl bg-white/[0.04] border border-white/[0.06] overflow-hidden flex items-center justify-center shrink-0">
+                  <Link href={`/product/${r.inventoryItemId}`} className="w-14 h-14 rounded-xl bg-wash-2 border border-line overflow-hidden flex items-center justify-center shrink-0">
                     {r.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element -- bucket host is configured per environment
                       <img src={r.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -119,17 +119,17 @@ function CartContents() {
                   </div>
 
                   {!r.gone && !r.quote && (
-                    <div className="flex items-center rounded-lg border border-white/[0.08] bg-white/[0.03] shrink-0">
-                      <button type="button" aria-label="Fewer" disabled={r.quantity <= 1} onClick={() => cart.setQuantity(r.inventoryItemId, r.quantity - 1)} className="p-1.5 text-slate-400 hover:text-white disabled:opacity-30">
+                    <div className="flex items-center rounded-lg border border-line bg-wash-2 shrink-0">
+                      <button type="button" aria-label="Fewer" disabled={r.quantity <= 1} onClick={() => cart.setQuantity(r.inventoryItemId, r.quantity - 1)} className="p-1.5 text-slate-400 hover:text-foreground disabled:opacity-30">
                         <Minus className="h-3.5 w-3.5" />
                       </button>
-                      <span className="w-9 text-center text-sm text-white tabular-nums">{r.quantity}</span>
-                      <button type="button" aria-label="More" disabled={r.stock !== null && r.quantity >= r.stock} onClick={() => cart.setQuantity(r.inventoryItemId, r.quantity + 1)} className="p-1.5 text-slate-400 hover:text-white disabled:opacity-30">
+                      <span className="w-9 text-center text-sm text-foreground tabular-nums">{r.quantity}</span>
+                      <button type="button" aria-label="More" disabled={r.stock !== null && r.quantity >= r.stock} onClick={() => cart.setQuantity(r.inventoryItemId, r.quantity + 1)} className="p-1.5 text-slate-400 hover:text-foreground disabled:opacity-30">
                         <Plus className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   )}
-                  <div className="w-24 text-right text-[13px] font-semibold text-white tabular-nums shrink-0">
+                  <div className="w-24 text-right text-[13px] font-semibold text-foreground tabular-nums shrink-0">
                     {!r.gone && !r.quote ? formatMoney(r.unitPrice * r.quantity, r.currency) : "—"}
                   </div>
                   <button type="button" aria-label={`Remove ${r.name}`} onClick={() => cart.remove(r.inventoryItemId)} className="p-1.5 text-slate-600 hover:text-red-400 shrink-0">
@@ -139,10 +139,10 @@ function CartContents() {
               ))}
             </ul>
 
-            <footer className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-t border-white/[0.06]">
+            <footer className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-t border-line">
               <div>
                 <div className="text-[11px] text-slate-500">Subtotal</div>
-                <div data-testid={`cart-subtotal-${g.vendorId}`} className="text-lg font-bold text-white tabular-nums">
+                <div data-testid={`cart-subtotal-${g.vendorId}`} className="text-lg font-bold text-foreground tabular-nums">
                   {currencies.size === 1 ? formatMoney(subtotal, [...currencies][0]) : "—"}
                 </div>
               </div>
@@ -190,10 +190,10 @@ function CartContents() {
 export default function CartPage() {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#040a15]">
+      <div className="min-h-screen bg-canvas">
         <Navbar />
         <main className="pt-28 pb-16 px-4 max-w-3xl mx-auto">
-          <h1 className="text-2xl font-bold text-white">Your cart</h1>
+          <h1 className="text-2xl font-bold text-foreground">Your cart</h1>
           <p className="text-sm text-slate-500 mt-1 mb-6">Review what you picked, then pay.</p>
           <CartContents />
         </main>

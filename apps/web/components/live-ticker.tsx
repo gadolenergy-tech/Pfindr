@@ -18,10 +18,10 @@ const DOUBLED = [...EVENTS, ...EVENTS];
 
 export function LiveTicker() {
   return (
-    <div className="relative overflow-hidden border-y border-white/[0.04] bg-[#030810] py-3">
+    <div className="relative overflow-hidden border-y border-line-soft bg-sunken py-3">
       {/* Left/right fade masks */}
-      <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#030810] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#030810] to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-sunken to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-sunken to-transparent z-10 pointer-events-none" />
 
       <div
         className="flex items-center gap-10 whitespace-nowrap animate-marquee"

@@ -57,32 +57,32 @@ export default function PrivacyPolicy() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-5">
               Legal Document
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">Privacy Policy</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-4">Privacy Policy</h1>
             <p className="text-slate-400 text-lg font-light leading-relaxed">Finder is committed to protecting your personal and business data. This policy explains what we collect, how we use it, and the rights you have over your information.</p>
             <p className="text-sm text-slate-500 mt-4">Last updated: June 22, 2026 · Finder Platform Inc.</p>
           </div>
 
           <div className="space-y-8">
             {SECTIONS.map((section) => (
-              <div key={section.title} className="border-b border-white/[0.04] pb-8 last:border-0">
-                <h2 className="text-base font-semibold text-white mb-3">{section.title}</h2>
+              <div key={section.title} className="border-b border-line-soft pb-8 last:border-0">
+                <h2 className="text-base font-semibold text-foreground mb-3">{section.title}</h2>
                 <p className="text-slate-400 text-sm leading-7">{section.body}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-16 p-6 bg-white/[0.02] border border-white/[0.06] rounded-2xl">
-            <h3 className="text-sm font-semibold text-white mb-2">Privacy Questions or Requests?</h3>
+          <div className="mt-16 p-6 bg-wash-1 border border-line rounded-2xl">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Privacy Questions or Requests?</h3>
             <p className="text-sm text-slate-400 mb-4">Contact our Data Protection Team to exercise your rights or raise a concern.</p>
             <div className="flex flex-wrap gap-3">
               <Link href="/contact">
                 <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors">Contact DPT</button>
               </Link>
               <Link href="/terms">
-                <button className="px-4 py-2 bg-white/[0.05] hover:bg-white/[0.08] text-slate-300 text-sm font-medium rounded-lg border border-white/[0.08] transition-colors">Terms of Service</button>
+                <button className="px-4 py-2 bg-wash-3 hover:bg-wash-4 text-slate-300 text-sm font-medium rounded-lg border border-line transition-colors">Terms of Service</button>
               </Link>
               <Link href="/disclaimer">
-                <button className="px-4 py-2 bg-white/[0.05] hover:bg-white/[0.08] text-slate-300 text-sm font-medium rounded-lg border border-white/[0.08] transition-colors">Disclaimer</button>
+                <button className="px-4 py-2 bg-wash-3 hover:bg-wash-4 text-slate-300 text-sm font-medium rounded-lg border border-line transition-colors">Disclaimer</button>
               </Link>
             </div>
           </div>

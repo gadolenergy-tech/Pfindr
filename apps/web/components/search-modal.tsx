@@ -381,16 +381,16 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
           transition={{ duration: 0.18 }}
           onClick={onClose}
         >
-          <div className="absolute inset-0 bg-[#020812]/88 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-sunken/88 backdrop-blur-2xl" />
 
           <motion.div
             data-testid="search-modal-panel"
             className="relative w-full max-w-2xl flex flex-col overflow-hidden"
             style={{
-              background: "linear-gradient(160deg, #0b1830 0%, #060d1f 60%, #040913 100%)",
-              border: "1px solid rgba(255,255,255,0.07)",
+              background: "var(--panel-gradient)",
+              border: "1px solid var(--line)",
               borderRadius: "1.5rem",
-              boxShadow: "0 48px 140px -20px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.04), 0 0 100px -30px rgba(59,130,246,0.18)",
+              boxShadow: "var(--modal-shadow)",
               maxHeight: "84vh",
             }}
             initial={{ opacity: 0, y: -20, scale: 0.97 }}
@@ -403,7 +403,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
             <div className="absolute -top-px left-1/2 -translate-x-1/2 w-[55%] h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
             {/* Search Input Row */}
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-line-soft">
               <div className="relative shrink-0 w-5 flex items-center justify-center">
                 {isSearching
                   ? <Loader2 className="h-4.5 w-4.5 text-blue-400 animate-spin" />
@@ -415,7 +415,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                   data-testid="search-modal-input"
                   value={query}
                   onChange={(e) => handleQueryChange(e.target.value)}
-                  className="w-full bg-transparent text-white text-[17px] placeholder:text-slate-600 outline-none font-light tracking-[-0.01em]"
+                  className="w-full bg-transparent text-foreground text-[17px] placeholder:text-slate-600 outline-none font-light tracking-[-0.01em]"
                   spellCheck={false}
                   autoComplete="off"
                 />
@@ -452,7 +452,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                 <button
                   data-testid="search-modal-close"
                   onClick={onClose}
-                  className="p-1.5 rounded-lg hover:bg-white/[0.06] text-slate-600 hover:text-slate-300 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-wash-3 text-slate-600 hover:text-slate-300 transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -463,7 +463,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                 Claude vision names the product → that text runs through the
                 normal proximity search, shown to the user so they can edit it. */}
             {imageSearchOpen && (
-              <div data-testid="search-image-panel" className="px-5 py-4 border-b border-white/[0.05] bg-blue-500/[0.03]">
+              <div data-testid="search-image-panel" className="px-5 py-4 border-b border-line-soft bg-blue-500/[0.03]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
                     <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
@@ -485,7 +485,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                   <button
                     type="button"
                     onClick={() => setImageSearchOpen(false)}
-                    className="p-1 rounded-md text-slate-600 hover:text-slate-300 hover:bg-white/[0.06]"
+                    className="p-1 rounded-md text-slate-600 hover:text-slate-300 hover:bg-wash-3"
                     aria-label="Close image search"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -501,7 +501,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                       type="button"
                       disabled
                       title="Coming soon"
-                      className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 border border-white/[0.07] bg-white/[0.02] rounded-lg px-3 py-1.5 cursor-not-allowed"
+                      className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 border border-line bg-wash-1 rounded-lg px-3 py-1.5 cursor-not-allowed"
                     >
                       <Icon className="h-3.5 w-3.5" /> {label}
                     </button>
@@ -511,7 +511,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
             )}
 
             {/* Category Tabs */}
-            <div className="flex items-center gap-1 px-4 py-2.5 border-b border-white/[0.04] overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+            <div className="flex items-center gap-1 px-4 py-2.5 border-b border-line-soft overflow-x-auto" style={{ scrollbarWidth: "none" }}>
               {CATEGORIES.map(({ label: cat }) => (
                 <button
                   key={cat}
@@ -520,7 +520,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                   className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-150 ${
                     activeCategory === cat
                       ? "bg-blue-500/15 text-blue-300 border border-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.15)]"
-                      : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.04] border border-transparent"
+                      : "text-slate-500 hover:text-slate-300 hover:bg-wash-2 border border-transparent"
                   }`}
                 >
                   {cat}
@@ -533,7 +533,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                 className={`ml-auto shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-medium border transition-all ${
                   origin
                     ? "bg-green-500/10 text-green-300 border-green-500/30"
-                    : "text-slate-500 hover:text-slate-300 border-white/[0.06]"
+                    : "text-slate-500 hover:text-slate-300 border-line"
                 }`}
                 title="Results are sorted nearest first — click to change location"
               >
@@ -548,7 +548,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
 
             {/* Location picker — GPS, or a city centre when GPS is unavailable */}
             {pickerOpen && (
-              <div data-testid="search-location-picker" className="px-4 py-3 border-b border-white/[0.04] space-y-2.5">
+              <div data-testid="search-location-picker" className="px-4 py-3 border-b border-line-soft space-y-2.5">
                 <button
                   type="button"
                   onClick={locate}
@@ -568,7 +568,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                       className={`px-2.5 py-1 rounded-full text-[11px] border transition-all ${
                         origin?.source === "city" && origin.label === city.label
                           ? "bg-blue-500/15 text-blue-300 border-blue-500/30"
-                          : "text-slate-400 border-white/[0.07] hover:bg-white/[0.05] hover:text-slate-200"
+                          : "text-slate-400 border-line hover:bg-wash-3 hover:text-slate-200"
                       }`}
                     >
                       {city.label}
@@ -592,7 +592,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                           key={t.term}
                           type="button"
                           onClick={() => handleQueryChange(t.term)}
-                          className="px-3 py-1.5 rounded-full text-[12px] text-slate-300 bg-white/[0.03] border border-white/[0.07] hover:bg-white/[0.06] hover:border-blue-500/30 transition-all"
+                          className="px-3 py-1.5 rounded-full text-[12px] text-slate-300 bg-wash-2 border border-line hover:bg-wash-3 hover:border-blue-500/30 transition-all"
                         >
                           {t.term}
                         </button>
@@ -624,7 +624,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                 </div>
               ) : results.length === 0 && !isSearching ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-wash-2 border border-line-soft flex items-center justify-center">
                     <Package className="h-6 w-6 text-slate-600" />
                   </div>
                   <div>
@@ -652,7 +652,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                       aria-expanded={isExpanded}
                       className="mx-2 my-0.5 rounded-xl cursor-pointer transition-all duration-150"
                       style={isSelected ? {
-                        background: "rgba(255,255,255,0.035)",
+                        background: "var(--wash-2)",
                         boxShadow: "inset 0 0 0 1px rgba(59,130,246,0.15), 0 0 20px -8px rgba(59,130,246,0.2)"
                       } : {}}
                     >
@@ -663,7 +663,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-150"
                           style={isSelected
                             ? { background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)" }
-                            : { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }
+                            : { background: "var(--wash-2)", border: "1px solid var(--line)" }
                           }
                         >
                           {v.imageUrl ? (
@@ -682,7 +682,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                             {v.brand && (
                               <span className="shrink-0 text-[10px] text-slate-400 font-medium">· {v.brand}</span>
                             )}
-                            <span className="shrink-0 text-[9px] uppercase tracking-widest bg-white/[0.04] border border-white/[0.07] text-slate-500 px-1.5 py-px rounded font-medium">
+                            <span className="shrink-0 text-[9px] uppercase tracking-widest bg-wash-2 border border-line text-slate-500 px-1.5 py-px rounded font-medium">
                               {v.category}
                             </span>
                             {v.verified && (
@@ -702,7 +702,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                             <MapPin className="h-3 w-3 shrink-0 text-blue-400" />
                             {v.distance ? (
                               <span>
-                                This product is <strong className="font-semibold text-white">{v.distance}</strong> away from{" "}
+                                This product is <strong className="font-semibold text-foreground">{v.distance}</strong> away from{" "}
                                 {/* A city pick is measured from its centre, so say so. */}
                                 {origin?.source === "city" ? `${origin.label} centre` : "you"}
                               </span>
@@ -713,7 +713,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
 
                           {/* Inventory bar + quantity */}
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 h-[3px] bg-white/[0.06] rounded-full overflow-hidden max-w-[80px]">
+                            <div className="flex-1 h-[3px] bg-wash-3 rounded-full overflow-hidden max-w-[80px]">
                               <div
                                 className={`h-full rounded-full ${sc.bar} transition-all duration-700`}
                                 style={{ width: `${pct}%` }}
@@ -753,7 +753,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                           ) : (
                             <>
                               <div className="text-right">
-                                <div className="text-[15px] font-bold text-white tabular-nums leading-none">{v.price}</div>
+                                <div className="text-[15px] font-bold text-foreground tabular-nums leading-none">{v.price}</div>
                                 <div className="text-[10px] text-slate-600 mt-0.5 leading-none">{v.unit}</div>
                               </div>
                               {v.buy && (
@@ -780,7 +780,7 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
                             className="overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <div className="mx-3.5 mb-3 pt-3 border-t border-white/[0.06] space-y-3 cursor-default">
+                            <div className="mx-3.5 mb-3 pt-3 border-t border-line space-y-3 cursor-default">
                               <div className="flex items-start gap-2 text-[12px] text-slate-300">
                                 <MapPin className="h-3.5 w-3.5 shrink-0 mt-px text-slate-500" />
                                 <div>
@@ -819,14 +819,14 @@ export function SearchModal({ open, onClose, resume = false }: SearchModalProps)
             </div>
 
             {/* Footer */}
-            <div className="border-t border-white/[0.05] px-5 py-3 flex items-center justify-between bg-white/[0.01]">
+            <div className="border-t border-line-soft px-5 py-3 flex items-center justify-between bg-wash-1">
               <div className="flex items-center gap-4 text-[10px] text-slate-600">
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-white/[0.05] border border-white/[0.07] rounded text-slate-500 font-mono text-[9px]">↑↓</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-wash-3 border border-line rounded text-slate-500 font-mono text-[9px]">↑↓</kbd>
                   navigate
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-white/[0.05] border border-white/[0.07] rounded text-slate-500 font-mono text-[9px]">esc</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-wash-3 border border-line rounded text-slate-500 font-mono text-[9px]">esc</kbd>
                   close
                 </span>
               </div>
